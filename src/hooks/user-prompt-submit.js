@@ -13,6 +13,6 @@ if (!root) {
     `- run: ${relRun || "none"}`,
     `- milestone: ${state.current_milestone || "none"}`,
     `- blocked: ${state.blocked}`,
-    "Use repo-relative paths. Read `.codex/prompts/main-workflow.md` and `.codex/prompts/file-protocol.md`."
+    "Use repo-relative paths. Main thread reads `.codex/prompts/main-thread.md`; subagents read only dispatch-listed files, `.codex/prompts/subagent-contract.md`, `.codex/prompts/file-protocol.md`, and their own role prompt."
   ].join("\n"));
 }

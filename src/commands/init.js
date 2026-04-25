@@ -26,7 +26,7 @@ export function initCommand(args, context) {
     writeText(cfgOut, rendered, { force });
   }
 
-  for (const rel of [".agentflow/runs/.gitkeep", ".agentflow/backups/.gitkeep"]) {
+  for (const rel of [".agentflow/runs/.gitkeep", ".agentflow/backups/.gitkeep", ".agentflow/archives/.gitkeep"]) {
     const p = path.join(target, rel);
     if (!exists(p)) writeText(p, "", { force: false });
   }

@@ -1,32 +1,19 @@
-# Spec Guide
+# Spec 指南
 
-稳定的功能或模块规格写成：
+Architect 负责维护 `agentflow/spec/` 下的稳定规格。
 
-```text
-agentflow/spec/<domain>.md
-```
+Spec 用于记录已经接受的设计、接口、数据契约和行为。草案保留在 `.agentflow/runs/<run-id>/architect/`，直到 `$finish` 阶段同步已接受内容。
 
-示例：
+建议章节：
 
-```text
-agentflow/spec/auth.md
-agentflow/spec/api.md
-agentflow/spec/cache.md
-```
-
-每个 spec 使用下面的表格：
-
-| Section | Content |
+| 章节 | 内容 |
 |---|---|
-| Owner | PM / Architect |
-| Scope | 包含什么 |
-| Non-goals | 不包含什么 |
-| Inputs | 外部输入 |
-| Outputs | 期望输出 |
-| Behavior | 必须满足的行为 |
-| Error handling | 错误行为 |
-| Performance constraints | 可选 |
-| Related ADRs | `agentflow/adr/...` |
-| Test plan | `agentflow/spec/test-plan/<domain>.md` |
-
-Spec 是稳定要求。临时执行记录写入 `.agentflow/runs/<run-id>/`。
+| 负责人 | Architect |
+| 范围 | 包含的行为 |
+| 非目标 | 不包含的行为 |
+| 接口 | 对外 API、文件、CLI、事件 |
+| 数据契约 | 输入、输出、schema、持久化 |
+| 行为 | 必须满足的行为 |
+| 错误处理 | 失败和异常行为 |
+| 相关 ADR | `agentflow/adr/*.md` |
+| 测试计划 | `agentflow/spec/test-plan/*.md` |

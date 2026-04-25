@@ -64,23 +64,47 @@ export function isWorkflowPath(toolInput) {
 
 export function requiredRunFiles(runPath, phase) {
   if (!runPath) return [];
-  if (phase === "ready-to-execute" || phase === "planning") {
-    return [path.join(runPath, "task.md"), path.join(runPath, "gate.md")];
+  if (phase === "planning") {
+    return [path.join(runPath, "task.md"), path.join(runPath, "pm", "requirements.md")];
   }
-  if (phase === "executing" || phase === "ready-to-review") {
+  if (phase === "designing") {
+    return [
+      path.join(runPath, "architect", "design.md"),
+      path.join(runPath, "architect", "spec-draft.md"),
+      path.join(runPath, "architect", "adr-draft.md"),
+      path.join(runPath, "tester", "test-plan.md")
+    ];
+  }
+  if (phase === "doc-reviewing") {
+    return [
+      path.join(runPath, "doc-reviewer", "review-report.md"),
+      path.join(runPath, "doc-reviewer", "review-ledger.md")
+    ];
+  }
+  if (phase === "ready-to-execute") {
+    return [path.join(runPath, "gate.md")];
+  }
+  if (phase === "executing") {
     return [
       path.join(runPath, "gate.md"),
       path.join(runPath, "developer", "implementation-report.md"),
-      path.join(runPath, "developer", "changed-files.md")
+      path.join(runPath, "developer", "changed-files.md"),
+      path.join(runPath, "developer", "test-result.md")
     ];
   }
-  if (phase === "reviewing" || phase === "ready-to-finish") {
+  if (phase === "code-reviewing") {
     return [
-      path.join(runPath, "reviewer", "review-report.md"),
-      path.join(runPath, "tester", "test-report.md")
+      path.join(runPath, "code-reviewer", "review-report.md"),
+      path.join(runPath, "code-reviewer", "review-ledger.md")
     ];
+  }
+  if (phase === "ready-to-finish") {
+    return [path.join(runPath, "gate.md"), path.join(runPath, "code-reviewer", "review-report.md")];
   }
   if (phase === "finishing") {
+    return [path.join(runPath, "auditor", "audit-report.md"), path.join(runPath, "summary.md")];
+  }
+  if (phase === "blocked") {
     return [path.join(runPath, "summary.md")];
   }
   return [];

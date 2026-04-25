@@ -1,22 +1,17 @@
-# Test Plan Guide
+# 测试计划指南
 
-测试计划由 Tester 维护。
+Tester 负责维护 `agentflow/spec/test-plan/` 下的稳定测试计划。
 
-测试计划写成：
+测试计划把已接受的 design/spec 行为映射到验证步骤、fixture、验收矩阵和通过/失败标准。Tester 写测试计划和覆盖审查，不写代码。
 
-```text
-agentflow/spec/test-plan/<domain>.md
-```
+建议章节：
 
-每个测试计划应该直接对应 `agentflow/spec/<domain>.md`。
-
-| Test area | Required cases | Type | Tool/command | Pass criteria | Notes |
-|---|---|---|---|---|---|
-| Decode/input | | unit | | | |
-| Validation | | unit/integration | | | |
-| Behavior | | integration | | | |
-| Error cases | | unit/integration | | | |
-| Regression | | regression | | | |
-| Performance | | benchmark | | | |
-
-除非写出测试名称或命令，否则不能声称已覆盖。
+| 章节 | 内容 |
+|---|---|
+| 负责人 | Tester |
+| 相关 spec | `agentflow/spec/*.md` |
+| 验收矩阵 | 需求到验证项的映射 |
+| 自动化检查 | 命令和预期结果 |
+| 手工检查 | 需要时的手工验证 |
+| 测试数据/夹具 | 所需数据或环境准备 |
+| 回归范围 | 需要保护的既有行为 |

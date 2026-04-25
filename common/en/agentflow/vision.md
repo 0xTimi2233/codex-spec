@@ -1,6 +1,6 @@
 # Vision
 
-Fill this file before serious implementation. Keep it short and stable.
+Fill this file before serious implementation. Keep it short, stable, and maintainable.
 
 | Field | Content |
 |---|---|
@@ -15,6 +15,6 @@ Fill this file before serious implementation. Keep it short and stable.
 ## Notes
 
 - PM owns this file.
-- Do not write temporary implementation notes here.
+- Temporary run records live in `.agentflow/runs/<run-id>/`.
 - Put architecture decisions in `agentflow/adr/*.md`.
-- Put feature/module details in `agentflow/spec/<domain>.md`.
+- Put stable feature and module specs in `agentflow/spec/*.md`.

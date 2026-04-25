@@ -10,6 +10,7 @@ import { statusCommand } from "./commands/status.js";
 import { rebindHooksCommand } from "./commands/rebind-hooks.js";
 import { stateCommand } from "./commands/state.js";
 import { backupCommand } from "./commands/backup.js";
+import { archiveCommand } from "./commands/archive.js";
 import { exitWith, println } from "./lib/output.js";
 
 const args = parseArgs(process.argv.slice(2));
@@ -31,6 +32,8 @@ if (!command || command === "help" || args.help) {
   stateCommand(args, context);
 } else if (command === "backup") {
   backupCommand(args, context);
+} else if (command === "archive") {
+  archiveCommand(args, context);
 } else if (command === "--version" || command === "version") {
   const pkg = JSON.parse(fs.readFileSync(path.join(packageRoot, "package.json"), "utf8"));
   println(pkg.version);

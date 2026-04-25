@@ -1,33 +1,42 @@
 ---
 name: auto
-description: Run roadmap milestones automatically with clean subagent contexts per milestone.
+description: Execute the standard workflow for the current run under control, stopping on rejection or risk.
 ---
 
 # Skill: auto
 
-## Read first
+## Read First
 
-- `.codex/prompts/main-workflow.md`
+- `.codex/prompts/main-thread.md`
 - `.codex/prompts/file-protocol.md`
 - `agentflow/roadmap.md`
 - `.agentflow/state.json`
 
 ## Procedure
 
-1. Run `$health` equivalent checks.
-2. Select the first `Status: ready` milestone whose dependencies are satisfied.
-3. For that milestone, run `$plan -> $execute -> $review -> $finish`.
-4. After finish, close all subagent contexts and start the next milestone with fresh subagents.
-5. Stop only when no ready milestone exists or a blocker appears.
+Run the next missing phase from the current phase:
 
-## Must stop when
+```text
+$plan -> $design -> $doc-review -> $execute -> $code-review -> $finish
+```
 
-- roadmap dependency is not satisfied;
-- required user decision is missing;
-- hook blocks a transition;
-- tests or review repeatedly fail;
-- high-risk or destructive action is required.
+After every phase, read `.agentflow/state.json`, current run summary, latest report, and review ledger.
 
-## Final reply
+## Must Stop
 
-Return completed milestones, current state, next ready milestone if any, and blocker if stopped.
+Stop and do not advance to the next phase when any of these occur:
+
+- PM returns `fail`, `blocked`, `needs-context`, or `done-with-concerns`
+- Architect returns `fail`, `blocked`, `needs-context`, or `done-with-concerns`
+- Tester returns `fail`, `blocked`, `needs-context`, or `done-with-concerns`
+- Doc Reviewer or Code Reviewer returns anything other than `pass`
+- `.agentflow/runs/<run-id>/fix-requests/*.md` exists
+- `.agentflow/state.json.blocked = true`
+- required artifacts for the current phase are missing
+- a user, external system, or destructive operation decision is needed
+
+When stopping, the main thread writes `.agentflow/runs/<run-id>/summary.md` with state, reason, latest evidence paths, and recommended next action.
+
+## Final Reply
+
+Return completed phases, stop reason, current state, relevant report/fix-request paths, and the recommended next skill for the user.

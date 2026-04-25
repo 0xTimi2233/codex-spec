@@ -11,15 +11,30 @@ const REQUIRED = [
   ".codex/agents/architect.toml",
   ".codex/agents/tester.toml",
   ".codex/agents/developer.toml",
-  ".codex/agents/reviewer.toml",
-  ".codex/agents/researcher.toml",
-  ".codex/agents/performance.toml",
-  ".codex/prompts/main-workflow.md",
+  ".codex/agents/doc-reviewer.toml",
+  ".codex/agents/code-reviewer.toml",
+  ".codex/agents/auditor.toml",
+  ".codex/prompts/main-thread.md",
   ".codex/prompts/file-protocol.md",
-  ".codex/prompts/role-common.md",
+  ".codex/prompts/subagent-contract.md",
+  ".codex/prompts/roles/pm.md",
+  ".codex/prompts/roles/architect.md",
+  ".codex/prompts/roles/tester.md",
+  ".codex/prompts/roles/doc-reviewer.md",
+  ".codex/prompts/roles/developer.md",
+  ".codex/prompts/roles/code-reviewer.md",
+  ".codex/prompts/roles/auditor.md",
+  ".codex/prompts/project/product-rules.md",
+  ".codex/prompts/project/architecture-rules.md",
+  ".codex/prompts/project/coding-standards.md",
+  ".codex/prompts/project/testing-standards.md",
+  ".codex/prompts/project/doc-review-policy.md",
+  ".codex/prompts/project/code-review-policy.md",
   ".agents/skills/plan/SKILL.md",
+  ".agents/skills/design/SKILL.md",
+  ".agents/skills/doc-review/SKILL.md",
   ".agents/skills/execute/SKILL.md",
-  ".agents/skills/review/SKILL.md",
+  ".agents/skills/code-review/SKILL.md",
   ".agents/skills/finish/SKILL.md",
   ".agents/skills/auto/SKILL.md",
   ".agents/skills/health/SKILL.md",
@@ -32,29 +47,52 @@ const REQUIRED = [
   "agentflow/spec/00-spec-guide.md",
   "agentflow/spec/test-plan/00-test-plan-guide.md",
   ".agentflow/state.json",
-  ".agentflow/handoff.md"
+  ".agentflow/handoff.md",
+  ".agentflow/runs/.gitkeep",
+  ".agentflow/backups/.gitkeep",
+  ".agentflow/archives/.gitkeep"
 ];
 
 function requiredForPhase(root, state) {
   if (!state.current_run) return [];
   const runPath = currentRunPath(root, state);
-  if (state.current_phase === "planning" || state.current_phase === "ready-to-execute") {
-    return [path.join(runPath, "task.md"), path.join(runPath, "gate.md")];
+  if (state.current_phase === "planning") {
+    return [path.join(runPath, "task.md"), path.join(runPath, "pm", "requirements.md")];
   }
-  if (state.current_phase === "executing" || state.current_phase === "ready-to-review") {
+  if (state.current_phase === "designing") {
+    return [
+      path.join(runPath, "architect", "design.md"),
+      path.join(runPath, "architect", "spec-draft.md"),
+      path.join(runPath, "architect", "adr-draft.md"),
+      path.join(runPath, "tester", "test-plan.md")
+    ];
+  }
+  if (state.current_phase === "doc-reviewing") {
+    return [
+      path.join(runPath, "doc-reviewer", "review-report.md"),
+      path.join(runPath, "doc-reviewer", "review-ledger.md")
+    ];
+  }
+  if (state.current_phase === "ready-to-execute") return [path.join(runPath, "gate.md")];
+  if (state.current_phase === "executing") {
     return [
       path.join(runPath, "gate.md"),
       path.join(runPath, "developer", "implementation-report.md"),
-      path.join(runPath, "developer", "changed-files.md")
+      path.join(runPath, "developer", "changed-files.md"),
+      path.join(runPath, "developer", "test-result.md")
     ];
   }
-  if (state.current_phase === "reviewing" || state.current_phase === "ready-to-finish") {
+  if (state.current_phase === "code-reviewing") {
     return [
-      path.join(runPath, "reviewer", "review-report.md"),
-      path.join(runPath, "tester", "test-report.md")
+      path.join(runPath, "code-reviewer", "review-report.md"),
+      path.join(runPath, "code-reviewer", "review-ledger.md")
     ];
   }
-  if (state.current_phase === "finishing") return [path.join(runPath, "summary.md")];
+  if (state.current_phase === "ready-to-finish") {
+    return [path.join(runPath, "gate.md"), path.join(runPath, "code-reviewer", "review-report.md")];
+  }
+  if (state.current_phase === "finishing") return [path.join(runPath, "auditor", "audit-report.md"), path.join(runPath, "summary.md")];
+  if (state.current_phase === "blocked") return [path.join(runPath, "summary.md")];
   return [];
 }
 
@@ -78,6 +116,9 @@ export function healthCommand(_args, context) {
     const state = readState(root);
     const phaseMissing = requiredForPhase(root, state).filter((p) => !fs.existsSync(p)).map((p) => path.relative(root, p));
     if (phaseMissing.length) problems.push(`Current phase '${state.current_phase}' is missing run artifacts:\n${phaseMissing.map((m) => `  - ${m}`).join("\n")}`);
+    if (state.current_phase === "paused" && !fs.existsSync(path.join(root, ".agentflow", "handoff.md"))) {
+      problems.push("Current phase 'paused' is missing .agentflow/handoff.md");
+    }
   }
 
   if (problems.length) {

@@ -4,10 +4,11 @@ import { readJson, writeJson } from "./fs.js";
 export const PHASES = [
   "idle",
   "planning",
+  "designing",
+  "doc-reviewing",
   "ready-to-execute",
   "executing",
-  "ready-to-review",
-  "reviewing",
+  "code-reviewing",
   "ready-to-finish",
   "finishing",
   "blocked",

@@ -1,61 +1,61 @@
 # File Protocol
 
-All agents and the main thread use files as shared state. Chat history is not a source of truth.
+Files are the workflow source of truth. Chat history is not a source of truth. Use repo-relative paths only; do not use absolute paths, aliases, or vague labels.
 
-## Path language
-
-Use repo-relative paths in every response and artifact. Do not use absolute paths, symbolic names, or vague labels.
-
-Examples:
-
-- good: `.agentflow/runs/2026-04-25T120000Z-auth/developer/implementation-report.md`
-- bad: `/home/me/project/.agentflow/...`
-- bad: `implementation report`
-
-## Long-lived files
+## Long-Lived Files
 
 | Path | Purpose | Owner |
 |---|---|---|
-| `agentflow/vision.md` | Product goal, scope, non-goals, constraints | PM |
+| `agentflow/vision.md` | Product goals, scope, non-goals, project constraints | PM |
 | `agentflow/roadmap.md` | Milestones, status, dependencies, exit criteria | PM |
 | `agentflow/adr/*.md` | Accepted architecture decisions | Architect |
-| `agentflow/spec/<domain>.md` | Stable feature/module specification | PM + Architect |
-| `agentflow/spec/test-plan/<domain>.md` | Stable verification plan | Tester |
+| `agentflow/spec/*.md` | Stable designs, interfaces, behavior specs | Architect |
+| `agentflow/spec/test-plan/*.md` | Stable test plans and acceptance matrices | Tester |
 
-## Runtime files
+Long-lived files are synced only during `$finish` by the owning role.
 
-| Path | Purpose | Writer |
-|---|---|---|
-| `.agentflow/state.json` | Small machine-readable workflow pointer | `codex-spec` CLI / hooks |
-| `.agentflow/handoff.md` | Pause/resume note | Main thread |
-| `.agentflow/runs/<run-id>/` | Current task collaboration record | Main thread + role agents |
-| `.agentflow/backups/` | Phase boundary checkpoint | `codex-spec backup` |
-
-## Required artifacts
-
-| Phase | Required paths |
-|---|---|
-| `planning` | `.agentflow/runs/<run-id>/task.md`, `.agentflow/runs/<run-id>/gate.md` |
-| `executing` | `.agentflow/runs/<run-id>/developer/implementation-report.md`, `.agentflow/runs/<run-id>/developer/changed-files.md` |
-| `reviewing` | `.agentflow/runs/<run-id>/reviewer/review-report.md`, `.agentflow/runs/<run-id>/tester/test-report.md` |
-| `finishing` | `.agentflow/runs/<run-id>/summary.md` |
-
-## Required report format
+## Current Run Files
 
 ```text
-Status: pass | fail | blocked
+.agentflow/runs/<run-id>/
+  task.md
+  gate.md
+  summary.md
+  dispatch/
+  pm/
+  architect/
+  tester/
+  doc-reviewer/
+  developer/
+  code-reviewer/
+  auditor/
+  fix-requests/
+  fix-responses/
+```
+
+## Archive Files
+
+```text
+.agentflow/backups/
+.agentflow/archives/<run-id>/
+```
+
+`archives/` is immutable history. Later runs do not read context from `archives/`; reusable facts must be synced into `agentflow/` or written into the current run's `task.md`.
+
+## Report Format
+
+```text
+Status: pass | fail | blocked | needs-context | done-with-concerns
 Summary: <one paragraph>
 Inputs read:
 - <repo-relative path>
 Outputs written:
 - <repo-relative path>
 Findings:
-- <finding>
+- <specific finding>
 Required next action:
 - <action or none>
-Decision: pass | fail | blocked
+Decision: pass | fail | blocked | needs-context | done-with-concerns
 ```
 
-## Draft then sync
-
-Role agents write drafts under `.agentflow/runs/<run-id>/<role>/`. Long-lived files under `agentflow/` are synced only during `finish` or when the main thread explicitly asks a role owner to sync.
+Every report must list inputs read and outputs written. Do not claim tests passed unless tests were run or a test report was read.

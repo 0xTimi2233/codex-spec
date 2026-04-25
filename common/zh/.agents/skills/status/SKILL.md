@@ -1,12 +1,8 @@
 ---
 name: status
-description: 查看当前工作流阶段、run 和下一步动作。
+description: 查看当前 workflow state、run 和下一步建议。
 ---
 
 # Skill: status
 
-1. 执行 `codex-spec status`。
-2. 读取 `.agentflow/state.json`。
-3. 如果存在 `current_run`，在存在时摘要 `.agentflow/runs/<run-id>/summary.md`。
-4. 读取 `agentflow/roadmap.md`，查找下一个 ready milestone。
-5. 回复 mode、phase、run id、milestone、blocked flag 和建议的下一个 skill。
+执行 `codex-spec status`，读取 `.agentflow/state.json` 和当前 run 摘要，返回 phase、run id、blocked flag 和建议的下一个 skill。

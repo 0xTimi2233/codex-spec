@@ -12,9 +12,9 @@
 | Hard constraints | |
 | Success criteria | |
 
-## 说明
+## Notes
 
 - 本文件由 PM 维护。
-- 临时实现笔记不要写在这里。
+- 临时执行记录写入 `.agentflow/runs/<run-id>/`。
 - 架构决策写入 `agentflow/adr/*.md`。
-- 功能/模块细节写入 `agentflow/spec/<domain>.md`。
+- 稳定功能和模块规格写入 `agentflow/spec/*.md`。

@@ -15,6 +15,11 @@ function run(args) {
   return res.stdout;
 }
 run(["init", "--lang", "en", "--target", tmp]);
+run(["--version"]);
 run(["health", "--target", tmp]);
 run(["status", "--target", tmp]);
+const runDir = path.join(tmp, ".agentflow", "runs", "smoke-run");
+fs.mkdirSync(runDir, { recursive: true });
+fs.writeFileSync(path.join(runDir, "summary.md"), "Status: pass\n", "utf8");
+run(["archive", "--run", "smoke-run", "--target", tmp]);
 console.log(`dist smoke OK: ${tmp}`);

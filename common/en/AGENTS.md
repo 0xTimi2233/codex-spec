@@ -2,19 +2,20 @@
 
 This repository uses the project-local `codex-spec` workflow.
 
-Read first:
+Main thread reads first:
 
-- `.codex/prompts/main-workflow.md`
+- `.codex/prompts/main-thread.md`
 - `.codex/prompts/file-protocol.md`
-- `.codex/prompts/role-common.md`
+- `.codex/prompts/subagent-contract.md`
 - `agentflow/vision.md`
 - `agentflow/roadmap.md`
 - `.agentflow/state.json`
 
 Rules:
 
+- The main thread handles orchestration, dispatch, integration, state advancement, and run archiving.
+- Subagents must not read `.codex/prompts/main-thread.md`.
+- Subagents read only `.codex/prompts/subagent-contract.md`, `.codex/prompts/file-protocol.md`, their own role prompt, and dispatch-listed inputs/project rules.
 - Use repo-relative paths in all reports.
-- Long-lived project knowledge lives in `agentflow/`.
-- Temporary run artifacts live in `.agentflow/runs/<run-id>/`.
-- Subagents keep clean context and write only their role-owned run artifacts unless explicitly instructed.
-- The main thread is the orchestrator, integrator, and gatekeeper.
+- Long-lived facts live in `agentflow/`; current run artifacts live in `.agentflow/runs/<run-id>/`.
+- `.agentflow/archives/` is immutable history and is not a context source for later runs.

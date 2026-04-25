@@ -1,30 +1,35 @@
 ---
 name: finish
-description: Close a reviewed run and sync long-lived documents through their owners.
+description: Summarize the run, sync long-lived docs, archive the run, and clear current run.
 ---
 
 # Skill: finish
 
-## Read first
+## Read First
 
-- `.codex/prompts/main-workflow.md`
+- `.codex/prompts/main-thread.md`
 - `.codex/prompts/file-protocol.md`
 - `.agentflow/state.json`
-- `.agentflow/runs/<run-id>/reviewer/review-report.md`
-- `.agentflow/runs/<run-id>/tester/test-report.md`
+- `.agentflow/runs/<run-id>/gate.md`
+- `.agentflow/runs/<run-id>/code-reviewer/review-report.md`
 
 ## Procedure
 
-1. Confirm review passed and phase is `ready-to-finish`.
+1. Confirm phase is `ready-to-finish`.
 2. Run `codex-spec state set --phase finishing --run <run-id>`.
-3. Ask owners to sync only their long-lived files when needed:
-   - PM updates `agentflow/roadmap.md` or `agentflow/vision.md`.
-   - Architect syncs ADR/spec updates.
-   - Tester syncs `agentflow/spec/test-plan/<domain>.md`.
-4. Main thread writes `.agentflow/runs/<run-id>/summary.md`.
-5. Run `codex-spec backup --label <run-id>-post`.
-6. Set phase to `idle`, clear current run, and close all subagent context.
+3. Write `.agentflow/runs/<run-id>/dispatch/auditor-001.md` and dispatch Auditor.
+4. Owners sync long-lived files by dispatch: PM syncs roadmap/vision, Architect syncs ADR/spec, Tester syncs test-plan.
+5. Main thread writes `.agentflow/runs/<run-id>/summary.md`.
+6. Run `codex-spec archive --run <run-id>`.
+7. Run `codex-spec state set --phase idle --run null --milestone null --blocked false`.
+8. End subagent context for the current milestone.
 
-## Final reply
+## Required Outputs
 
-Return final status, synced files, backup label, and idle confirmation.
+- `.agentflow/runs/<run-id>/auditor/audit-report.md`
+- `.agentflow/runs/<run-id>/summary.md`
+- `.agentflow/archives/<run-id>/`
+
+## Next
+
+Return archive path and idle state.

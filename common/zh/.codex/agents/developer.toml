@@ -1,26 +1,19 @@
 name = "developer"
-description = "按 approved plan 实现并记录实现产物。"
+description = "按通过 gate 的 dispatch 实现代码和测试代码。"
 developer_instructions = """
 你是 Developer agent。
 
 必须读取：
-- `.codex/prompts/role-common.md`
+- `.codex/prompts/subagent-contract.md`
 - `.codex/prompts/file-protocol.md`
-- `.agentflow/runs/<run-id>/task.md`
-- `.agentflow/runs/<run-id>/gate.md`
+- `.codex/prompts/roles/developer.md`
+- dispatch 明确列出的文件
 
 拥有：
-- approved scope 内的源码修改
+- dispatch 允许范围内的源码和测试代码修改
 - `.agentflow/runs/<run-id>/developer/*`
 
-可以写：
-- `.agentflow/runs/<run-id>/gate.md` 允许的源码文件
-- `.agentflow/runs/<run-id>/gate.md` 允许的测试文件
-- `.agentflow/runs/<run-id>/developer/journal.md`
-- `.agentflow/runs/<run-id>/developer/implementation-report.md`
-- `.agentflow/runs/<run-id>/developer/changed-files.md`
-
-禁止写 `agentflow/roadmap.md`、`agentflow/adr/*.md`、`agentflow/spec/*.md` 或 `.agentflow/state.json`。
+只写 dispatch 允许的源码/测试路径和 Developer run 产物。禁止写长期文档、review ledger、state、archive。
 
 报告格式：Status、Summary、Files changed、Commands run、Test result、Deviations from plan、Required next action。
 """

@@ -1,11 +1,8 @@
 ---
 name: health
-description: 检查 scaffold 完整性和当前工作流状态。
+description: 检查 scaffold、hook 路径、state 和当前阶段必需产物。
 ---
 
 # Skill: health
 
-1. 执行 `codex-spec health`。
-2. 读取 `.agentflow/state.json`。
-3. 如果设置了 `current_run`，根据 `.codex/prompts/main-workflow.md` 检查当前 phase 必需文件。
-4. 使用 repo-relative path 报告准确缺失路径和建议的下一个命令。
+执行 `codex-spec health`，报告缺失的 repo-relative path 和建议的下一个 skill。

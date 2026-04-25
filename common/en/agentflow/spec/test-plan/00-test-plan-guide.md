@@ -1,22 +1,17 @@
 # Test Plan Guide
 
-Tester owns test plans.
+Tester owns stable test plans under `agentflow/spec/test-plan/`.
 
-Create test plans as:
+Test plans map accepted design/spec behavior to verification steps, fixtures, acceptance matrices, and pass/fail criteria. Tester writes plans and coverage reviews, not code.
 
-```text
-agentflow/spec/test-plan/<domain>.md
-```
+Suggested sections:
 
-Each test plan should map directly to `agentflow/spec/<domain>.md`.
-
-| Test area | Required cases | Type | Tool/command | Pass criteria | Notes |
-|---|---|---|---|---|---|
-| Decode/input | | unit | | | |
-| Validation | | unit/integration | | | |
-| Behavior | | integration | | | |
-| Error cases | | unit/integration | | | |
-| Regression | | regression | | | |
-| Performance | | benchmark | | | |
-
-Do not claim coverage unless tests are named or commands are recorded.
+| Section | Content |
+|---|---|
+| Owner | Tester |
+| Related spec | `agentflow/spec/*.md` |
+| Acceptance matrix | Requirement to verification mapping |
+| Automated checks | Commands and expected result |
+| Manual checks | Manual verification if needed |
+| Fixtures | Required data or setup |
+| Regression scope | Existing behavior to protect |

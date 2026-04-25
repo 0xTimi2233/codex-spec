@@ -1,32 +1,19 @@
 # Spec Guide
 
-Create stable feature or module specs as:
+Architect owns stable specs under `agentflow/spec/`.
 
-```text
-agentflow/spec/<domain>.md
-```
+Use specs for accepted design, interfaces, data contracts, and behavior. Drafts stay in `.agentflow/runs/<run-id>/architect/` until `$finish` syncs accepted content.
 
-Examples:
-
-```text
-agentflow/spec/auth.md
-agentflow/spec/api.md
-agentflow/spec/cache.md
-```
-
-Use this table inside each spec:
+Suggested sections:
 
 | Section | Content |
 |---|---|
-| Owner | PM / Architect |
-| Scope | What is included |
-| Non-goals | What is excluded |
-| Inputs | External inputs |
-| Outputs | Expected outputs |
+| Owner | Architect |
+| Scope | Included behavior |
+| Non-goals | Excluded behavior |
+| Interfaces | Public APIs, files, CLI, events |
+| Data contracts | Inputs, outputs, schema, persistence |
 | Behavior | Required behavior |
-| Error handling | Required error behavior |
-| Performance constraints | Optional |
-| Related ADRs | `agentflow/adr/...` |
-| Test plan | `agentflow/spec/test-plan/<domain>.md` |
-
-Specs are stable requirements. Temporary execution records belong in `.agentflow/runs/<run-id>/`.
+| Error handling | Failure behavior |
+| Related ADRs | `agentflow/adr/*.md` |
+| Test plan | `agentflow/spec/test-plan/*.md` |

@@ -1,33 +1,42 @@
 ---
 name: auto
-description: 按 roadmap 自动执行 milestone，每个 milestone 使用干净子代理上下文。
+description: 受控执行当前 run 的标准工作流，遇到打回或风险时停止。
 ---
 
 # Skill: auto
 
 ## 先读
 
-- `.codex/prompts/main-workflow.md`
+- `.codex/prompts/main-thread.md`
 - `.codex/prompts/file-protocol.md`
 - `agentflow/roadmap.md`
 - `.agentflow/state.json`
 
-## 操作规程
+## 操作
 
-1. 执行 `$health` 等效检查。
-2. 选择第一个 `Status: ready` 且依赖满足的 milestone。
-3. 对该 milestone 执行 `$plan -> $execute -> $review -> $finish`。
-4. finish 后关闭所有子代理上下文，下一个 milestone 使用全新子代理。
-5. 只有没有 ready milestone 或出现 blocker 时停止。
+按当前 phase 执行下一个缺失阶段：
 
-## 必须停止的情况
+```text
+$plan -> $design -> $doc-review -> $execute -> $code-review -> $finish
+```
 
-- roadmap 依赖不满足；
-- 缺少必要用户决策；
-- hook 阻止阶段流转；
-- 测试或 review 反复失败；
-- 需要高风险或破坏性操作。
+每个阶段结束后读取 `.agentflow/state.json`、当前 run summary、最新 report 和 review ledger。
+
+## 必须停止
+
+出现以下任意情况时停止，不继续推进下一阶段：
+
+- PM 返回 `fail`、`blocked`、`needs-context` 或 `done-with-concerns`
+- Architect 返回 `fail`、`blocked`、`needs-context` 或 `done-with-concerns`
+- Tester 返回 `fail`、`blocked`、`needs-context` 或 `done-with-concerns`
+- Doc Reviewer 或 Code Reviewer 返回非 `pass`
+- 出现 `.agentflow/runs/<run-id>/fix-requests/*.md`
+- `.agentflow/state.json.blocked = true`
+- 当前阶段必需产物缺失
+- 需要用户、外部系统或破坏性操作决策
+
+停止时，主线程写 `.agentflow/runs/<run-id>/summary.md`，报告状态、原因、最新证据路径和建议下一步。
 
 ## 最终回复
 
-返回已完成 milestone、当前 state、下一个 ready milestone，以及停止时的 blocker。
+返回已完成阶段、停止原因、当前 state、相关 report/fix-request 路径，以及建议用户执行的下一个 skill。

@@ -2,7 +2,7 @@
 codex_hooks = true
 
 [agents]
-max_threads = 6
+max_threads = 8
 max_depth = 1
 
 [[hooks.UserPromptSubmit]]
