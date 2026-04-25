@@ -5,11 +5,10 @@ import { parseArgs } from "./lib/args.js";
 import { findPackageRoot, resolveTarget } from "./lib/paths.js";
 import { printHelp } from "./commands/help.js";
 import { initCommand } from "./commands/init.js";
-import { healthCommand } from "./commands/health.js";
+import { doctorCommand } from "./commands/doctor.js";
 import { statusCommand } from "./commands/status.js";
 import { rebindHooksCommand } from "./commands/rebind-hooks.js";
 import { stateCommand } from "./commands/state.js";
-import { backupCommand } from "./commands/backup.js";
 import { archiveCommand } from "./commands/archive.js";
 import { exitWith, println } from "./lib/output.js";
 
@@ -22,16 +21,14 @@ if (!command || command === "help" || args.help) {
   printHelp(args._[1]);
 } else if (command === "init") {
   initCommand(args, context);
-} else if (command === "health") {
-  healthCommand(args, context);
+} else if (command === "doctor") {
+  doctorCommand(args, context);
 } else if (command === "status") {
   statusCommand(args, context);
 } else if (command === "rebind-hooks") {
   rebindHooksCommand(args, context);
 } else if (command === "state") {
   stateCommand(args, context);
-} else if (command === "backup") {
-  backupCommand(args, context);
 } else if (command === "archive") {
   archiveCommand(args, context);
 } else if (command === "--version" || command === "version") {

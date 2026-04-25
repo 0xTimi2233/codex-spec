@@ -36,7 +36,6 @@
 ## 归档文件
 
 ```text
-.agentflow/backups/
 .agentflow/archives/<run-id>/
 ```
 

@@ -11,6 +11,12 @@ npm install -g @0xtimi2233/codex-spec
 codex-spec --version
 ```
 
+升级：
+
+```bash
+npm install -g @0xtimi2233/codex-spec@latest
+```
+
 要求：
 
 - Node.js 20 或更高版本
@@ -27,7 +33,7 @@ codex-spec init --lang zh
 检查脚手架：
 
 ```bash
-codex-spec health
+codex-spec doctor
 codex-spec status
 ```
 
@@ -110,13 +116,8 @@ codex-spec init --model xhigh --fast off
 ```bash
 codex-spec help
 codex-spec init --lang en|zh --model high|xhigh --fast off|on
-codex-spec health
+codex-spec doctor
 codex-spec status
-codex-spec rebind-hooks
-codex-spec state set --phase <phase> --run <run-id>
-codex-spec state set --phase idle --run null --milestone null --blocked false
-codex-spec backup --label <label>
-codex-spec archive --run <run-id>
 ```
 
 项目命令都可以使用可选的 `--target`。不传时，`codex-spec` 使用当前目录。

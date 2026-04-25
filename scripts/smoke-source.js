@@ -20,7 +20,7 @@ if (!defaultConfig.includes('model = "gpt-5.5"')) throw new Error("default model
 if (!defaultConfig.includes('model_reasoning_effort = "high"')) throw new Error("default reasoning was not rendered");
 if (defaultConfig.includes("service_tier")) throw new Error("fast mode should be off by default");
 run(["--version"]);
-run(["health", "--target", tmp]);
+run(["doctor", "--target", tmp]);
 run(["status", "--target", tmp]);
 const highTmp = fs.mkdtempSync(path.join(os.tmpdir(), "codex-spec-source-high-"));
 run(["init", "--lang", "en", "--model", "high", "--fast", "on", "--target", highTmp]);

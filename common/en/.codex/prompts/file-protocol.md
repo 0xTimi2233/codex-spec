@@ -36,7 +36,6 @@ Long-lived files are synced only during `$finish` by the owning role.
 ## Archive Files
 
 ```text
-.agentflow/backups/
 .agentflow/archives/<run-id>/
 ```
 

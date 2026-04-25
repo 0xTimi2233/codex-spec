@@ -37,7 +37,7 @@ const REQUIRED = [
   ".agents/skills/code-review/SKILL.md",
   ".agents/skills/finish/SKILL.md",
   ".agents/skills/auto/SKILL.md",
-  ".agents/skills/health/SKILL.md",
+  ".agents/skills/doctor/SKILL.md",
   ".agents/skills/status/SKILL.md",
   ".agents/skills/pause/SKILL.md",
   ".agents/skills/resume/SKILL.md",
@@ -49,7 +49,6 @@ const REQUIRED = [
   ".agentflow/state.json",
   ".agentflow/handoff.md",
   ".agentflow/runs/.gitkeep",
-  ".agentflow/backups/.gitkeep",
   ".agentflow/archives/.gitkeep"
 ];
 
@@ -96,7 +95,7 @@ function requiredForPhase(root, state) {
   return [];
 }
 
-export function healthCommand(_args, context) {
+export function doctorCommand(_args, context) {
   const root = context.target;
   const missing = listMissing(root, REQUIRED);
   const problems = [];
@@ -122,8 +121,8 @@ export function healthCommand(_args, context) {
   }
 
   if (problems.length) {
-    exitWith(`codex-spec health: failed\n\n${problems.join("\n\n")}`);
+    exitWith(`codex-spec doctor: failed\n\n${problems.join("\n\n")}`);
     return;
   }
-  println(`codex-spec health: OK (${root})`);
+  println(`codex-spec doctor: OK (${root})`);
 }

@@ -20,7 +20,7 @@ if (!config.includes('model = "gpt-5.5"')) throw new Error("model was not render
 if (!config.includes('model_reasoning_effort = "xhigh"')) throw new Error("xhigh profile was not rendered");
 if (config.includes("service_tier")) throw new Error("fast mode off should not render service_tier");
 run(["--version"]);
-run(["health", "--target", tmp]);
+run(["doctor", "--target", tmp]);
 run(["status", "--target", tmp]);
 const runDir = path.join(tmp, ".agentflow", "runs", "smoke-run");
 fs.mkdirSync(runDir, { recursive: true });
