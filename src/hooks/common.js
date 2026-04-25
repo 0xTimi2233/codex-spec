@@ -64,11 +64,13 @@ export function isWorkflowPath(toolInput) {
 
 export function requiredRunFiles(runPath, phase) {
   if (!runPath) return [];
+  const base = [path.join(runPath, "dispatch-ledger.md")];
   if (phase === "planning") {
-    return [path.join(runPath, "task.md"), path.join(runPath, "pm", "requirements.md")];
+    return [...base, path.join(runPath, "task.md"), path.join(runPath, "pm", "requirements.md")];
   }
   if (phase === "designing") {
     return [
+      ...base,
       path.join(runPath, "architect", "design.md"),
       path.join(runPath, "architect", "spec-draft.md"),
       path.join(runPath, "architect", "adr-draft.md"),
@@ -77,15 +79,17 @@ export function requiredRunFiles(runPath, phase) {
   }
   if (phase === "doc-reviewing") {
     return [
+      ...base,
       path.join(runPath, "doc-reviewer", "review-report.md"),
       path.join(runPath, "doc-reviewer", "review-ledger.md")
     ];
   }
   if (phase === "ready-to-execute") {
-    return [path.join(runPath, "gate.md")];
+    return [...base, path.join(runPath, "gate.md")];
   }
   if (phase === "executing") {
     return [
+      ...base,
       path.join(runPath, "gate.md"),
       path.join(runPath, "developer", "implementation-report.md"),
       path.join(runPath, "developer", "changed-files.md"),
@@ -94,20 +98,21 @@ export function requiredRunFiles(runPath, phase) {
   }
   if (phase === "code-reviewing") {
     return [
+      ...base,
       path.join(runPath, "code-reviewer", "review-report.md"),
       path.join(runPath, "code-reviewer", "review-ledger.md")
     ];
   }
   if (phase === "ready-to-finish") {
-    return [path.join(runPath, "gate.md"), path.join(runPath, "code-reviewer", "review-report.md")];
+    return [...base, path.join(runPath, "gate.md"), path.join(runPath, "code-reviewer", "review-report.md")];
   }
   if (phase === "finishing") {
-    return [path.join(runPath, "auditor", "audit-report.md"), path.join(runPath, "summary.md")];
+    return [...base, path.join(runPath, "auditor", "audit-report.md"), path.join(runPath, "summary.md")];
   }
   if (phase === "blocked") {
-    return [path.join(runPath, "summary.md")];
+    return [...base, path.join(runPath, "summary.md")];
   }
-  return [];
+  return base;
 }
 
 export function missingRunFiles(root, runPath, phase) {

@@ -1,8 +1,8 @@
 # 主线程协议
 
-本文件只供主线程读取。子代理不得读取本文件，除非 dispatch 明确允许。
+本文件只供主线程读取。子代理不得读取本文件。
 
-主线程是 orchestrator、integrator、gatekeeper。主线程负责选择角色、创建 dispatch、读取报告、维护 ledger、推进 state、归档 run。主线程不承担重设计、重实现、重代码审查。
+主线程是 orchestrator、integrator、gatekeeper。主线程负责选择角色、创建 dispatch、读取报告、维护 dispatch ledger、推进 state、归档 run。主线程不承担重设计、重实现、重代码审查。
 
 ## 启动上下文
 
@@ -32,7 +32,6 @@ code-reviewing
 ready-to-finish
 finishing
 blocked
-paused
 ```
 
 ## Dispatch Packet
@@ -59,6 +58,8 @@ Stop condition:
 ```
 
 子代理只读取 dispatch 列出的输入、共享协议、自己的 role prompt。
+
+每个 dispatch 都必须把 `.agentflow/runs/<run-id>/dispatch-ledger.md`、`.agentflow/state.json`、archive 目录和无关角色目录列为 forbidden paths。dispatch ledger 仅供主线程使用，不传给子代理。
 
 ## 调度 Ledger
 
@@ -89,7 +90,7 @@ run 开始时创建 ledger：
 
 ## Review Ledger
 
-主线程维护：
+Reviewer 角色写自己的 review ledger：
 
 ```text
 .agentflow/runs/<run-id>/doc-reviewer/review-ledger.md
@@ -107,7 +108,7 @@ Resolution:
 Verification:
 ```
 
-新一轮 reviewer 读取 ledger，不读取旧聊天上下文。
+主线程跨轮次保存 review ledger，并把相关 ledger 路径作为 allowed input 传入。新一轮 reviewer 读取 ledger，不读取旧聊天上下文。
 
 ## 工作流节点职责
 

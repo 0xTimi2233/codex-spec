@@ -14,6 +14,12 @@ Subagents read only:
 
 Subagents must not read `.codex/prompts/main-thread.md` and must not independently scan `agentflow/`, `.agentflow/`, source directories, or test directories.
 
+Role ownership defines responsibility, not implicit read scope. Read owned files only when the dispatch packet lists them as allowed input paths.
+
+Subagents do not share hidden state with each other. Use another role's artifacts only when the dispatch packet lists those paths as allowed input.
+
+Subagents must not read or write `.agentflow/runs/<run-id>/dispatch-ledger.md`, `.agentflow/state.json`, archive directories, or unrelated role directories. The dispatch ledger is maintained only by the main thread and is never a subagent input.
+
 ## Write Boundary
 
 Subagents write only output paths and allowed source/test paths listed in the dispatch packet. Unless explicitly allowed by dispatch, they must not write long-lived files, state, archives, or other role directories.

@@ -1,8 +1,8 @@
 # Main Thread Protocol
 
-This file is for the main thread only. Subagents must not read it unless a dispatch packet explicitly allows it.
+This file is for the main thread only. Subagents must not read it.
 
-The main thread is the orchestrator, integrator, and gatekeeper. It selects roles, creates dispatch packets, reads reports, maintains ledgers, advances state, and archives runs. It does not perform heavy design, implementation, or code review work.
+The main thread is the orchestrator, integrator, and gatekeeper. It selects roles, creates dispatch packets, reads reports, maintains the dispatch ledger, advances state, and archives runs. It does not perform heavy design, implementation, or code review work.
 
 ## Startup Context
 
@@ -32,7 +32,6 @@ code-reviewing
 ready-to-finish
 finishing
 blocked
-paused
 ```
 
 ## Dispatch Packet
@@ -59,6 +58,8 @@ Stop condition:
 ```
 
 Subagents read only the dispatch-listed inputs, shared protocols, and their own role prompt.
+
+Every dispatch must list `.agentflow/runs/<run-id>/dispatch-ledger.md`, `.agentflow/state.json`, archive directories, and unrelated role directories as forbidden paths. The dispatch ledger is main-thread-only and must not be passed to subagents.
 
 ## Dispatch Ledger
 
@@ -89,7 +90,7 @@ When a resumable row has an agent id, `$resume` attempts to continue that agent.
 
 ## Review Ledger
 
-The main thread maintains:
+Reviewer roles write their own review ledgers:
 
 ```text
 .agentflow/runs/<run-id>/doc-reviewer/review-ledger.md
@@ -107,7 +108,7 @@ Resolution:
 Verification:
 ```
 
-A new reviewer reads the ledger, not prior chat context.
+The main thread preserves review ledgers across rounds and passes the relevant ledger path as allowed input. A new reviewer reads the ledger, not prior chat context.
 
 ## Workflow Step Duties
 

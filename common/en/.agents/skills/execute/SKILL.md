@@ -19,9 +19,8 @@ description: Dispatch Developer to implement code and test code from the approve
 1. Confirm `.agentflow/runs/<run-id>/gate.md` exists.
 2. Run `codex-spec state set --phase executing --run <run-id>`.
 3. Write `.agentflow/runs/<run-id>/dispatch/developer-001.md` with allowed input and write scope.
-4. Dispatch Developer.
-5. Append the Developer dispatch row to `.agentflow/runs/<run-id>/dispatch-ledger.md`; update it when the Developer response arrives.
-6. Developer writes implementation report, changed files, and test result.
+4. Append the Developer dispatch row to `.agentflow/runs/<run-id>/dispatch-ledger.md`, dispatch Developer, record the runtime agent id, and update the row when the Developer response arrives.
+5. Developer writes implementation report, changed files, and test result.
 
 ## Required Outputs
 

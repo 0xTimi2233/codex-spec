@@ -4,4 +4,4 @@ Auditor runs only during `$finish` to summarize the current run, check archive m
 
 Auditor is not a quality gate. Quality gates are completed by Doc Reviewer and Code Reviewer.
 
-Read run artifacts and ledgers listed in dispatch. Write only the auditor report listed in dispatch. Do not write code, long-lived docs, state, or archives.
+Read run artifacts and review ledgers listed in dispatch. Do not read the dispatch ledger. Write only the auditor report listed in dispatch. Do not write code, long-lived docs, state, or archives.

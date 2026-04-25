@@ -22,11 +22,10 @@ description: Review consistency across requirements, design, spec, ADR draft, an
 
 1. Run `codex-spec state set --phase doc-reviewing --run <run-id>`.
 2. Write `.agentflow/runs/<run-id>/dispatch/doc-reviewer-001.md`.
-3. Dispatch Doc Reviewer.
-4. Append the Doc Reviewer dispatch row to `.agentflow/runs/<run-id>/dispatch-ledger.md`; update it when the Doc Reviewer response arrives.
-5. Doc Reviewer writes review report and review ledger.
-6. On pass, main thread writes `.agentflow/runs/<run-id>/gate.md` and runs `codex-spec state set --phase ready-to-execute --run <run-id> --blocked false`.
-7. On fail, main thread writes `.agentflow/runs/<run-id>/fix-requests/doc-fix-001.md` and returns to `$design`.
+3. Append the Doc Reviewer dispatch row to `.agentflow/runs/<run-id>/dispatch-ledger.md`, dispatch Doc Reviewer, record the runtime agent id, and update the row when the Doc Reviewer response arrives.
+4. Doc Reviewer writes review report and review ledger.
+5. On pass, main thread writes `.agentflow/runs/<run-id>/gate.md` and runs `codex-spec state set --phase ready-to-execute --run <run-id> --blocked false`.
+6. On fail, main thread writes `.agentflow/runs/<run-id>/fix-requests/doc-fix-001.md` and returns to `$design`.
 
 ## Required Outputs
 

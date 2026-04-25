@@ -11,8 +11,7 @@ export const PHASES = [
   "code-reviewing",
   "ready-to-finish",
   "finishing",
-  "blocked",
-  "paused"
+  "blocked"
 ];
 
 export function defaultState() {

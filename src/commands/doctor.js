@@ -38,7 +38,6 @@ const REQUIRED = [
   ".agents/skills/finish/SKILL.md",
   ".agents/skills/auto/SKILL.md",
   ".agents/skills/status/SKILL.md",
-  ".agents/skills/pause/SKILL.md",
   ".agents/skills/resume/SKILL.md",
   "agentflow/vision.md",
   "agentflow/roadmap.md",
@@ -46,7 +45,6 @@ const REQUIRED = [
   "agentflow/spec/00-spec-guide.md",
   "agentflow/spec/test-plan/00-test-plan-guide.md",
   ".agentflow/state.json",
-  ".agentflow/handoff.md",
   ".agentflow/runs/.gitkeep",
   ".agentflow/archives/.gitkeep"
 ];
@@ -119,9 +117,6 @@ export function doctorCommand(_args, context) {
     const state = readState(root);
     const phaseMissing = requiredForPhase(root, state).filter((p) => !fs.existsSync(p)).map((p) => path.relative(root, p));
     if (phaseMissing.length) problems.push(`Current phase '${state.current_phase}' is missing run artifacts:\n${phaseMissing.map((m) => `  - ${m}`).join("\n")}`);
-    if (state.current_phase === "paused" && !fs.existsSync(path.join(root, ".agentflow", "handoff.md"))) {
-      problems.push("Current phase 'paused' is missing .agentflow/handoff.md");
-    }
   }
 
   if (problems.length) {

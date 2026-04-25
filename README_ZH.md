@@ -127,6 +127,7 @@ codex-spec status
 - 每个 milestone 保持足够小，确保可以完整完成设计、实现、审查和 finish。
 - 从 `$plan` 开始，让 PM 把模糊需求整理成清晰范围和完成标准。
 - 把上下文放在文件里，不依赖聊天记忆。子代理只读取 dispatch 指定路径和自己的角色 prompt。
+- `dispatch-ledger.md` 只作为主线程状态：子代理返回报告，由主线程记录调度状态。
 - 区分 Doc Reviewer 和 Code Reviewer：先验证文档正确性，再验证实现正确性。
 - 常规推进可以使用 `$auto`，但当下一步无法安全判断时应停止。
 - `$finish` 后提交完成的 milestone，提交信息使用简洁的用户可见描述，例如 `feat: add import workflow`、`fix: handle empty config`、`docs: update setup guide`。

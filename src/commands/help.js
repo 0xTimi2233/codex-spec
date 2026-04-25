@@ -4,7 +4,7 @@ import { PHASES } from "../lib/state.js";
 const COMMANDS = {
   init: `codex-spec init [--lang en|zh] [--model high|xhigh] [--fast off|on] [--target <dir>] [--force]\n\nCreate project-local Codex workflow files. Default language is English. Default model profile is high and fast mode is off.`,
   doctor: `codex-spec doctor [--target <dir>]\n\nCheck required workflow files, hook script paths, and current run artifacts.`,
-  status: `codex-spec status [--target <dir>]\n\nPrint .agentflow/state.json and current run summary.`,
+  status: `codex-spec status [--target <dir>]\n\nPrint .agentflow/state.json, current run dispatch ledger, and current run summary.`,
   "rebind-hooks": `codex-spec rebind-hooks [--target <dir>] [--lang en|zh]\n\nRewrite .codex/config.toml hook commands to the current installed script paths.`,
   state: `codex-spec state set --phase <phase> [--mode <mode>] [--run <run-id>] [--milestone <id>] [--blocked true|false]\n\nAllowed phases:\n  ${PHASES.join("\n  ")}`,
   archive: `codex-spec archive --run <run-id> [--target <dir>] [--force]\n\nCopy .agentflow/runs/<run-id>/ into .agentflow/archives/<run-id>/.`
