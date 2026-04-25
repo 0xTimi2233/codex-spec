@@ -1,3 +1,5 @@
+{{MODEL_PROFILE_CONFIG}}
+
 [features]
 codex_hooks = true
 

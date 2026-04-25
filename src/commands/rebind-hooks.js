@@ -11,7 +11,10 @@ export function rebindHooksCommand(args, context) {
     return;
   }
   const out = path.join(context.target, ".codex", "config.toml");
-  const rendered = renderConfigToml(readText(tpl), context.packageRoot);
+  const current = exists(out) ? readText(out) : "";
+  const modelProfile = current.includes('model_reasoning_effort = "xhigh"') ? "xhigh" : "middle";
+  const fastMode = current.includes('service_tier = "fast"') ? "on" : "off";
+  const rendered = renderConfigToml(readText(tpl), context.packageRoot, { modelProfile, fastMode });
   writeText(out, rendered, { force: true });
   println(`Rebound hooks in ${out}`);
 }

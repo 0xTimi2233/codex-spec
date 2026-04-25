@@ -1,51 +1,43 @@
 # codex-spec
 
-`codex-spec` scaffolds a project-local Codex subagent workflow.
+[English](README.md) | [中文](README_ZH.md)
 
-It creates:
+`codex-spec` is a project-local workflow scaffold for Codex. It gives Codex a small, file-based operating system for spec-driven work: a main thread coordinates the run, role-specific subagents receive narrow dispatch packets, reviewers guard the gates, and durable artifacts replace chat history as the source of truth.
 
-```text
-AGENTS.md
-.codex/
-.agents/
-agentflow/
-.agentflow/
-```
-
-The workflow uses file artifacts instead of chat history as the source of truth. The main thread orchestrates and integrates; subagents receive narrow dispatch packets and write role-owned run artifacts.
-
-## Install for Local Development
+## Install
 
 ```bash
-bun run build
-npm link
-codex-spec --help
+npm install -g @0xtimi2233/codex-spec
 codex-spec --version
 ```
 
-## Initialize a Project
+Requirements:
 
-English templates:
+- Node.js 20 or newer
+- Codex installed and available in the project where you want to use the workflow
 
-```bash
-codex-spec init
-```
+## Quick Start
 
-Chinese templates:
-
-```bash
-codex-spec init --lang zh
-```
-
-Initialize another directory:
+Initialize English templates in the current directory:
 
 ```bash
-codex-spec init --lang zh --target /path/to/project
+codex-spec init --lang en --model middle --fast off
 ```
 
-`--target` is optional. Without it, `codex-spec` uses the current working directory.
+Initialize Chinese templates:
 
-## Workflow
+```bash
+codex-spec init --lang zh --model middle --fast off
+```
+
+Check the scaffold:
+
+```bash
+codex-spec health
+codex-spec status
+```
+
+Then start Codex in the project and drive the workflow with skills:
 
 ```text
 $plan
@@ -56,36 +48,27 @@ $code-review
 $finish
 ```
 
-Automation and support skills:
+For controlled end-to-end progress, use:
 
 ```text
 $auto
-$status
-$health
-$pause
-$resume
 ```
 
-`$auto` uses the same gates as manual execution. When a rejection has a clear owner and scope, the main thread routes it to the responsible subagent instead of stopping immediately. It stops only when the main thread cannot safely choose the owner, scope, or next gate.
+## Detailed Guide
 
-Main thread responsibilities:
+### What It Creates
 
-- create run directories and dispatch packets;
-- choose the role for each task;
-- read concise reports and review ledgers;
-- write and route fix requests when a gate fails;
-- update `.agentflow/state.json`;
-- archive completed runs;
-- after `$finish`, commit the completed milestone before any new milestone begins.
+```text
+AGENTS.md
+.codex/
+.agents/
+agentflow/
+.agentflow/
+```
 
-Subagent responsibilities:
+Long-lived project knowledge lives in `agentflow/`: vision, roadmap, ADRs, specs, and test plans. Current work lives in `.agentflow/runs/<run-id>/`: task files, dispatch packets, role reports, review ledgers, fix requests, and summaries. Completed runs are copied to `.agentflow/archives/`.
 
-- read only dispatch-listed inputs, shared protocol files, project rules, and their own role prompt;
-- write only dispatch-allowed output paths;
-- avoid chat history as a source of truth;
-- report decisions with repo-relative paths.
-
-## Roles
+### Roles
 
 ```text
 PM
@@ -97,53 +80,44 @@ Code Reviewer
 Auditor
 ```
 
-Tester writes test plans and coverage reviews, not code. Doc Reviewer checks document consistency before implementation. Code Reviewer checks implementation after execution. Auditor runs during `$finish` to summarize the run and report workflow or prompt improvement notes; Auditor is not a quality gate.
+The main thread orchestrates and integrates. PM defines scope. Architect writes design/spec/ADR drafts. Tester writes test plans and coverage reviews, not implementation code. Doc Reviewer checks document consistency before execution. Developer implements code and tests from an approved gate. Code Reviewer checks implementation after execution. Auditor summarizes the run during `$finish`.
 
-## Important Paths
-
-Long-lived files:
+### Workflow
 
 ```text
-agentflow/vision.md
-agentflow/roadmap.md
-agentflow/adr/*.md
-agentflow/spec/*.md
-agentflow/spec/test-plan/*.md
+$plan        define requirement, scope, milestone, and run task
+$design      produce design/spec/ADR drafts and test plan
+$doc-review  validate document consistency before implementation
+$execute     implement code and tests from the approved gate
+$code-review validate implementation against gate, spec, and test plan
+$finish      summarize, sync long-lived docs, archive the run, clear state
 ```
 
-Current run files:
+`$auto` follows the same gates. When a rejection has a clear owner and fix scope, the main thread routes it to the responsible subagent. It stops only when safe routing is not possible or an external decision is required.
 
-```text
-.agentflow/runs/<run-id>/task.md
-.agentflow/runs/<run-id>/gate.md
-.agentflow/runs/<run-id>/dispatch/
-.agentflow/runs/<run-id>/pm/
-.agentflow/runs/<run-id>/architect/
-.agentflow/runs/<run-id>/tester/
-.agentflow/runs/<run-id>/doc-reviewer/
-.agentflow/runs/<run-id>/developer/
-.agentflow/runs/<run-id>/code-reviewer/
-.agentflow/runs/<run-id>/auditor/
-.agentflow/runs/<run-id>/fix-requests/
-.agentflow/runs/<run-id>/fix-responses/
+### Model Profiles
+
+`init` can generate model and reasoning settings:
+
+```bash
+codex-spec init --model middle --fast off
+codex-spec init --model high --fast on
+codex-spec init --model xhigh --fast off
 ```
 
-Archive files:
+| Profile | Generated behavior |
+| --- | --- |
+| `middle` | Balanced default. Uses `gpt-5.5` with `high` reasoning as the upper bound for the workflow. |
+| `high` | High-end workflow. Uses `gpt-5.5` with `high` reasoning globally, and upgrades Architect, Doc Reviewer, and Code Reviewer to `xhigh`. |
+| `xhigh` | Maximum reasoning profile. Uses `gpt-5.5` with `xhigh` reasoning for the workflow. |
 
-```text
-.agentflow/backups/
-.agentflow/archives/<run-id>/
-```
+`--fast on` writes `service_tier = "fast"` into the generated Codex config. It can reduce latency but may consume fast quota more aggressively. `--fast off` omits the fast service tier.
 
-Archives are immutable history and are not a context source for later runs. Reusable facts must be synced into `agentflow/` or written into the current run.
-
-Milestone boundary: `$finish` archives the run, clears current state, and ends the milestone subagent context. The main thread then commits the completed milestone's code, tests, and documentation before starting the next milestone. If there are no file changes, it records that no-op in the run summary instead of creating an empty commit.
-
-## CLI Commands
+### CLI Reference
 
 ```bash
 codex-spec help
-codex-spec init --lang en|zh
+codex-spec init --lang en|zh --model middle|high|xhigh --fast off|on
 codex-spec health
 codex-spec status
 codex-spec rebind-hooks
@@ -153,38 +127,23 @@ codex-spec backup --label <label>
 codex-spec archive --run <run-id>
 ```
 
-`--run null` and `--milestone null` clear the current run or milestone pointer.
+`--target` is optional for project commands. Without it, `codex-spec` uses the current working directory.
 
-## Build
+## Best Practices
 
-```bash
-bun run build
-```
+- Keep each milestone small enough to design, implement, review, and finish cleanly.
+- Start with `$plan`; let PM turn ambiguous requests into explicit scope and done criteria.
+- Keep context in files, not chat memory. Subagents should read only dispatch-listed paths and their own role prompt.
+- Treat Doc Reviewer and Code Reviewer as separate gates: document correctness before execution, implementation correctness after execution.
+- Use `$auto` for routine progress, but expect it to stop when the next safe decision is unclear.
+- After `$finish`, commit the completed milestone with a short user-facing message such as `feat: add import workflow`, `fix: handle empty config`, or `docs: update setup guide`.
+- Do not use archived runs as future context. Sync reusable knowledge into `agentflow/` during `$finish`.
 
-The build creates:
-
-```text
-dist/cli.js
-dist/hooks/user-prompt-submit.js
-dist/hooks/pre-tool-use.js
-dist/hooks/post-tool-use.js
-dist/hooks/stop.js
-```
-
-## Publish
-
-Update the package scope first:
-
-```json
-{
-  "name": "@your-npm-name/codex-spec"
-}
-```
-
-Then:
+## Development
 
 ```bash
 bun run test
 npm pack --dry-run
-npm publish --access public
 ```
+
+The build output is written to `dist/`, and the npm package includes `dist/`, `common/`, `README.md`, `README_ZH.md`, and `LICENSE`.

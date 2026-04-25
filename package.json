@@ -1,7 +1,7 @@
 {
-  "name": "@your-npm-name/codex-spec",
-  "version": "0.1.0",
-  "description": "Project-local Codex workflow scaffold with skills, subagents, hooks, ADR, roadmap, and spec files.",
+  "name": "@0xtimi2233/codex-spec",
+  "version": "0.2.0",
+  "description": "Spec-driven Codex subagent workflow scaffold with isolated roles, review gates, and run archives.",
   "type": "module",
   "bin": {
     "codex-spec": "./dist/cli.js"
@@ -10,6 +10,7 @@
     "dist/",
     "common/",
     "README.md",
+    "README_ZH.md",
     "LICENSE"
   ],
   "scripts": {

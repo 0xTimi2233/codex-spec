@@ -22,7 +22,7 @@ description: Summarize the run, sync long-lived docs, archive the run, and clear
 5. Main thread writes `.agentflow/runs/<run-id>/summary.md`.
 6. Run `codex-spec archive --run <run-id>`.
 7. Run `codex-spec state set --phase idle --run null --milestone null --blocked false`.
-8. Commit the code, test, and documentation changes for the current milestone; include the run id or milestone id in the commit message. If there are no file changes, record the no-op in summary and do not create an empty commit.
+8. Commit the code, test, and documentation changes for the current milestone; the commit message should briefly describe the user-facing change. If there are no file changes, record the no-op in summary and do not create an empty commit.
 9. End subagent context for the current milestone.
 
 ## Required Outputs

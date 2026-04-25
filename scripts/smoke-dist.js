@@ -14,7 +14,11 @@ function run(args) {
   }
   return res.stdout;
 }
-run(["init", "--lang", "en", "--target", tmp]);
+run(["init", "--lang", "en", "--model", "xhigh", "--fast", "off", "--target", tmp]);
+const config = fs.readFileSync(path.join(tmp, ".codex", "config.toml"), "utf8");
+if (!config.includes('model = "gpt-5.5"')) throw new Error("model was not rendered");
+if (!config.includes('model_reasoning_effort = "xhigh"')) throw new Error("xhigh profile was not rendered");
+if (config.includes("service_tier")) throw new Error("fast mode off should not render service_tier");
 run(["--version"]);
 run(["health", "--target", tmp]);
 run(["status", "--target", tmp]);
