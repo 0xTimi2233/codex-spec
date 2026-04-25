@@ -1,0 +1,53 @@
+import path from "node:path";
+import { readJson, writeJson } from "./fs.js";
+
+export const PHASES = [
+  "idle",
+  "planning",
+  "ready-to-execute",
+  "executing",
+  "ready-to-review",
+  "reviewing",
+  "ready-to-finish",
+  "finishing",
+  "blocked",
+  "paused"
+];
+
+export function defaultState() {
+  return {
+    version: 1,
+    mode: "idle",
+    current_run: null,
+    current_phase: "idle",
+    current_milestone: null,
+    blocked: false,
+    updated_by: "codex-spec"
+  };
+}
+
+export function normalizeState(state) {
+  const fallback = defaultState();
+  const next = { ...fallback, ...(state || {}) };
+  if (!PHASES.includes(next.current_phase)) next.current_phase = "idle";
+  if (typeof next.blocked !== "boolean") next.blocked = Boolean(next.blocked);
+  if (next.current_run === "") next.current_run = null;
+  if (next.current_milestone === "") next.current_milestone = null;
+  return next;
+}
+
+export function statePath(root) {
+  return path.join(root, ".agentflow", "state.json");
+}
+
+export function readState(root) {
+  return normalizeState(readJson(statePath(root), defaultState()));
+}
+
+export function writeState(root, state) {
+  writeJson(statePath(root), normalizeState(state), { force: true });
+}
+
+export function currentRunPath(root, state = readState(root)) {
+  return state.current_run ? path.join(root, ".agentflow", "runs", state.current_run) : null;
+}

@@ -1,0 +1,41 @@
+{
+  "name": "@your-npm-name/codex-spec",
+  "version": "0.1.0",
+  "description": "Project-local Codex workflow scaffold with skills, subagents, hooks, ADR, roadmap, and spec files.",
+  "type": "module",
+  "bin": {
+    "codex-spec": "./dist/cli.js"
+  },
+  "files": [
+    "dist/",
+    "common/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "bun run scripts/build.js",
+    "clean": "node scripts/clean.js",
+    "prepack": "bun run build",
+    "prepublishOnly": "bun run test",
+    "smoke:source": "node scripts/smoke-source.js",
+    "smoke:dist": "bun run build && node scripts/smoke-dist.js",
+    "test": "bun run smoke:source && bun run smoke:dist",
+    "pack:dry": "npm pack --dry-run"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "keywords": [
+    "codex",
+    "agents",
+    "skills",
+    "workflow",
+    "spec-driven-development",
+    "cli"
+  ],
+  "license": "MIT"
+}
