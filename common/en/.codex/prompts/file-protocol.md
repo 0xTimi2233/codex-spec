@@ -18,6 +18,7 @@ Long-lived files are synced only during `$finish` by the owning role.
 
 ```text
 .agentflow/runs/<run-id>/
+  agents.json
   task.md
   gate.md
   summary.md

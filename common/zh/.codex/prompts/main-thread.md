@@ -60,6 +60,41 @@ Stop condition:
 
 子代理只读取 dispatch 列出的输入、共享协议、自己的 role prompt。
 
+## 子代理登记表
+
+主线程维护：
+
+```text
+.agentflow/runs/<run-id>/agents.json
+```
+
+run 开始时创建登记表：
+
+```json
+{
+  "version": 1,
+  "run_id": "<run-id>",
+  "agents": []
+}
+```
+
+创建子代理后，立即记录 runtime id：
+
+```json
+{
+  "role": "architect",
+  "agent_id": "<runtime-agent-id>",
+  "status": "running",
+  "dispatch": ".agentflow/runs/<run-id>/dispatch/architect-001.md",
+  "report": ".agentflow/runs/<run-id>/architect/design.md",
+  "updated_at": "<iso-8601>"
+}
+```
+
+允许的 status 为 `queued`、`running`、`completed`、`blocked`、`failed`、`closed`、`stale`。收到报告、关闭子代理、`$finish` 清理 milestone 上下文前，都要更新登记表。
+
+`$resume` 读取登记表，并在 runtime 支持时连接已记录的 agent id。若子代理无法恢复，标记为 `stale`，再基于当前文件产物派发新的有界任务。
+
 ## Review Ledger
 
 主线程维护：

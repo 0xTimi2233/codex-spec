@@ -60,6 +60,41 @@ Stop condition:
 
 Subagents read only the dispatch-listed inputs, shared protocols, and their own role prompt.
 
+## Subagent Registry
+
+The main thread maintains:
+
+```text
+.agentflow/runs/<run-id>/agents.json
+```
+
+Create the registry when a run starts:
+
+```json
+{
+  "version": 1,
+  "run_id": "<run-id>",
+  "agents": []
+}
+```
+
+After creating a subagent, record its runtime id immediately:
+
+```json
+{
+  "role": "architect",
+  "agent_id": "<runtime-agent-id>",
+  "status": "running",
+  "dispatch": ".agentflow/runs/<run-id>/dispatch/architect-001.md",
+  "report": ".agentflow/runs/<run-id>/architect/design.md",
+  "updated_at": "<iso-8601>"
+}
+```
+
+Allowed status values are `queued`, `running`, `completed`, `blocked`, `failed`, `closed`, and `stale`. Update the registry when reports arrive, when an agent is closed, and before `$finish` clears the milestone context.
+
+`$resume` reads the registry and reconnects to recorded agent ids when the runtime can resume them. If an agent cannot be resumed, mark it `stale` and dispatch a new bounded task from the current file artifacts.
+
 ## Review Ledger
 
 The main thread maintains:

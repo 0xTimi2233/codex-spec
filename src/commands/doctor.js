@@ -37,7 +37,6 @@ const REQUIRED = [
   ".agents/skills/code-review/SKILL.md",
   ".agents/skills/finish/SKILL.md",
   ".agents/skills/auto/SKILL.md",
-  ".agents/skills/doctor/SKILL.md",
   ".agents/skills/status/SKILL.md",
   ".agents/skills/pause/SKILL.md",
   ".agents/skills/resume/SKILL.md",
@@ -55,11 +54,13 @@ const REQUIRED = [
 function requiredForPhase(root, state) {
   if (!state.current_run) return [];
   const runPath = currentRunPath(root, state);
+  const base = [path.join(runPath, "agents.json")];
   if (state.current_phase === "planning") {
-    return [path.join(runPath, "task.md"), path.join(runPath, "pm", "requirements.md")];
+    return [...base, path.join(runPath, "task.md"), path.join(runPath, "pm", "requirements.md")];
   }
   if (state.current_phase === "designing") {
     return [
+      ...base,
       path.join(runPath, "architect", "design.md"),
       path.join(runPath, "architect", "spec-draft.md"),
       path.join(runPath, "architect", "adr-draft.md"),
@@ -68,13 +69,15 @@ function requiredForPhase(root, state) {
   }
   if (state.current_phase === "doc-reviewing") {
     return [
+      ...base,
       path.join(runPath, "doc-reviewer", "review-report.md"),
       path.join(runPath, "doc-reviewer", "review-ledger.md")
     ];
   }
-  if (state.current_phase === "ready-to-execute") return [path.join(runPath, "gate.md")];
+  if (state.current_phase === "ready-to-execute") return [...base, path.join(runPath, "gate.md")];
   if (state.current_phase === "executing") {
     return [
+      ...base,
       path.join(runPath, "gate.md"),
       path.join(runPath, "developer", "implementation-report.md"),
       path.join(runPath, "developer", "changed-files.md"),
@@ -83,16 +86,17 @@ function requiredForPhase(root, state) {
   }
   if (state.current_phase === "code-reviewing") {
     return [
+      ...base,
       path.join(runPath, "code-reviewer", "review-report.md"),
       path.join(runPath, "code-reviewer", "review-ledger.md")
     ];
   }
   if (state.current_phase === "ready-to-finish") {
-    return [path.join(runPath, "gate.md"), path.join(runPath, "code-reviewer", "review-report.md")];
+    return [...base, path.join(runPath, "gate.md"), path.join(runPath, "code-reviewer", "review-report.md")];
   }
-  if (state.current_phase === "finishing") return [path.join(runPath, "auditor", "audit-report.md"), path.join(runPath, "summary.md")];
-  if (state.current_phase === "blocked") return [path.join(runPath, "summary.md")];
-  return [];
+  if (state.current_phase === "finishing") return [...base, path.join(runPath, "auditor", "audit-report.md"), path.join(runPath, "summary.md")];
+  if (state.current_phase === "blocked") return [...base, path.join(runPath, "summary.md")];
+  return base;
 }
 
 export function doctorCommand(_args, context) {

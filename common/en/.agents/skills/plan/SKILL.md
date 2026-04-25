@@ -16,15 +16,17 @@ description: Define requirements, scope, roadmap milestone, and create the curre
 ## Procedure
 
 1. Select or create a run id.
-2. Write `.agentflow/runs/<run-id>/task.md` with goal, scope, non-goals, constraints, and done criteria.
-3. Write `.agentflow/runs/<run-id>/dispatch/pm-001.md`.
-4. Dispatch PM and collect PM artifacts.
-5. Write or update `.agentflow/runs/<run-id>/summary.md`.
-6. Run `codex-spec state set --phase planning --run <run-id> --blocked false`.
+2. Write `.agentflow/runs/<run-id>/agents.json` with an empty registry.
+3. Write `.agentflow/runs/<run-id>/task.md` with goal, scope, non-goals, constraints, and done criteria.
+4. Write `.agentflow/runs/<run-id>/dispatch/pm-001.md`.
+5. Dispatch PM, record the PM agent id in `agents.json`, and collect PM artifacts.
+6. Write or update `.agentflow/runs/<run-id>/summary.md`.
+7. Run `codex-spec state set --phase planning --run <run-id> --blocked false`.
 
 ## Required Outputs
 
 - `.agentflow/runs/<run-id>/task.md`
+- `.agentflow/runs/<run-id>/agents.json`
 - `.agentflow/runs/<run-id>/dispatch/pm-001.md`
 - `.agentflow/runs/<run-id>/pm/requirements.md`
 
