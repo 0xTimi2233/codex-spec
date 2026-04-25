@@ -82,7 +82,7 @@ Verification:
 
 新一轮 reviewer 读取 ledger，不读取旧聊天上下文。
 
-## 阶段职责
+## 工作流节点职责
 
 `$plan`：调度 PM，写 `task.md` 和 PM 产物。
 
@@ -96,20 +96,36 @@ Verification:
 
 `$finish`：调度 Auditor 总结当前 run；调度 owner 同步长期文档；归档 run；清空 current run；结束当前 milestone 子代理上下文。
 
-## 自动执行
+## 打回与路由
 
-`$auto` 只执行当前 run 的下一个缺失阶段。每个阶段结束后，主线程读取 state、summary、最新 report 和 review ledger。
+该规则适用于手动执行和 `$auto`。
 
-以下情况必须停止，不继续推进：
+当 PM、Architect、Tester 返回 `fail`、`blocked`、`needs-context` 或 `done-with-concerns`，或 Doc Reviewer、Code Reviewer 返回非 `pass` 时，主线程先处理路由：
 
-- PM、Architect 或 Tester 返回 `fail`、`blocked`、`needs-context` 或 `done-with-concerns`
-- Doc Reviewer 或 Code Reviewer 返回非 `pass`
-- 出现 `fix-requests/*.md`
-- `.agentflow/state.json.blocked = true`
-- 当前阶段必需产物缺失
-- 需要用户、外部系统或破坏性操作决策
+1. 读取相关 report、review ledger 和证据路径。
+2. 写或更新 `.agentflow/runs/<run-id>/fix-requests/*.md`。
+3. 若责任角色、允许输入路径和允许输出路径明确，调度对应子代理处理，并把 fix request 和相关 ledger 作为 allowed input。
+4. 修复后回到对应的工作流节点或 review gate。
+
+只有无法安全路由时，主线程才进入 blocked，或让 `$auto` 停止。典型情况包括：
+
+- 主线程无法判断责任角色、修复范围或下一步 gate。
+- 需要用户、外部系统或破坏性操作决策。
+- 必需产物缺失，且无法通过明确 dispatch 补齐。
+- 同一 open issue 经修复后仍缺少可执行下一步。
+- `.agentflow/state.json.blocked = true`。
 
 停止时，主线程写 `.agentflow/runs/<run-id>/summary.md`，报告停止原因、证据路径和建议下一步。
+
+## 自动执行
+
+`$auto` 只执行当前 run 的下一个缺失工作流节点。每个节点结束后，主线程读取 state、summary、最新 report 和 review ledger。遇到打回时，先按“打回与路由”处理；只有无法安全路由时才停止自动推进。
+
+## Milestone 边界
+
+一个 run 表示一个 milestone 的执行单元。`$finish` 完成归档和 state 清理后，主线程必须提交当前 milestone 产生的代码、测试和文档变化，然后才能开始新的 milestone。
+
+提交信息应包含 run id 或 milestone id。若没有文件变化，不创建空提交，并在 `.agentflow/runs/<run-id>/summary.md` 记录 no-op。
 
 ## 阻塞
 

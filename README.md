@@ -66,14 +66,17 @@ $pause
 $resume
 ```
 
+`$auto` uses the same gates as manual execution. When a rejection has a clear owner and scope, the main thread routes it to the responsible subagent instead of stopping immediately. It stops only when the main thread cannot safely choose the owner, scope, or next gate.
+
 Main thread responsibilities:
 
 - create run directories and dispatch packets;
 - choose the role for each task;
 - read concise reports and review ledgers;
-- write fix requests when a gate fails;
+- write and route fix requests when a gate fails;
 - update `.agentflow/state.json`;
-- archive completed runs.
+- archive completed runs;
+- after `$finish`, commit the completed milestone before any new milestone begins.
 
 Subagent responsibilities:
 
@@ -133,6 +136,8 @@ Archive files:
 ```
 
 Archives are immutable history and are not a context source for later runs. Reusable facts must be synced into `agentflow/` or written into the current run.
+
+Milestone boundary: `$finish` archives the run, clears current state, and ends the milestone subagent context. The main thread then commits the completed milestone's code, tests, and documentation before starting the next milestone. If there are no file changes, it records that no-op in the run summary instead of creating an empty commit.
 
 ## CLI Commands
 

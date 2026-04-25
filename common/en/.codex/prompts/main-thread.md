@@ -82,7 +82,7 @@ Verification:
 
 A new reviewer reads the ledger, not prior chat context.
 
-## Phase Duties
+## Workflow Step Duties
 
 `$plan`: dispatch PM, write `task.md`, and collect PM artifacts.
 
@@ -96,20 +96,36 @@ A new reviewer reads the ledger, not prior chat context.
 
 `$finish`: dispatch Auditor to summarize the run; dispatch owners to sync long-lived docs; archive the run; clear the current run; end subagent context for the milestone.
 
-## Auto Execution
+## Rejection Routing
 
-`$auto` runs only the next missing phase for the current run. After every phase, the main thread reads state, summary, latest report, and review ledger.
+This rule applies to manual execution and `$auto`.
 
-The main thread must stop and not advance when any of these occur:
+When PM, Architect, or Tester returns `fail`, `blocked`, `needs-context`, or `done-with-concerns`, or Doc Reviewer or Code Reviewer returns anything other than `pass`, the main thread routes the issue first:
 
-- PM, Architect, or Tester returns `fail`, `blocked`, `needs-context`, or `done-with-concerns`
-- Doc Reviewer or Code Reviewer returns anything other than `pass`
-- `fix-requests/*.md` exists
-- `.agentflow/state.json.blocked = true`
-- required artifacts for the current phase are missing
-- a user, external system, or destructive operation decision is needed
+1. Read the relevant report, review ledger, and evidence paths.
+2. Write or update `.agentflow/runs/<run-id>/fix-requests/*.md`.
+3. If the responsible role, allowed input paths, and allowed output paths are clear, dispatch that subagent with the fix request and relevant ledger as allowed input.
+4. After the fix, return to the corresponding workflow step or review gate.
+
+The main thread enters blocked, or stops `$auto`, only when safe routing is not possible. Typical cases include:
+
+- the main thread cannot choose the responsible role, fix scope, or next gate safely;
+- a user, external system, or destructive operation decision is needed;
+- required artifacts are missing and cannot be recreated through a clear dispatch;
+- the same open issue still has no executable next step after a fix attempt;
+- `.agentflow/state.json.blocked = true`.
 
 When stopping, the main thread writes `.agentflow/runs/<run-id>/summary.md` with stop reason, evidence paths, and recommended next action.
+
+## Auto Execution
+
+`$auto` runs only the next missing workflow step for the current run. After every step, the main thread reads state, summary, latest report, and review ledger. On rejection, route the issue through "Rejection Routing" first; stop automatic progress only when safe routing is not possible.
+
+## Milestone Boundary
+
+A run represents one milestone execution unit. After `$finish` archives the run and clears state, the main thread must commit the code, test, and documentation changes for the completed milestone before starting a new milestone.
+
+The commit message should include the run id or milestone id. If there are no file changes, do not create an empty commit; record the no-op in `.agentflow/runs/<run-id>/summary.md`.
 
 ## Blocked
 
