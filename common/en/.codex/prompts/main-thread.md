@@ -125,7 +125,7 @@ When stopping, the main thread writes `.agentflow/runs/<run-id>/summary.md` with
 
 A run represents one milestone execution unit. After `$finish` archives the run and clears state, the main thread must commit the code, test, and documentation changes for the completed milestone before starting a new milestone.
 
-The commit message should include the run id or milestone id. If there are no file changes, do not create an empty commit; record the no-op in `.agentflow/runs/<run-id>/summary.md`.
+The commit message must follow the project's commit convention. If the project has no explicit convention, use Conventional Commits such as `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, or `chore:`. Commit content is public-facing and should describe user-visible behavior, compatibility, documentation, or maintenance changes; do not use the run id, milestone id, or agent workflow numbers as the commit subject. If there are no file changes, do not create an empty commit; record the no-op in `.agentflow/runs/<run-id>/summary.md`.
 
 ## Blocked
 

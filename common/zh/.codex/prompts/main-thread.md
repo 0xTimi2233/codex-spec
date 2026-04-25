@@ -125,7 +125,7 @@ Verification:
 
 一个 run 表示一个 milestone 的执行单元。`$finish` 完成归档和 state 清理后，主线程必须提交当前 milestone 产生的代码、测试和文档变化，然后才能开始新的 milestone。
 
-提交信息应包含 run id 或 milestone id。若没有文件变化，不创建空提交，并在 `.agentflow/runs/<run-id>/summary.md` 记录 no-op。
+提交信息必须遵循项目提交规范；若项目没有明确规范，使用 Conventional Commits，例如 `feat:`、`fix:`、`docs:`、`refactor:`、`test:` 或 `chore:`。提交内容面向项目外部消费者，描述用户可见行为、兼容性、文档或维护变化；不要把 run id、milestone id 或代理流程编号作为提交主题。若没有文件变化，不创建空提交，并在 `.agentflow/runs/<run-id>/summary.md` 记录 no-op。
 
 ## 阻塞
 
