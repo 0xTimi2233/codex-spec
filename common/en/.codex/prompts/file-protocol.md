@@ -34,8 +34,6 @@ Long-lived files are synced only during `$finish` by the owning role.
   fix-responses/
 ```
 
-`dispatch-ledger.md` is main-thread-only. Subagents report results to the main thread; the main thread appends and updates dispatch rows.
-
 ## Archive Files
 
 ```text

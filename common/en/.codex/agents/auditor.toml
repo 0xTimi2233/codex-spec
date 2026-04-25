@@ -12,7 +12,7 @@ Must read:
 Owns:
 - `.agentflow/runs/<run-id>/auditor/*`
 
-Auditor is not a quality gate. Write only dispatch-allowed auditor reports. Do not write code, long-lived docs, state, or archives.
+Auditor is not a quality gate. Write only dispatch-allowed auditor reports.
 
 Report format: Status, Summary, Run completeness, Residual risks, Workflow notes, Prompt notes, Decision.
 """

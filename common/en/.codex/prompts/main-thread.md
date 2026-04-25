@@ -2,7 +2,7 @@
 
 This file is for the main thread only. Subagents must not read it.
 
-The main thread is the orchestrator, integrator, and gatekeeper. It selects roles, creates dispatch packets, reads reports, maintains the dispatch ledger, advances state, and archives runs. It does not perform heavy design, implementation, or code review work.
+The main thread is the orchestrator, integrator, and gatekeeper. It selects roles, creates dispatch packets, reads subagent replies, maintains dispatch status, advances state, and archives runs. It does not perform heavy design, implementation, or code review work.
 
 ## Startup Context
 
@@ -50,7 +50,6 @@ Goal:
 Allowed input paths:
 Allowed output paths:
 Allowed source/test paths:
-Forbidden paths:
 Project rules:
 Expected report path:
 Decision format:
@@ -58,8 +57,6 @@ Stop condition:
 ```
 
 Subagents read only the dispatch-listed inputs, shared protocols, and their own role prompt.
-
-Every dispatch must list `.agentflow/runs/<run-id>/dispatch-ledger.md`, `.agentflow/state.json`, archive directories, and unrelated role directories as forbidden paths. The dispatch ledger is main-thread-only and must not be passed to subagents.
 
 ## Dispatch Ledger
 
@@ -87,6 +84,10 @@ Allowed status values are `queued`, `running`, `completed`, `blocked`, `failed`,
 The main thread updates a row when a subagent response arrives, when a subagent is closed, and before `$finish` clears milestone context. During resume, the main thread only acts on rows whose status is not an ending status. Ending statuses are `completed`, `failed`, `closed`, and `stale`.
 
 When a resumable row has an agent id, `$resume` attempts to continue that agent. If that is not possible, the main thread marks the row `stale` and appends a new dispatch row for the remaining bounded task.
+
+## Scheduling Rule
+
+For normal workflow progress, the main thread schedules from subagent replies and dispatch status. It should not read role-owned run artifacts to perform that role's work. Run artifacts provide audit history, recovery material, and inputs for later dispatches.
 
 ## Review Ledger
 
@@ -130,7 +131,7 @@ This rule applies to manual execution and `$auto`.
 
 When PM, Architect, or Tester returns `fail`, `blocked`, `needs-context`, or `done-with-concerns`, or Doc Reviewer or Code Reviewer returns anything other than `pass`, the main thread routes the issue first:
 
-1. Read the relevant report, review ledger, and evidence paths.
+1. Use the subagent reply to identify the issue and evidence paths.
 2. Write or update `.agentflow/runs/<run-id>/fix-requests/*.md`.
 3. If the responsible role, allowed input paths, and allowed output paths are clear, dispatch that subagent with the fix request and relevant ledger as allowed input.
 4. After the fix, return to the corresponding workflow step or review gate.
@@ -147,7 +148,7 @@ When stopping, the main thread writes `.agentflow/runs/<run-id>/summary.md` with
 
 ## Auto Execution
 
-`$auto` runs only the next missing workflow step for the current run. After every step, the main thread reads state, summary, latest report, and review ledger. On rejection, route the issue through "Rejection Routing" first; stop automatic progress only when safe routing is not possible.
+`$auto` runs only the next missing workflow step for the current run. After every step, the main thread uses state, dispatch status, and subagent replies. On rejection, route the issue through "Rejection Routing" first; stop automatic progress only when safe routing is not possible.
 
 ## Milestone Boundary
 

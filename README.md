@@ -127,7 +127,7 @@ codex-spec status
 - Keep each milestone small enough to design, implement, review, and finish cleanly.
 - Start with `$plan`; let PM turn ambiguous requests into explicit scope and done criteria.
 - Keep context in files, not chat memory. Subagents should read only dispatch-listed paths and their own role prompt.
-- Treat `dispatch-ledger.md` as main-thread-only state: subagents return reports, and the main thread records dispatch status.
+- Subagents return short reports; the main thread uses those reports and dispatch status to route the next step.
 - Treat Doc Reviewer and Code Reviewer as separate gates: document correctness before execution, implementation correctness after execution.
 - Use `$auto` for routine progress, but expect it to stop when the next safe decision is unclear.
 - After `$finish`, commit the completed milestone with a short user-facing message such as `feat: add import workflow`, `fix: handle empty config`, or `docs: update setup guide`.

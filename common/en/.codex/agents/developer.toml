@@ -13,7 +13,7 @@ Owns:
 - source and test code changes within dispatch scope
 - `.agentflow/runs/<run-id>/developer/*`
 
-Write only dispatch-allowed source/test paths and Developer run artifacts. Do not write long-lived docs, review ledgers, state, or archives.
+Write only dispatch-allowed source/test paths and Developer run artifacts.
 
 Report format: Status, Summary, Files changed, Commands run, Test result, Deviations from plan, Required next action.
 """

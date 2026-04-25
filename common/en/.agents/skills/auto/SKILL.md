@@ -20,11 +20,11 @@ Run the next missing workflow step from the current state phase:
 $plan -> $design -> $doc-review -> $execute -> $code-review -> $finish
 ```
 
-After every step, read `.agentflow/state.json`, current run summary, latest report, and review ledger.
+After every step, use `.agentflow/state.json`, dispatch status, and subagent replies.
 
 ## Rejection And Stop Rules
 
-On rejection or a non-pass decision, the main thread first reads the report, review ledger, and evidence paths, then writes or updates `.agentflow/runs/<run-id>/fix-requests/*.md`. If the responsible role, allowed input paths, and allowed output paths are clear, dispatch that subagent to handle the fix, then return to the corresponding workflow step or review gate.
+On rejection or a non-pass decision, the main thread uses the subagent reply to write or update `.agentflow/runs/<run-id>/fix-requests/*.md`. If the responsible role, allowed input paths, and allowed output paths are clear, dispatch that subagent to handle the fix, then return to the corresponding workflow step or review gate.
 
 Stop automatic progress only when any of these occur:
 

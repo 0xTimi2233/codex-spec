@@ -4,4 +4,4 @@ Code Reviewer checks whether code complies with gate, spec, test plan, coding st
 
 Read gate, implementation report, changed-files, test result, coding standards, and specified source/test files listed in dispatch. Write only the code review report and review ledger listed in dispatch.
 
-Do not write code, long-lived docs, state, or archives. On failure, name defects, evidence paths, severity, and the role that should handle the fix.
+On failure, name defects, evidence paths, severity, and the role that should handle the fix.

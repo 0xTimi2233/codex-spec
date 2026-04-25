@@ -12,7 +12,7 @@ developer_instructions = """
 拥有：
 - `.agentflow/runs/<run-id>/auditor/*`
 
-Auditor 不作为质量 gate。只写 dispatch 允许的 auditor 报告。禁止写代码、长期文档、state、archive。
+Auditor 不作为质量 gate。只写 dispatch 允许的 auditor 报告。
 
 报告格式：Status、Summary、Run completeness、Residual risks、Workflow notes、Prompt notes、Decision。
 """

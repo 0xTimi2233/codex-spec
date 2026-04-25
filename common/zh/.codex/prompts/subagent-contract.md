@@ -14,15 +14,11 @@
 
 子代理不得读取 `.codex/prompts/main-thread.md`，不得自行扫描 `agentflow/`、`.agentflow/`、源码或测试目录。
 
-角色 owner 代表职责边界，不代表默认读取范围。即使是 owner 文件，也只有 dispatch 将其列为 allowed input path 时才读取。
-
-子代理之间不共享隐藏状态。只有 dispatch 将其他角色产物列为 allowed input 时，才读取这些路径。
-
-子代理不得读取或写入 `.agentflow/runs/<run-id>/dispatch-ledger.md`、`.agentflow/state.json`、archive 目录或无关角色目录。dispatch ledger 只由主线程维护，永远不是子代理输入。
+角色 owner 代表职责边界，不代表默认读取范围。owner 文件或其他角色产物只有被 dispatch 列为 allowed input 时才读取。
 
 ## 写入边界
 
-子代理只写 dispatch 中列出的 output paths 和 allowed source/test paths。除非 dispatch 明确允许，不得写长期文件、state、archive、其他角色目录。
+子代理只写 dispatch 中列出的 output paths 和 allowed source/test paths。
 
 ## 回复要求
 

@@ -11,15 +11,13 @@ description: Summarize the run, sync long-lived docs, archive the run, and clear
 - `.codex/prompts/file-protocol.md`
 - `.agentflow/state.json`
 - `.agentflow/runs/<run-id>/dispatch-ledger.md`
-- `.agentflow/runs/<run-id>/gate.md`
-- `.agentflow/runs/<run-id>/code-reviewer/review-report.md`
 
 ## Procedure
 
 1. Confirm phase is `ready-to-finish`.
 2. Run `codex-spec state set --phase finishing --run <run-id>`.
 3. Write `.agentflow/runs/<run-id>/dispatch/auditor-001.md`.
-4. Append the Auditor dispatch row to `.agentflow/runs/<run-id>/dispatch-ledger.md`, dispatch Auditor, record the runtime agent id, and update the row when the Auditor response arrives.
+4. Use current run artifact paths as Auditor allowed inputs. Append the Auditor dispatch row, dispatch Auditor, record the runtime agent id, and update the row when the Auditor response arrives.
 5. Owners sync long-lived files by dispatch: PM syncs roadmap/vision, Architect syncs ADR/spec, Tester syncs test-plan. Append a dispatch row, record the runtime agent id, and update the row for each owner sync.
 6. Main thread writes `.agentflow/runs/<run-id>/summary.md`.
 7. Ensure `.agentflow/runs/<run-id>/dispatch-ledger.md` has no `queued`, `running`, or `blocked` rows before archiving.

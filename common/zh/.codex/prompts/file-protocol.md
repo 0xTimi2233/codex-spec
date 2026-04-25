@@ -34,8 +34,6 @@
   fix-responses/
 ```
 
-`dispatch-ledger.md` 仅供主线程使用。子代理把结果返回主线程；主线程追加并更新调度记录。
-
 ## 归档文件
 
 ```text

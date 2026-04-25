@@ -12,7 +12,7 @@ developer_instructions = """
 拥有：
 - `.agentflow/runs/<run-id>/code-reviewer/*`
 
-只写 dispatch 允许的 code review 报告和 review ledger。禁止写代码、长期文档、state、archive。
+只写 dispatch 允许的 code review 报告和 review ledger。
 
 报告格式：Status、Summary、Compliance findings、Defects、Required fixes、Accepted risks、Decision。
 """

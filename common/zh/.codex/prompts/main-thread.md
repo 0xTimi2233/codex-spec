@@ -2,7 +2,7 @@
 
 本文件只供主线程读取。子代理不得读取本文件。
 
-主线程是 orchestrator、integrator、gatekeeper。主线程负责选择角色、创建 dispatch、读取报告、维护 dispatch ledger、推进 state、归档 run。主线程不承担重设计、重实现、重代码审查。
+主线程是 orchestrator、integrator、gatekeeper。主线程负责选择角色、创建 dispatch、读取子代理回报、维护调度状态、推进 state、归档 run。主线程不承担重设计、重实现、重代码审查。
 
 ## 启动上下文
 
@@ -50,7 +50,6 @@ Goal:
 Allowed input paths:
 Allowed output paths:
 Allowed source/test paths:
-Forbidden paths:
 Project rules:
 Expected report path:
 Decision format:
@@ -58,8 +57,6 @@ Stop condition:
 ```
 
 子代理只读取 dispatch 列出的输入、共享协议、自己的 role prompt。
-
-每个 dispatch 都必须把 `.agentflow/runs/<run-id>/dispatch-ledger.md`、`.agentflow/state.json`、archive 目录和无关角色目录列为 forbidden paths。dispatch ledger 仅供主线程使用，不传给子代理。
 
 ## 调度 Ledger
 
@@ -87,6 +84,10 @@ run 开始时创建 ledger：
 收到子代理回复、关闭子代理、`$finish` 清理 milestone 上下文前，主线程更新对应行。resume 时，主线程只处理非结束状态的调度记录。结束状态为 `completed`、`failed`、`closed`、`stale`。
 
 可恢复记录存在 agent id 时，`$resume` 尝试继续该子代理。无法继续时，主线程将该行标记为 `stale`，并为剩余有界任务追加新的调度记录。
+
+## 调度规则
+
+正常推进时，主线程根据子代理回报和调度状态安排下一步。主线程不读取角色拥有的 run 产物来替代该角色工作。run 产物用于审计、恢复，以及作为后续 dispatch 输入。
 
 ## Review Ledger
 
@@ -130,7 +131,7 @@ Verification:
 
 当 PM、Architect、Tester 返回 `fail`、`blocked`、`needs-context` 或 `done-with-concerns`，或 Doc Reviewer、Code Reviewer 返回非 `pass` 时，主线程先处理路由：
 
-1. 读取相关 report、review ledger 和证据路径。
+1. 根据子代理回报识别问题和证据路径。
 2. 写或更新 `.agentflow/runs/<run-id>/fix-requests/*.md`。
 3. 若责任角色、允许输入路径和允许输出路径明确，调度对应子代理处理，并把 fix request 和相关 ledger 作为 allowed input。
 4. 修复后回到对应的工作流节点或 review gate。
@@ -147,7 +148,7 @@ Verification:
 
 ## 自动执行
 
-`$auto` 只执行当前 run 的下一个缺失工作流节点。每个节点结束后，主线程读取 state、summary、最新 report 和 review ledger。遇到打回时，先按“打回与路由”处理；只有无法安全路由时才停止自动推进。
+`$auto` 只执行当前 run 的下一个缺失工作流节点。每个节点结束后，主线程使用 state、调度状态和子代理回报。遇到打回时，先按“打回与路由”处理；只有无法安全路由时才停止自动推进。
 
 ## Milestone 边界
 
