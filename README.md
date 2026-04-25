@@ -21,13 +21,7 @@ Requirements:
 Initialize English templates in the current directory:
 
 ```bash
-codex-spec init --lang en --model middle --fast off
-```
-
-Initialize Chinese templates:
-
-```bash
-codex-spec init --lang zh --model middle --fast off
+codex-spec init
 ```
 
 Check the scaffold:
@@ -100,15 +94,13 @@ $finish      summarize, sync long-lived docs, archive the run, clear state
 `init` can generate model and reasoning settings:
 
 ```bash
-codex-spec init --model middle --fast off
 codex-spec init --model high --fast on
 codex-spec init --model xhigh --fast off
 ```
 
 | Profile | Generated behavior |
 | --- | --- |
-| `middle` | Balanced default. Uses `gpt-5.5` with `high` reasoning as the upper bound for the workflow. |
-| `high` | High-end workflow. Uses `gpt-5.5` with `high` reasoning globally, and upgrades Architect, Doc Reviewer, and Code Reviewer to `xhigh`. |
+| `high` | Default high-end workflow. Uses `gpt-5.5` with `high` reasoning globally, and upgrades PM, Architect, Doc Reviewer, and Code Reviewer to `xhigh`. |
 | `xhigh` | Maximum reasoning profile. Uses `gpt-5.5` with `xhigh` reasoning for the workflow. |
 
 `--fast on` writes `service_tier = "fast"` into the generated Codex config. It can reduce latency but may consume fast quota more aggressively. `--fast off` omits the fast service tier.
@@ -117,7 +109,7 @@ codex-spec init --model xhigh --fast off
 
 ```bash
 codex-spec help
-codex-spec init --lang en|zh --model middle|high|xhigh --fast off|on
+codex-spec init --lang en|zh --model high|xhigh --fast off|on
 codex-spec health
 codex-spec status
 codex-spec rebind-hooks
@@ -144,6 +136,7 @@ codex-spec archive --run <run-id>
 ```bash
 bun run test
 npm pack --dry-run
+sh scripts/publish.sh patch
 ```
 
 The build output is written to `dist/`, and the npm package includes `dist/`, `common/`, `README.md`, `README_ZH.md`, and `LICENSE`.

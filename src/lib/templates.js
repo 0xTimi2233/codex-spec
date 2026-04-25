@@ -7,7 +7,7 @@ export function templateRoot(packageRoot, lang) {
   return path.join(packageRoot, "common", lang);
 }
 
-export function renderConfigToml(template, packageRoot, { modelProfile = "middle", fastMode = "off" } = {}) {
+export function renderConfigToml(template, packageRoot, { modelProfile = "high", fastMode = "off" } = {}) {
   const hooks = hookPaths(packageRoot);
   const replacements = {
     "{{MODEL_PROFILE_CONFIG}}": renderRootModelConfig(modelProfile, fastMode),
@@ -21,13 +21,13 @@ export function renderConfigToml(template, packageRoot, { modelProfile = "middle
   return out;
 }
 
-export function renderAgentToml(template, role, { modelProfile = "middle" } = {}) {
+export function renderAgentToml(template, role, { modelProfile = "high" } = {}) {
   const modelConfig = renderAgentModelConfig(role, modelProfile);
   if (!modelConfig) return template;
   return template.replace(/(description = ".*"\n)/, `$1${modelConfig}`);
 }
 
-export function copyTemplate({ packageRoot, targetRoot, lang, force, modelProfile = "middle", fastMode = "off" }) {
+export function copyTemplate({ packageRoot, targetRoot, lang, force, modelProfile = "high", fastMode = "off" }) {
   const src = templateRoot(packageRoot, lang);
   return copyDir(src, targetRoot, {
     force,

@@ -18,16 +18,10 @@ codex-spec --version
 
 ## 快速开始
 
-在当前目录初始化英文模板：
+在当前目录初始化中文模板：
 
 ```bash
-codex-spec init --lang en --model middle --fast off
-```
-
-初始化中文模板：
-
-```bash
-codex-spec init --lang zh --model middle --fast off
+codex-spec init --lang zh
 ```
 
 检查脚手架：
@@ -100,15 +94,13 @@ $finish      总结、同步长期文档、归档 run、清理状态
 `init` 可以生成模型和推理强度配置：
 
 ```bash
-codex-spec init --model middle --fast off
 codex-spec init --model high --fast on
 codex-spec init --model xhigh --fast off
 ```
 
 | 档位 | 生成行为 |
 | --- | --- |
-| `middle` | 默认均衡档。使用 `gpt-5.5`，工作流推理强度上限为 `high`。 |
-| `high` | 高端工作流。全局使用 `gpt-5.5` + `high`，并将 Architect、Doc Reviewer、Code Reviewer 提升到 `xhigh`。 |
+| `high` | 默认高端工作流。全局使用 `gpt-5.5` + `high`，并将 PM、Architect、Doc Reviewer、Code Reviewer 提升到 `xhigh`。 |
 | `xhigh` | 最大推理档。工作流使用 `gpt-5.5` + `xhigh`。 |
 
 `--fast on` 会在生成的 Codex 配置中写入 `service_tier = "fast"`。它可以降低延迟，但会更快消耗 fast 额度。`--fast off` 不写入 fast service tier。
@@ -117,7 +109,7 @@ codex-spec init --model xhigh --fast off
 
 ```bash
 codex-spec help
-codex-spec init --lang en|zh --model middle|high|xhigh --fast off|on
+codex-spec init --lang en|zh --model high|xhigh --fast off|on
 codex-spec health
 codex-spec status
 codex-spec rebind-hooks
@@ -144,6 +136,7 @@ codex-spec archive --run <run-id>
 ```bash
 bun run test
 npm pack --dry-run
+sh scripts/publish.sh patch
 ```
 
 构建产物会写入 `dist/`，npm 包包含 `dist/`、`common/`、`README.md`、`README_ZH.md` 和 `LICENSE`。

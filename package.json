@@ -21,7 +21,8 @@
     "smoke:source": "node scripts/smoke-source.js",
     "smoke:dist": "bun run build && node scripts/smoke-dist.js",
     "test": "bun run smoke:source && bun run smoke:dist",
-    "pack:dry": "npm pack --dry-run"
+    "pack:dry": "npm pack --dry-run",
+    "release": "sh scripts/publish.sh"
   },
   "engines": {
     "node": ">=20"

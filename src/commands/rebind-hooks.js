@@ -12,7 +12,7 @@ export function rebindHooksCommand(args, context) {
   }
   const out = path.join(context.target, ".codex", "config.toml");
   const current = exists(out) ? readText(out) : "";
-  const modelProfile = current.includes('model_reasoning_effort = "xhigh"') ? "xhigh" : "middle";
+  const modelProfile = current.includes('model_reasoning_effort = "xhigh"') ? "xhigh" : "high";
   const fastMode = current.includes('service_tier = "fast"') ? "on" : "off";
   const rendered = renderConfigToml(readText(tpl), context.packageRoot, { modelProfile, fastMode });
   writeText(out, rendered, { force: true });
