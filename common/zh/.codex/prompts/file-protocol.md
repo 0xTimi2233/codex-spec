@@ -18,7 +18,7 @@
 
 ```text
 .agentflow/runs/<run-id>/
-  agents.json
+  dispatch-ledger.md
   task.md
   gate.md
   summary.md

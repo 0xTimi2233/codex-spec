@@ -66,7 +66,7 @@ agentflow/
 .agentflow/
 ```
 
-长期项目知识保存在 `agentflow/`：vision、roadmap、ADR、spec 和测试计划。当前工作保存在 `.agentflow/runs/<run-id>/`：任务文件、子代理登记表、dispatch、角色报告、review ledger、修复请求和总结。完成的 run 会归档到 `.agentflow/archives/`。
+长期项目知识保存在 `agentflow/`：vision、roadmap、ADR、spec 和测试计划。当前工作保存在 `.agentflow/runs/<run-id>/`：任务文件、调度 ledger、dispatch、角色报告、review ledger、修复请求和总结。完成的 run 会归档到 `.agentflow/archives/`。
 
 ### 角色
 

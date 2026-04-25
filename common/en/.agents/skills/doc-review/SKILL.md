@@ -10,6 +10,7 @@ description: Review consistency across requirements, design, spec, ADR draft, an
 - `.codex/prompts/main-thread.md`
 - `.codex/prompts/file-protocol.md`
 - `.agentflow/state.json`
+- `.agentflow/runs/<run-id>/dispatch-ledger.md`
 - `.agentflow/runs/<run-id>/task.md`
 - `.agentflow/runs/<run-id>/pm/requirements.md`
 - `.agentflow/runs/<run-id>/architect/design.md`
@@ -22,14 +23,16 @@ description: Review consistency across requirements, design, spec, ADR draft, an
 1. Run `codex-spec state set --phase doc-reviewing --run <run-id>`.
 2. Write `.agentflow/runs/<run-id>/dispatch/doc-reviewer-001.md`.
 3. Dispatch Doc Reviewer.
-4. Doc Reviewer writes review report and review ledger.
-5. On pass, main thread writes `.agentflow/runs/<run-id>/gate.md`.
-6. On fail, main thread writes `.agentflow/runs/<run-id>/fix-requests/doc-fix-001.md` and returns to `$design`.
+4. Append the Doc Reviewer dispatch row to `.agentflow/runs/<run-id>/dispatch-ledger.md`; update it when the Doc Reviewer response arrives.
+5. Doc Reviewer writes review report and review ledger.
+6. On pass, main thread writes `.agentflow/runs/<run-id>/gate.md` and runs `codex-spec state set --phase ready-to-execute --run <run-id> --blocked false`.
+7. On fail, main thread writes `.agentflow/runs/<run-id>/fix-requests/doc-fix-001.md` and returns to `$design`.
 
 ## Required Outputs
 
 - `.agentflow/runs/<run-id>/doc-reviewer/review-report.md`
 - `.agentflow/runs/<run-id>/doc-reviewer/review-ledger.md`
+- updated `.agentflow/runs/<run-id>/dispatch-ledger.md`
 - on pass: `.agentflow/runs/<run-id>/gate.md`
 
 ## Next

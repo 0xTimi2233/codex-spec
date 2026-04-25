@@ -60,40 +60,32 @@ Stop condition:
 
 Subagents read only the dispatch-listed inputs, shared protocols, and their own role prompt.
 
-## Subagent Registry
+## Dispatch Ledger
 
 The main thread maintains:
 
 ```text
-.agentflow/runs/<run-id>/agents.json
+.agentflow/runs/<run-id>/dispatch-ledger.md
 ```
 
-Create the registry when a run starts:
+Create the ledger when a run starts:
 
-```json
-{
-  "version": 1,
-  "run_id": "<run-id>",
-  "agents": []
-}
+```markdown
+| Dispatch ID | Role | Agent ID | Status | Dispatch Path | Report Path | Started At | Updated At | Notes |
+|---|---|---|---|---|---|---|---|---|
 ```
 
-After creating a subagent, record its runtime id immediately:
+Append one row for every dispatch. After creating a subagent, record its runtime agent id in that row.
 
-```json
-{
-  "role": "architect",
-  "agent_id": "<runtime-agent-id>",
-  "status": "running",
-  "dispatch": ".agentflow/runs/<run-id>/dispatch/architect-001.md",
-  "report": ".agentflow/runs/<run-id>/architect/design.md",
-  "updated_at": "<iso-8601>"
-}
+```markdown
+| architect-001 | architect | <runtime-agent-id> | running | .agentflow/runs/<run-id>/dispatch/architect-001.md | .agentflow/runs/<run-id>/architect/design.md | <iso-8601> | <iso-8601> | - |
 ```
 
-Allowed status values are `queued`, `running`, `completed`, `blocked`, `failed`, `closed`, and `stale`. Update the registry when reports arrive, when an agent is closed, and before `$finish` clears the milestone context.
+Allowed status values are `queued`, `running`, `completed`, `blocked`, `failed`, `closed`, and `stale`.
 
-`$resume` reads the registry and reconnects to recorded agent ids when the runtime can resume them. If an agent cannot be resumed, mark it `stale` and dispatch a new bounded task from the current file artifacts.
+The main thread updates a row when a subagent response arrives, when a subagent is closed, and before `$finish` clears milestone context. During resume, the main thread only acts on rows whose status is not an ending status. Ending statuses are `completed`, `failed`, `closed`, and `stale`.
+
+When a resumable row has an agent id, `$resume` attempts to continue that agent. If that is not possible, the main thread marks the row `stale` and appends a new dispatch row for the remaining bounded task.
 
 ## Review Ledger
 

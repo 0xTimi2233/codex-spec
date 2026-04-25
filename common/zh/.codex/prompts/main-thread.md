@@ -60,40 +60,32 @@ Stop condition:
 
 子代理只读取 dispatch 列出的输入、共享协议、自己的 role prompt。
 
-## 子代理登记表
+## 调度 Ledger
 
 主线程维护：
 
 ```text
-.agentflow/runs/<run-id>/agents.json
+.agentflow/runs/<run-id>/dispatch-ledger.md
 ```
 
-run 开始时创建登记表：
+run 开始时创建 ledger：
 
-```json
-{
-  "version": 1,
-  "run_id": "<run-id>",
-  "agents": []
-}
+```markdown
+| Dispatch ID | Role | Agent ID | Status | Dispatch Path | Report Path | Started At | Updated At | Notes |
+|---|---|---|---|---|---|---|---|---|
 ```
 
-创建子代理后，立即记录 runtime id：
+每次调度追加一行。创建子代理后，在该行记录 runtime agent id。
 
-```json
-{
-  "role": "architect",
-  "agent_id": "<runtime-agent-id>",
-  "status": "running",
-  "dispatch": ".agentflow/runs/<run-id>/dispatch/architect-001.md",
-  "report": ".agentflow/runs/<run-id>/architect/design.md",
-  "updated_at": "<iso-8601>"
-}
+```markdown
+| architect-001 | architect | <runtime-agent-id> | running | .agentflow/runs/<run-id>/dispatch/architect-001.md | .agentflow/runs/<run-id>/architect/design.md | <iso-8601> | <iso-8601> | - |
 ```
 
-允许的 status 为 `queued`、`running`、`completed`、`blocked`、`failed`、`closed`、`stale`。收到报告、关闭子代理、`$finish` 清理 milestone 上下文前，都要更新登记表。
+允许的 status 为 `queued`、`running`、`completed`、`blocked`、`failed`、`closed`、`stale`。
 
-`$resume` 读取登记表，并在 runtime 支持时连接已记录的 agent id。若子代理无法恢复，标记为 `stale`，再基于当前文件产物派发新的有界任务。
+收到子代理回复、关闭子代理、`$finish` 清理 milestone 上下文前，主线程更新对应行。resume 时，主线程只处理非结束状态的调度记录。结束状态为 `completed`、`failed`、`closed`、`stale`。
+
+可恢复记录存在 agent id 时，`$resume` 尝试继续该子代理。无法继续时，主线程将该行标记为 `stale`，并为剩余有界任务追加新的调度记录。
 
 ## Review Ledger
 

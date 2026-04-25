@@ -54,7 +54,7 @@ const REQUIRED = [
 function requiredForPhase(root, state) {
   if (!state.current_run) return [];
   const runPath = currentRunPath(root, state);
-  const base = [path.join(runPath, "agents.json")];
+  const base = [path.join(runPath, "dispatch-ledger.md")];
   if (state.current_phase === "planning") {
     return [...base, path.join(runPath, "task.md"), path.join(runPath, "pm", "requirements.md")];
   }
