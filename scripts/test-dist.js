@@ -35,4 +35,12 @@ runCli("dist", ["archive", "--run", "smoke-run", "--target", tmp]);
 assert(!fs.existsSync(runDir), "archive should move run out of runs/");
 assert(fs.existsSync(path.join(tmp, ".agentflow", "archives", "smoke-run")), "archive directory was not created");
 
+const brainstormDir = path.join(tmp, ".agentflow", "brainstorm", "smoke-brainstorm");
+fs.mkdirSync(brainstormDir, { recursive: true });
+fs.writeFileSync(path.join(brainstormDir, "brief.md"), "Status: ready-for-plan\n", "utf8");
+
+runCli("dist", ["archive", "--brainstorm", "smoke-brainstorm", "--target", tmp]);
+assert(!fs.existsSync(brainstormDir), "archive should move brainstorm out of brainstorm/");
+assert(fs.existsSync(path.join(tmp, ".agentflow", "archives", "brainstorm", "smoke-brainstorm")), "brainstorm archive directory was not created");
+
 console.log(`dist smoke OK: ${tmp}`);

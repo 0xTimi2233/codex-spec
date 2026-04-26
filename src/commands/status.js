@@ -9,6 +9,7 @@ export function statusCommand(_args, context) {
   println(`Project: ${root}`);
   println(`Mode: ${state.mode}`);
   println(`Phase: ${state.current_phase}`);
+  println(`Brainstorm: ${state.current_brainstorm || "-"}`);
   println(`Run: ${state.current_run || "-"}`);
   println(`Milestone: ${state.current_milestone || "-"}`);
   println(`Blocked: ${state.blocked ? "yes" : "no"}`);

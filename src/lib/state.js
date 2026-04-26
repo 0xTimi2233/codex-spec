@@ -18,6 +18,7 @@ export function defaultState() {
   return {
     version: 1,
     mode: "idle",
+    current_brainstorm: null,
     current_run: null,
     current_phase: "idle",
     current_milestone: null,
@@ -32,6 +33,7 @@ export function normalizeState(state) {
   if (!PHASES.includes(next.current_phase)) next.current_phase = "idle";
   if (typeof next.blocked !== "boolean") next.blocked = Boolean(next.blocked);
   if (next.current_run === "") next.current_run = null;
+  if (next.current_brainstorm === "") next.current_brainstorm = null;
   if (next.current_milestone === "") next.current_milestone = null;
   return next;
 }

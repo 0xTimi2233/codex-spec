@@ -8,7 +8,8 @@ Files are the workflow source of truth. Chat history is not a source of truth. U
 |---|---|
 | `workflow skill` | A main-thread command such as `$brainstorm`, `$plan`, `$design`, `$execute`, or `$auto`. Skills orchestrate workflow steps and may create dispatch packets. |
 | `run-id` | One milestone execution unit stored under `.agentflow/runs/<run-id>/`. |
-| `brainstorm brief` | `.agentflow/brainstorm/brief.md`; pre-plan intent notes that must be condensed before PM planning. |
+| `brainstorm-id` | One pre-plan discovery session stored under `.agentflow/brainstorm/<brainstorm-id>/`. |
+| `brainstorm brief` | `.agentflow/brainstorm/<brainstorm-id>/brief.md`; the planning-ready result of a brainstorm session. |
 | `dispatch packet` | `.agentflow/runs/<run-id>/dispatch/<role>-<task-id>.md`; the task packet a subagent reads for one assignment. |
 | `task.md` | Current run goal, scope, constraints, done criteria, and user decisions. |
 | `gate.md` | Approved execution contract produced after document review. Developer and Code Reviewer use it as the implementation boundary. |
@@ -33,28 +34,36 @@ Long-lived files are synced only during milestone finish by the owning role.
 
 ## Brainstorm Files
 
-Brainstorm files are draft context for requirement discovery:
+Brainstorm files capture one pre-plan discovery session:
 
 ```text
-.agentflow/brainstorm/brief.md
+.agentflow/brainstorm/<brainstorm-id>/
+  brief.md
+  notes.md
+  questions.md
+  source-map.md
+  summary.md
 ```
 
-`brief.md` uses:
+`brief.md` is the PM planning input:
 
 ```text
 Status: draft | ready-for-plan | discarded
 Goal:
 Confirmed requirements:
 Non-goals:
+User decisions:
 Open questions:
 User preferences:
 Constraints:
 Candidate milestones:
 Risks:
-Recommended next step:
+Recommended planning focus:
 ```
 
-`$plan` may use only `.agentflow/brainstorm/brief.md` when it is `ready-for-plan`. A draft brainstorm brief must be closed or discarded before PM planning starts.
+`notes.md` records useful exploration notes. `questions.md` records open and answered questions. `source-map.md` records user-provided inputs and inspected paths. `summary.md` records the session outcome and archive status.
+
+PM planning uses the brainstorm `brief.md` path specified by the main thread.
 
 ## Current Run Files
 
@@ -100,9 +109,10 @@ The main thread writes this file after Doc Reviewer returns `pass`. Source and t
 
 ```text
 .agentflow/archives/<run-id>/
+.agentflow/archives/brainstorm/<brainstorm-id>/
 ```
 
-`archives/` is immutable history. `codex-spec archive` moves the completed run from `.agentflow/runs/<run-id>/` into `.agentflow/archives/<run-id>/` and must not overwrite an existing archive. Later runs do not read context from `archives/`; reusable facts must be synced into `agentflow/` or written into the current run's `task.md`.
+`archives/` is immutable history. `codex-spec archive --run <run-id>` moves the completed run from `.agentflow/runs/<run-id>/` into `.agentflow/archives/<run-id>/`. `codex-spec archive --brainstorm <brainstorm-id>` moves the completed brainstorm session from `.agentflow/brainstorm/<brainstorm-id>/` into `.agentflow/archives/brainstorm/<brainstorm-id>/`. Archives must not overwrite existing archives. Reusable facts must be synced into `agentflow/` or written into the current run's `task.md`.
 
 ## Report Format
 

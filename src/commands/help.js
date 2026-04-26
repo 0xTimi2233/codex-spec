@@ -5,8 +5,8 @@ const COMMANDS = {
   init: `codex-spec init [--lang en|zh] [--model high|xhigh] [--fast off|on] [--target <dir>] [--force]\n\nCreate project-local Codex workflow files. Default language is English. Default model profile is high and fast mode is off. Existing generated files are preserved by default; interactive runs ask before overwriting non-agentflow files. Existing agentflow/ and .agentflow/ files are never overwritten.`,
   doctor: `codex-spec doctor [--target <dir>]\n\nCheck required workflow scaffold files.`,
   status: `codex-spec status [--target <dir>]\n\nPrint .agentflow/state.json, current run dispatch ledger, and current run summary.`,
-  state: `codex-spec state set --phase <phase> [--mode <mode>] [--run <run-id>] [--milestone <id>] [--blocked true|false]\n\nAllowed phases:\n  ${PHASES.join("\n  ")}`,
-  archive: `codex-spec archive --run <run-id> [--target <dir>]\n\nMove .agentflow/runs/<run-id>/ into immutable .agentflow/archives/<run-id>/.`
+  state: `codex-spec state set [--phase <phase>] [--mode <mode>] [--brainstorm <id>] [--run <run-id>] [--milestone <id>] [--blocked true|false]\n\nAllowed phases:\n  ${PHASES.join("\n  ")}`,
+  archive: `codex-spec archive --run <run-id> [--target <dir>]\ncodex-spec archive --brainstorm <brainstorm-id> [--target <dir>]\n\nMove run or brainstorm artifacts into immutable .agentflow/archives/.`
 };
 
 export function printHelp(command = null) {

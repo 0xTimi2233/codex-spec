@@ -16,12 +16,14 @@ Read these paths only when they are not already in the active context or their c
 
 ## Procedure
 
-1. Discuss goal, scope, non-goals, constraints, risks, user preferences, and candidate milestones.
-2. Read only user-provided files. If more context is needed, ask for the specific path or decision.
-3. Write `.agentflow/brainstorm/brief.md`.
-4. Keep exactly one active brainstorm brief.
-5. Keep `Status: draft` until the user confirms the brief is ready for planning.
-6. When confirmed, update the brief to `Status: ready-for-plan` and recommend starting `$plan` from a clean chat context.
+1. Choose a brainstorm id and run `codex-spec state set --brainstorm <brainstorm-id> --blocked false`.
+2. Discuss goal, scope, non-goals, constraints, risks, user preferences, and candidate milestones.
+3. Read only user-provided files. If more context is needed, ask for the specific path or decision.
+4. Write `.agentflow/brainstorm/<brainstorm-id>/brief.md`.
+5. Update `.agentflow/brainstorm/<brainstorm-id>/notes.md`, `questions.md`, and `source-map.md` when they add useful audit context.
+6. Keep `brief.md` as `Status: draft` until the user confirms the brief is ready for planning.
+7. When confirmed, update `brief.md` to `Status: ready-for-plan` or `Status: discarded`, write `summary.md`, run `codex-spec archive --brainstorm <brainstorm-id>`, then run `codex-spec state set --brainstorm null`.
+8. Recommend starting `$plan` from a clean chat context.
 
 ## Brief Format
 
@@ -30,20 +32,19 @@ Status: draft | ready-for-plan | discarded
 Goal:
 Confirmed requirements:
 Non-goals:
+User decisions:
 Open questions:
 User preferences:
 Constraints:
 Candidate milestones:
 Risks:
-Recommended next step:
+Recommended planning focus:
 ```
 
-## Must Not Do
+## Scope
 
-- Do not create a run.
-- Do not update workflow state.
-- Do not write roadmap, ADR, spec, test plan, or source files.
-- Do not dispatch PM.
+- Maintain `.agentflow/brainstorm/<brainstorm-id>/` and `.agentflow/state.json.current_brainstorm`.
+- Leave roadmap, run, ADR, spec, test plan, and source work to later workflow skills.
 
 ## Final Reply
 

@@ -64,7 +64,7 @@ agentflow/
 .agentflow/
 ```
 
-Long-lived project knowledge lives in `agentflow/`: vision, roadmap, ADRs, specs, and test plans. Brainstorm notes live in `.agentflow/brainstorm/brief.md` before they are promoted into planning. Current work lives in `.agentflow/runs/<run-id>/`: task files, dispatch ledger, dispatch packets, role reports, review ledgers, fix requests, and summaries. Completed runs are moved to immutable `.agentflow/archives/`.
+Long-lived project knowledge lives in `agentflow/`: vision, roadmap, ADRs, specs, and test plans. Brainstorm sessions live in `.agentflow/brainstorm/<brainstorm-id>/` and are archived to `.agentflow/archives/brainstorm/<brainstorm-id>/`. PM planning uses the specified `brief.md`. Current work lives in `.agentflow/runs/<run-id>/`: task files, dispatch ledger, dispatch packets, role reports, review ledgers, fix requests, and summaries. Completed runs are moved to immutable `.agentflow/archives/`.
 
 ### Roles
 
@@ -127,7 +127,7 @@ codex-spec status
 ## Best Practices
 
 - Keep each milestone small enough to design, implement, review, and finish cleanly.
-- Use `$brainstorm` for early exploration. It writes a brief but does not create a run, update roadmap, or edit code.
+- Use `$brainstorm` for early exploration. It writes a brainstorm session, archives it when finished, and keeps `brief.md` as the planning input.
 - Start formal work with `$plan`; let PM turn confirmed requirements into explicit scope, roadmap milestones, and done criteria.
 - If `$plan` finds an unfinished brainstorm brief, close or discard it first. After a brief becomes ready for planning, use a clean chat context when practical.
 - Keep context in files, not chat memory. Subagents should read only dispatch-listed paths and their own role prompt.

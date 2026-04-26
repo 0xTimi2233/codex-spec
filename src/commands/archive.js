@@ -9,36 +9,58 @@ function resolveRun(args, root) {
   return readState(root).current_run;
 }
 
-function isSafeRunId(runId) {
-  const value = String(runId);
-  return /^[A-Za-z0-9._-]+$/.test(value) && value !== "." && value !== ".." && !value.includes("..");
+function isSafeId(value) {
+  const normalized = String(value);
+  return /^[A-Za-z0-9._-]+$/.test(normalized) && normalized !== "." && normalized !== ".." && !normalized.includes("..");
+}
+
+function moveImmutable({ root, kind, srcPath, archivePath }) {
+  if (!exists(srcPath)) {
+    exitWith(`${kind} not found: ${path.relative(root, srcPath)}`);
+    return false;
+  }
+
+  ensureDir(path.dirname(archivePath));
+  if (exists(archivePath)) {
+    exitWith(`Archive already exists: ${path.relative(root, archivePath)}. Archives are immutable.`);
+    return false;
+  }
+  fs.renameSync(srcPath, archivePath);
+  println(`Archived ${kind.toLowerCase()}: ${path.relative(root, archivePath)}`);
+  return true;
 }
 
 export function archiveCommand(args, context) {
+  if (args.brainstorm) {
+    const brainstormId = String(args.brainstorm);
+    if (!isSafeId(brainstormId)) {
+      exitWith(`Invalid brainstorm id: ${brainstormId}`);
+      return;
+    }
+    moveImmutable({
+      root: context.target,
+      kind: "Brainstorm",
+      srcPath: path.join(context.target, ".agentflow", "brainstorm", brainstormId),
+      archivePath: path.join(context.target, ".agentflow", "archives", "brainstorm", brainstormId)
+    });
+    return;
+  }
+
   const resolvedRunId = resolveRun(args, context.target);
   if (!resolvedRunId) {
-    exitWith("Usage: codex-spec archive --run <run-id>");
+    exitWith("Usage: codex-spec archive --run <run-id> | --brainstorm <brainstorm-id>");
     return;
   }
   const runId = String(resolvedRunId);
-  if (!isSafeRunId(runId)) {
+  if (!isSafeId(runId)) {
     exitWith(`Invalid run id: ${runId}`);
     return;
   }
 
-  const runPath = path.join(context.target, ".agentflow", "runs", runId);
-  if (!exists(runPath)) {
-    exitWith(`Run not found: ${path.relative(context.target, runPath)}`);
-    return;
-  }
-
-  const archiveRoot = path.join(context.target, ".agentflow", "archives");
-  const archivePath = path.join(archiveRoot, runId);
-  ensureDir(archiveRoot);
-  if (exists(archivePath)) {
-    exitWith(`Archive already exists: ${path.relative(context.target, archivePath)}. Archives are immutable.`);
-    return;
-  }
-  fs.renameSync(runPath, archivePath);
-  println(`Archived run: ${path.relative(context.target, archivePath)}`);
+  moveImmutable({
+    root: context.target,
+    kind: "Run",
+    srcPath: path.join(context.target, ".agentflow", "runs", runId),
+    archivePath: path.join(context.target, ".agentflow", "archives", runId)
+  });
 }

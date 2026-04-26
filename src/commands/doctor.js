@@ -42,7 +42,8 @@ const REQUIRED = [
   ".agentflow/state.json",
   ".agentflow/brainstorm/.gitkeep",
   ".agentflow/runs/.gitkeep",
-  ".agentflow/archives/.gitkeep"
+  ".agentflow/archives/.gitkeep",
+  ".agentflow/archives/brainstorm/.gitkeep"
 ];
 
 export function doctorCommand(_args, context) {

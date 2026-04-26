@@ -15,7 +15,7 @@ function nullableArg(value) {
 export function stateCommand(args, context) {
   const action = args._[1];
   if (action !== "set") {
-    exitWith("Usage: codex-spec state set --phase <phase> [--mode <mode>] [--run <run-id>] [--milestone <id>] [--blocked true|false]");
+    exitWith("Usage: codex-spec state set [--phase <phase>] [--mode <mode>] [--brainstorm <id>] [--run <run-id>] [--milestone <id>] [--blocked true|false]");
     return;
   }
   const state = readState(context.target);
@@ -28,6 +28,7 @@ export function stateCommand(args, context) {
     state.current_phase = phase;
   }
   if (args.mode) state.mode = String(args.mode);
+  if (Object.prototype.hasOwnProperty.call(args, "brainstorm")) state.current_brainstorm = nullableArg(args.brainstorm);
   if (Object.prototype.hasOwnProperty.call(args, "run")) state.current_run = nullableArg(args.run);
   if (Object.prototype.hasOwnProperty.call(args, "milestone")) state.current_milestone = nullableArg(args.milestone);
   if (Object.prototype.hasOwnProperty.call(args, "blocked")) {

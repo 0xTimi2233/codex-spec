@@ -64,7 +64,7 @@ agentflow/
 .agentflow/
 ```
 
-长期项目知识保存在 `agentflow/`：vision、roadmap、ADR、spec 和测试计划。Brainstorm 记录保存在 `.agentflow/brainstorm/brief.md`，进入 planning 后才沉淀为正式需求。当前工作保存在 `.agentflow/runs/<run-id>/`：任务文件、调度 ledger、dispatch、角色报告、review ledger、修复请求和总结。完成的 run 会移动归档到不可变的 `.agentflow/archives/`。
+长期项目知识保存在 `agentflow/`：vision、roadmap、ADR、spec 和测试计划。Brainstorm session 保存在 `.agentflow/brainstorm/<brainstorm-id>/`，结束后归档到 `.agentflow/archives/brainstorm/<brainstorm-id>/`。PM planning 使用主线程指定的 `brief.md`。当前工作保存在 `.agentflow/runs/<run-id>/`：任务文件、调度 ledger、dispatch、角色报告、review ledger、修复请求和总结。完成的 run 会移动归档到不可变的 `.agentflow/archives/`。
 
 ### 角色
 
@@ -127,7 +127,7 @@ codex-spec status
 ## 最佳实践
 
 - 每个 milestone 保持足够小，确保可以完整完成设计、实现、审查和 finish。
-- 使用 `$brainstorm` 做早期探索。它只写 brief，不创建 run、不更新 roadmap、不修改代码。
+- 使用 `$brainstorm` 做早期探索。它写入 brainstorm session，结束时归档，并将 `brief.md` 作为 planning 输入。
 - 正式工作从 `$plan` 开始，让 PM 把已确认需求整理成范围、roadmap milestone 和完成标准。
 - `$plan` 发现未结束 brainstorm brief 时，先结束或废弃。brief 进入 planning 前，建议在可行时使用干净聊天上下文。
 - 把上下文放在文件里，不依赖聊天记忆。子代理只读取 dispatch 指定路径和自己的角色 prompt。

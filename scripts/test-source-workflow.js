@@ -20,6 +20,17 @@ runCli("src", ["archive", "--run", "smoke-run", "--target", tmp]);
 assert(!fs.existsSync(runDir), "archive should move run out of runs/");
 assert(fs.existsSync(path.join(tmp, ".agentflow", "archives", "smoke-run")), "archive directory was not created");
 
+const brainstormDir = path.join(tmp, ".agentflow", "brainstorm", "smoke-brainstorm");
+fs.mkdirSync(brainstormDir, { recursive: true });
+fs.writeFileSync(path.join(brainstormDir, "brief.md"), "Status: ready-for-plan\n", "utf8");
+
+const invalidBrainstormArchive = runCliFail("src", ["archive", "--brainstorm", "../bad", "--target", tmp]);
+assert(invalidBrainstormArchive.includes("Invalid brainstorm id"), "archive should reject unsafe brainstorm ids");
+
+runCli("src", ["archive", "--brainstorm", "smoke-brainstorm", "--target", tmp]);
+assert(!fs.existsSync(brainstormDir), "archive should move brainstorm out of brainstorm/");
+assert(fs.existsSync(path.join(tmp, ".agentflow", "archives", "brainstorm", "smoke-brainstorm")), "brainstorm archive directory was not created");
+
 fs.mkdirSync(runDir, { recursive: true });
 fs.writeFileSync(
   path.join(tmp, ".agentflow", "state.json"),
@@ -27,6 +38,7 @@ fs.writeFileSync(
     {
       version: 1,
       mode: "active",
+      current_brainstorm: null,
       current_run: "smoke-run",
       current_phase: "executing",
       current_milestone: "smoke",
