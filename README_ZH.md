@@ -106,7 +106,15 @@ codex-spec init --model xhigh --fast off
 | `high` | 默认高端工作流。项目级主线程使用 `gpt-5.5` + `xhigh`；每个子代理都显式写入模型配置。PM、Architect、Doc Reviewer、Code Reviewer 使用 `xhigh`，Developer、Tester、Auditor 使用 `high`。 |
 | `xhigh` | 最大推理档。项目级主线程和所有子代理都使用 `gpt-5.5` + `xhigh`。 |
 
-`--fast on` 会在生成的 Codex 配置中写入 `service_tier = "fast"`。它可以降低延迟，但会更快消耗 fast 额度。`--fast off` 不写入 fast service tier。
+`--fast on` 会在生成的项目级和子代理 Codex 配置中写入 `service_tier = "fast"`。它可以降低延迟，但会更快消耗 fast 额度。`--fast off` 不写入 fast service tier。
+
+初始化后可以用 `profile` 查看或修改当前模型档位：
+
+```bash
+codex-spec profile
+codex-spec profile --model xhigh
+codex-spec profile --fast on
+```
 
 `--lang zh` 会生成简体中文工作流 prompt。task、dispatch、报告和长期文档的自然语言正文使用中文。
 
@@ -115,6 +123,7 @@ codex-spec init --model xhigh --fast off
 ```bash
 codex-spec help
 codex-spec init --lang en|zh --model high|xhigh --fast off|on
+codex-spec profile --model high|xhigh --fast off|on
 codex-spec doctor
 codex-spec status
 ```

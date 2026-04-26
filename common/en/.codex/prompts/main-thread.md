@@ -127,7 +127,7 @@ The main thread preserves review ledgers across rounds and passes the relevant l
 
 ## Workflow Step Duties
 
-`$brainstorm`: explore intent before planning. The main thread hosts the discussion, reads only user-provided inputs, keeps workflow phase idle, and writes `.agentflow/brainstorm/<brainstorm-id>/`. When the session ends, archive it to `.agentflow/archives/brainstorm/<brainstorm-id>/`.
+`$brainstorm`: explore intent before planning. The main thread hosts the discussion, reads only user-provided inputs, keeps workflow phase idle, and writes `.agentflow/brainstorm/<brainstorm-id>/`. Ask blocking decisions in small numbered option rounds. When the session ends, archive it to `.agentflow/archives/brainstorm/<brainstorm-id>/`.
 
 `$plan`: when `.agentflow/state.json.current_brainstorm` is set, use `.agentflow/brainstorm/<current_brainstorm>/brief.md` to close that brainstorm as `ready-for-plan` or `discarded`, archive it, and recommend clearing chat context before continuing. Dispatch PM with the specified brainstorm `brief.md` or user-provided requirement input to confirm requirements, update vision/roadmap when requested, select the next milestone, create the milestone run, write `task.md`, and collect PM artifacts.
 

@@ -16,8 +16,8 @@ export function renderConfigToml(template, _packageRoot, { modelProfile = "high"
   return out;
 }
 
-export function renderAgentToml(template, role, { modelProfile = "high" } = {}) {
-  const modelConfig = renderAgentModelConfig(role, modelProfile);
+export function renderAgentToml(template, role, { modelProfile = "high", fastMode = "off" } = {}) {
+  const modelConfig = renderAgentModelConfig(role, modelProfile, fastMode);
   if (!modelConfig) return template;
   return template.replace(/(description = ".*"\n)/, `$1${modelConfig}`);
 }
@@ -53,7 +53,7 @@ export function copyTemplate({ packageRoot, targetRoot, lang, force, modelProfil
         return renderConfigToml(content, packageRoot, { modelProfile, fastMode });
       }
       if (srcPath.includes(`${path.sep}.codex${path.sep}agents${path.sep}`) && srcPath.endsWith(".toml")) {
-        return renderAgentToml(content, path.basename(srcPath, ".toml"), { modelProfile });
+        return renderAgentToml(content, path.basename(srcPath, ".toml"), { modelProfile, fastMode });
       }
       return content;
     },

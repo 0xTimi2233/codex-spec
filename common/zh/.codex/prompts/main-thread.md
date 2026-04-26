@@ -132,7 +132,7 @@ Verification:
 
 ## 工作流节点职责
 
-`$brainstorm`：在 planning 前探索需求。主线程主持讨论，只读取用户提供的输入，保持 workflow phase 为 idle，并写 `.agentflow/brainstorm/<brainstorm-id>/`。结束时归档到 `.agentflow/archives/brainstorm/<brainstorm-id>/`。
+`$brainstorm`：在 planning 前探索需求。主线程主持讨论，只读取用户提供的输入，保持 workflow phase 为 idle，并写 `.agentflow/brainstorm/<brainstorm-id>/`。需要用户决策时，使用小批量编号选项提问。结束时归档到 `.agentflow/archives/brainstorm/<brainstorm-id>/`。
 
 `$plan`：当 `.agentflow/state.json.current_brainstorm` 存在时，使用 `.agentflow/brainstorm/<current_brainstorm>/brief.md` 将该 brainstorm 结束为 `ready-for-plan` 或 `discarded`，归档后建议清空聊天上下文再继续。使用主线程指定的 brainstorm `brief.md` 或用户提供的需求输入调度 PM，确认需求、按需更新 vision/roadmap、选择下一 milestone、创建 milestone run、写 `task.md` 和 PM 产物。
 

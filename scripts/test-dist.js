@@ -14,6 +14,16 @@ assert(!config.includes("[[hooks."), "generated config should not install hooks"
 assert(!config.includes("codex_hooks"), "generated config should not enable hook features");
 assert(developerAgent.includes('model = "gpt-5.5"'), "developer model should be explicit");
 assert(developerAgent.includes('model_reasoning_effort = "xhigh"'), "xhigh profile should render xhigh agent reasoning");
+assert(!developerAgent.includes("service_tier"), "fast mode off should not render agent service_tier");
+runCli("dist", ["profile", "--model", "high", "--fast", "on", "--target", tmp]);
+const profiledConfig = readText(tmp, ".codex", "config.toml");
+const profiledPmAgent = readText(tmp, ".codex", "agents", "pm.toml");
+const profiledDeveloperAgent = readText(tmp, ".codex", "agents", "developer.toml");
+assert(profiledConfig.includes('service_tier = "fast"'), "profile should enable root fast mode");
+assert(profiledPmAgent.includes('model_reasoning_effort = "xhigh"'), "profile high should keep pm xhigh");
+assert(profiledPmAgent.includes('service_tier = "fast"'), "profile should enable pm fast mode");
+assert(profiledDeveloperAgent.includes('model_reasoning_effort = "high"'), "profile high should set developer high");
+assert(profiledDeveloperAgent.includes('service_tier = "fast"'), "profile should enable developer fast mode");
 assert(!fs.existsSync(path.join(root, "dist", "hooks")), "dist should not include hooks");
 assert(fs.existsSync(path.join(tmp, ".agents", "skills", "brainstorm", "SKILL.md")), "dist init should include brainstorm skill");
 for (const removedSkill of ["doc-review", "code-review", "verify", "finish"]) {

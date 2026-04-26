@@ -24,6 +24,7 @@ const zhCodeReviewerRole = readText(tmp, ".codex", "prompts", "roles", "code-rev
 assert(defaultConfig.includes('model = "gpt-5.5"'), "default model was not rendered");
 assert(defaultConfig.includes('model_reasoning_effort = "xhigh"'), "main thread reasoning should be xhigh");
 assert(!defaultConfig.includes("service_tier"), "fast mode should be off by default");
+assert(!zhPmAgent.includes("service_tier"), "fast mode off should not render agent service_tier");
 assert(defaultState.includes('"current_brainstorm": null'), "state should track current brainstorm");
 assert(zhMainThread.includes("决策路由"), "zh main-thread should define decision routing");
 assert(zhMainThread.includes("只有 PM 或 Architect"), "zh main-thread should limit user decision escalation");
@@ -45,6 +46,8 @@ assert(zhBrainstormSkill.includes("上下文输入"), "zh brainstorm skill shoul
 assert(zhBrainstormSkill.includes(".agentflow/brainstorm/<brainstorm-id>/brief.md"), "zh brainstorm skill should write brainstorm brief under its id");
 assert(zhBrainstormSkill.includes("codex-spec archive --brainstorm <brainstorm-id>"), "zh brainstorm skill should archive completed brainstorms");
 assert(zhBrainstormSkill.includes(".agentflow/archives/brainstorm/<brainstorm-id>/brief.md"), "zh brainstorm skill should point to archived planning brief");
+assert(zhBrainstormSkill.includes("每轮最多提出 1-3 个阻塞问题"), "zh brainstorm skill should limit question rounds");
+assert(zhBrainstormSkill.includes("编号选项"), "zh brainstorm skill should ask with options");
 assert(!zhPlanSkill.includes("brainstorm/*/brief.md"), "zh plan skill should not use brainstorm glob paths");
 assert(zhPlanSkill.includes("PM 决策处理"), "zh plan skill should handle PM decision requests");
 assert(zhPlanSkill.includes("current_brainstorm"), "zh plan skill should close active brainstorm briefs");
@@ -101,9 +104,27 @@ const enCodeReviewerRole = readText(highTmp, ".codex", "prompts", "roles", "code
 
 assert(highConfig.includes('service_tier = "fast"'), "fast mode was not rendered");
 assert(pmAgent.includes('model_reasoning_effort = "xhigh"'), "pm xhigh override was not rendered");
+assert(pmAgent.includes('service_tier = "fast"'), "fast mode should render pm service_tier");
 assert(architectAgent.includes('model_reasoning_effort = "xhigh"'), "architect xhigh override was not rendered");
 assert(developerAgent.includes('model = "gpt-5.5"'), "developer model should be explicit");
 assert(developerAgent.includes('model_reasoning_effort = "high"'), "developer should use explicit high profile reasoning");
+assert(developerAgent.includes('service_tier = "fast"'), "fast mode should render developer service_tier");
+const profileOutput = runCli("src", ["profile", "--target", highTmp]);
+assert(profileOutput.includes("Model profile: high"), "profile should infer high model profile");
+assert(profileOutput.includes("Fast mode: on"), "profile should infer fast mode");
+runCli("src", ["profile", "--model", "xhigh", "--fast", "off", "--target", highTmp]);
+const xhighConfig = readText(highTmp, ".codex", "config.toml");
+const xhighDeveloperAgent = readText(highTmp, ".codex", "agents", "developer.toml");
+assert(xhighConfig.includes('model_reasoning_effort = "xhigh"'), "profile should update root reasoning");
+assert(!xhighConfig.includes("service_tier"), "profile should remove root fast mode");
+assert(xhighDeveloperAgent.includes('model_reasoning_effort = "xhigh"'), "profile should update agent reasoning");
+assert(!xhighDeveloperAgent.includes("service_tier"), "profile should remove agent fast mode");
+runCli("src", ["profile", "--fast", "on", "--target", highTmp]);
+const fastAgainConfig = readText(highTmp, ".codex", "config.toml");
+const fastAgainDeveloperAgent = readText(highTmp, ".codex", "agents", "developer.toml");
+assert(fastAgainConfig.includes('service_tier = "fast"'), "profile should enable root fast mode");
+assert(fastAgainDeveloperAgent.includes('model_reasoning_effort = "xhigh"'), "profile fast-only update should preserve inferred profile");
+assert(fastAgainDeveloperAgent.includes('service_tier = "fast"'), "profile should enable agent fast mode");
 assert(enMainThread.includes("Decision Routing"), "en main-thread should define decision routing");
 assert(enMainThread.includes("Only unresolved PM or Architect"), "en main-thread should limit user decision escalation");
 assert(enMainThread.includes("$brainstorm"), "en main-thread should define brainstorm workflow");
@@ -124,6 +145,8 @@ assert(enBrainstormSkill.includes("Context Inputs"), "en brainstorm skill should
 assert(enBrainstormSkill.includes(".agentflow/brainstorm/<brainstorm-id>/brief.md"), "en brainstorm skill should write brainstorm brief under its id");
 assert(enBrainstormSkill.includes("codex-spec archive --brainstorm <brainstorm-id>"), "en brainstorm skill should archive completed brainstorms");
 assert(enBrainstormSkill.includes(".agentflow/archives/brainstorm/<brainstorm-id>/brief.md"), "en brainstorm skill should point to archived planning brief");
+assert(enBrainstormSkill.includes("at most 1-3 blocking questions"), "en brainstorm skill should limit question rounds");
+assert(enBrainstormSkill.includes("numbered options"), "en brainstorm skill should ask with options");
 assert(!enPlanSkill.includes("brainstorm/*/brief.md"), "en plan skill should not use brainstorm glob paths");
 assert(enPlanSkill.includes("PM Decision Handling"), "en plan skill should handle PM decision requests");
 assert(enPlanSkill.includes("current_brainstorm"), "en plan skill should close active brainstorm briefs");

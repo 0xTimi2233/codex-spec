@@ -7,6 +7,7 @@ import { printHelp } from "./commands/help.js";
 import { initCommand } from "./commands/init.js";
 import { doctorCommand } from "./commands/doctor.js";
 import { statusCommand } from "./commands/status.js";
+import { profileCommand } from "./commands/profile.js";
 import { stateCommand } from "./commands/state.js";
 import { archiveCommand } from "./commands/archive.js";
 import { exitWith, println } from "./lib/output.js";
@@ -24,6 +25,8 @@ if (!command || command === "help" || args.help) {
   doctorCommand(args, context);
 } else if (command === "status") {
   statusCommand(args, context);
+} else if (command === "profile") {
+  profileCommand(args, context);
 } else if (command === "state") {
   stateCommand(args, context);
 } else if (command === "archive") {

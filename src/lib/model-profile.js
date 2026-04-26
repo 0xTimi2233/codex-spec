@@ -50,7 +50,8 @@ export function renderRootModelConfig(profile, fastMode) {
   return renderModelBlock({ ...modelConfig, serviceTier: fastConfig.serviceTier });
 }
 
-export function renderAgentModelConfig(role, profile) {
+export function renderAgentModelConfig(role, profile, fastMode = "off") {
   const agentConfig = MODEL_PROFILES[normalizeModelProfile(profile)].agents;
-  return `${renderModelBlock(agentConfig.roles[role] || agentConfig.default)}\n`;
+  const fastConfig = FAST_MODES[normalizeFastMode(fastMode)];
+  return `${renderModelBlock({ ...(agentConfig.roles[role] || agentConfig.default), serviceTier: fastConfig.serviceTier })}\n`;
 }

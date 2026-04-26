@@ -106,7 +106,15 @@ codex-spec init --model xhigh --fast off
 | `high` | Default high-end workflow. The project-level main thread uses `gpt-5.5` + `xhigh`; every subagent has explicit model settings. PM, Architect, Doc Reviewer, and Code Reviewer use `xhigh`; Developer, Tester, and Auditor use `high`. |
 | `xhigh` | Maximum reasoning profile. The project-level main thread and every subagent use `gpt-5.5` + `xhigh`. |
 
-`--fast on` writes `service_tier = "fast"` into the generated Codex config. It can reduce latency but may consume fast quota more aggressively. `--fast off` omits the fast service tier.
+`--fast on` writes `service_tier = "fast"` into the generated project and subagent Codex configs. It can reduce latency but may consume fast quota more aggressively. `--fast off` omits the fast service tier.
+
+Use `profile` after initialization to inspect or update the current model profile:
+
+```bash
+codex-spec profile
+codex-spec profile --model xhigh
+codex-spec profile --fast on
+```
 
 `--lang zh` generates Simplified Chinese workflow prompts. Natural-language task files, dispatch text, reports, and long-lived docs should be written in Chinese.
 
@@ -115,6 +123,7 @@ codex-spec init --model xhigh --fast off
 ```bash
 codex-spec help
 codex-spec init --lang en|zh --model high|xhigh --fast off|on
+codex-spec profile --model high|xhigh --fast off|on
 codex-spec doctor
 codex-spec status
 ```
