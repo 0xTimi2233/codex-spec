@@ -125,7 +125,7 @@ codex-spec status
 `--target` is optional for project commands. Without it, `codex-spec` uses the current working directory.
 `init` preserves existing generated files by default and asks before overwriting them in interactive shells. Existing `agentflow/` and `.agentflow/` files are treated as project artifacts and are never overwritten.
 
-`doctor` checks the installed scaffold and hook paths. Workflow progress is reported by `status` and the `$status` skill.
+`doctor` checks the installed scaffold files. Workflow progress is reported by `status` and the `$status` skill.
 
 ## Best Practices
 
@@ -139,7 +139,7 @@ codex-spec status
 - After `$finish`, commit the completed milestone with a short user-facing message such as `feat: add import workflow`, `fix: handle empty config`, or `docs: update setup guide`.
 - Do not use archived runs as future context. Sync reusable knowledge into `agentflow/` during `$finish`.
 
-Use the full workflow for multi-step changes, cross-file refactors, or work where review evidence matters. For small edits, exploratory prototypes, or projects without tests, use a shorter manual Codex flow outside an active run. Once `.agentflow/state.json` has an active `current_run`, source and test writes are gated by the approved run contract.
+Use the full workflow for multi-step changes, cross-file refactors, or work where review evidence matters. For small edits, exploratory prototypes, or projects without tests, use a shorter manual Codex flow outside an active run. During an active run, Developer and Code Reviewer use the approved run contract as the prompt-level implementation boundary.
 
 ## Development
 

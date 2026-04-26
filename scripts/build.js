@@ -4,7 +4,7 @@ import path from "node:path";
 const root = path.resolve(new URL("..", import.meta.url).pathname);
 const dist = path.join(root, "dist");
 fs.rmSync(dist, { recursive: true, force: true });
-fs.mkdirSync(path.join(dist, "hooks"), { recursive: true });
+fs.mkdirSync(dist, { recursive: true });
 
 async function buildOne(entry, outdir) {
   const result = await Bun.build({
@@ -22,9 +22,6 @@ async function buildOne(entry, outdir) {
 }
 
 await buildOne("src/cli.js", "dist");
-for (const file of ["user-prompt-submit", "pre-tool-use", "post-tool-use", "stop"]) {
-  await buildOne(`src/hooks/${file}.js`, "dist/hooks");
-}
 
 const cli = path.join(dist, "cli.js");
 let cliText = fs.readFileSync(cli, "utf8");

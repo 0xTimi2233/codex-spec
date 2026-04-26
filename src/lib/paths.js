@@ -20,26 +20,6 @@ export function resolveTarget(args) {
   return path.resolve(String(args.target || args.cwd || process.cwd()));
 }
 
-export function hookPaths(packageRoot) {
-  const dist = path.join(packageRoot, "dist", "hooks");
-  const src = path.join(packageRoot, "src", "hooks");
-  const base = fs.existsSync(path.join(dist, "user-prompt-submit.js")) ? dist : src;
-  return {
-    userPromptSubmit: path.join(base, "user-prompt-submit.js"),
-    preToolUse: path.join(base, "pre-tool-use.js"),
-    postToolUse: path.join(base, "post-tool-use.js"),
-    stop: path.join(base, "stop.js")
-  };
-}
-
-export function tomlString(value) {
-  return JSON.stringify(value);
-}
-
-export function commandForNodeScript(scriptPath) {
-  return `node ${JSON.stringify(scriptPath)}`;
-}
-
 export function findProjectRoot(start = process.cwd()) {
   let dir = path.resolve(start);
   while (true) {

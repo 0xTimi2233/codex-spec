@@ -125,7 +125,7 @@ codex-spec status
 项目命令都可以使用可选的 `--target`。不传时，`codex-spec` 使用当前目录。
 `init` 默认保留已有生成文件，并会在交互式终端中询问是否覆盖。已有 `agentflow/` 和 `.agentflow/` 文件视为项目产物，永不覆盖。
 
-`doctor` 只检查脚手架安装和 hook 路径。工作流进度由 `status` 和 `$status` skill 报告。
+`doctor` 只检查脚手架安装文件。工作流进度由 `status` 和 `$status` skill 报告。
 
 ## 最佳实践
 
@@ -139,7 +139,7 @@ codex-spec status
 - `$finish` 后提交完成的 milestone，提交信息使用简洁的用户可见描述，例如 `feat: add import workflow`、`fix: handle empty config`、`docs: update setup guide`。
 - 归档 run 是历史记录，不作为后续上下文来源。可复用信息应在 `$finish` 阶段同步到 `agentflow/`。
 
-完整流程适合多步骤改动、跨文件重构或需要审查证据的工作。小改动、探索性原型或缺少测试基础的项目，可以在没有 active run 时使用较短的手动 Codex 流程。`.agentflow/state.json` 存在 active `current_run` 后，源码和测试写入会受到已通过 run contract 的 gate 约束。
+完整流程适合多步骤改动、跨文件重构或需要审查证据的工作。小改动、探索性原型或缺少测试基础的项目，可以在没有 active run 时使用较短的手动 Codex 流程。存在 active run 时，Developer 和 Code Reviewer 将已通过的 run contract 作为 prompt 层面的实现边界。
 
 ## 开发
 

@@ -1,6 +1,4 @@
-import fs from "node:fs";
-import path from "node:path";
-import { exists, listMissing, readText } from "../lib/fs.js";
+import { listMissing } from "../lib/fs.js";
 import { println, exitWith } from "../lib/output.js";
 
 const REQUIRED = [
@@ -54,16 +52,6 @@ export function doctorCommand(_args, context) {
   const missing = listMissing(root, REQUIRED);
   const problems = [];
   if (missing.length) problems.push(`Missing files:\n${missing.map((m) => `  - ${m}`).join("\n")}`);
-
-  const cfg = path.join(root, ".codex", "config.toml");
-  if (exists(cfg)) {
-    const content = readText(cfg);
-    const matches = [...content.matchAll(/node \\"([^\"]+)\\"|node "([^"]+)"/g)];
-    for (const match of matches) {
-      const hookPath = match[1] || match[2];
-      if (hookPath && !fs.existsSync(hookPath)) problems.push(`Hook script not found: ${hookPath}`);
-    }
-  }
 
   if (problems.length) {
     exitWith(`codex-spec doctor: failed\n\n${problems.join("\n\n")}`);

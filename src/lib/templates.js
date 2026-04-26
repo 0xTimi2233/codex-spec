@@ -2,20 +2,14 @@ import path from "node:path";
 import fs from "node:fs";
 import { copyDir } from "./fs.js";
 import { renderAgentModelConfig, renderRootModelConfig } from "./model-profile.js";
-import { commandForNodeScript, hookPaths, tomlString } from "./paths.js";
 
 export function templateRoot(packageRoot, lang) {
   return path.join(packageRoot, "common", lang);
 }
 
-export function renderConfigToml(template, packageRoot, { modelProfile = "high", fastMode = "off" } = {}) {
-  const hooks = hookPaths(packageRoot);
+export function renderConfigToml(template, _packageRoot, { modelProfile = "high", fastMode = "off" } = {}) {
   const replacements = {
-    "{{MODEL_PROFILE_CONFIG}}": renderRootModelConfig(modelProfile, fastMode),
-    "{{HOOK_USER_PROMPT_SUBMIT}}": tomlString(commandForNodeScript(hooks.userPromptSubmit)),
-    "{{HOOK_PRE_TOOL_USE}}": tomlString(commandForNodeScript(hooks.preToolUse)),
-    "{{HOOK_POST_TOOL_USE}}": tomlString(commandForNodeScript(hooks.postToolUse)),
-    "{{HOOK_STOP}}": tomlString(commandForNodeScript(hooks.stop))
+    "{{MODEL_PROFILE_CONFIG}}": renderRootModelConfig(modelProfile, fastMode)
   };
   let out = template;
   for (const [key, value] of Object.entries(replacements)) out = out.split(key).join(value);
