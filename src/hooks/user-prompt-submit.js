@@ -1,4 +1,5 @@
-import { additionalContext, currentSummary, readStdinJson, resolveRoot } from "./common.js";
+import { currentSummary, resolveRoot } from "../lib/hook/context.js";
+import { additionalContext, readStdinJson } from "../lib/hook/io.js";
 
 const input = await readStdinJson();
 const root = resolveRoot(input);

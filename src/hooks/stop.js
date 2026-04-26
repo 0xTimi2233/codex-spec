@@ -1,4 +1,6 @@
-import { continueOk, currentSummary, jsonOut, missingRunFiles, readStdinJson, resolveRoot } from "./common.js";
+import { currentSummary, resolveRoot } from "../lib/hook/context.js";
+import { continueOk, jsonOut, readStdinJson } from "../lib/hook/io.js";
+import { missingRunFiles } from "../lib/hook/workflow-files.js";
 
 const input = await readStdinJson();
 const root = resolveRoot(input);

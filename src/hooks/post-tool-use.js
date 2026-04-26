@@ -1,3 +1,3 @@
-import { continueOk } from "./common.js";
+import { continueOk } from "../lib/hook/io.js";
 
 continueOk();

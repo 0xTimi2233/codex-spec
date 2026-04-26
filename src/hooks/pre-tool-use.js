@@ -1,14 +1,9 @@
 import path from "node:path";
 import { isPathAllowedByGate, normalizeRepoPath, readGate } from "../lib/gate.js";
-import {
-  analyzeWriteEffect,
-  blockPreToolUse,
-  continueOk,
-  currentSummary,
-  isWorkflowPath,
-  readStdinJson,
-  resolveRoot
-} from "./common.js";
+import { currentSummary, resolveRoot } from "../lib/hook/context.js";
+import { blockPreToolUse, continueOk, readStdinJson } from "../lib/hook/io.js";
+import { analyzeWriteEffect } from "../lib/hook/write-effect.js";
+import { isWorkflowPath } from "../lib/hook/workflow-files.js";
 
 const input = await readStdinJson();
 const root = resolveRoot(input);
