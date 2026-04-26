@@ -108,8 +108,8 @@ codex-spec init --model xhigh --fast off
 
 | 档位 | 生成行为 |
 | --- | --- |
-| `high` | 默认高端工作流。全局使用 `gpt-5.5` + `high`，并将 PM、Architect、Doc Reviewer、Code Reviewer 提升到 `xhigh`。 |
-| `xhigh` | 最大推理档。工作流使用 `gpt-5.5` + `xhigh`。 |
+| `high` | 默认高端工作流。项目级主线程使用 `gpt-5.5` + `xhigh`；每个子代理都显式写入模型配置。PM、Architect、Doc Reviewer、Code Reviewer 使用 `xhigh`，Developer、Tester、Auditor 使用 `high`。 |
+| `xhigh` | 最大推理档。项目级主线程和所有子代理都使用 `gpt-5.5` + `xhigh`。 |
 
 `--fast on` 会在生成的 Codex 配置中写入 `service_tier = "fast"`。它可以降低延迟，但会更快消耗 fast 额度。`--fast off` 不写入 fast service tier。
 

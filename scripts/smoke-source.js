@@ -35,7 +35,7 @@ function runHook(name, cwd, payload) {
 run(["init", "--lang", "zh", "--target", tmp]);
 const defaultConfig = fs.readFileSync(path.join(tmp, ".codex", "config.toml"), "utf8");
 if (!defaultConfig.includes('model = "gpt-5.5"')) throw new Error("default model was not rendered");
-if (!defaultConfig.includes('model_reasoning_effort = "high"')) throw new Error("default reasoning was not rendered");
+if (!defaultConfig.includes('model_reasoning_effort = "xhigh"')) throw new Error("main thread reasoning should be xhigh");
 if (defaultConfig.includes("service_tier")) throw new Error("fast mode should be off by default");
 run(["--version"]);
 run(["doctor", "--target", tmp]);
@@ -65,7 +65,8 @@ const developerAgent = fs.readFileSync(path.join(highTmp, ".codex", "agents", "d
 if (!highConfig.includes('service_tier = "fast"')) throw new Error("fast mode was not rendered");
 if (!pmAgent.includes('model_reasoning_effort = "xhigh"')) throw new Error("pm xhigh override was not rendered");
 if (!architectAgent.includes('model_reasoning_effort = "xhigh"')) throw new Error("architect xhigh override was not rendered");
-if (developerAgent.includes('model_reasoning_effort = "xhigh"')) throw new Error("developer should inherit high profile reasoning");
+if (!developerAgent.includes('model = "gpt-5.5"')) throw new Error("developer model should be explicit");
+if (!developerAgent.includes('model_reasoning_effort = "high"')) throw new Error("developer should use explicit high profile reasoning");
 const runDir = path.join(tmp, ".agentflow", "runs", "smoke-run");
 fs.mkdirSync(runDir, { recursive: true });
 fs.writeFileSync(path.join(runDir, "summary.md"), "Status: pass\n", "utf8");

@@ -21,9 +21,12 @@ function runFail(args) {
 }
 run(["init", "--lang", "en", "--model", "xhigh", "--fast", "off", "--target", tmp]);
 const config = fs.readFileSync(path.join(tmp, ".codex", "config.toml"), "utf8");
+const developerAgent = fs.readFileSync(path.join(tmp, ".codex", "agents", "developer.toml"), "utf8");
 if (!config.includes('model = "gpt-5.5"')) throw new Error("model was not rendered");
 if (!config.includes('model_reasoning_effort = "xhigh"')) throw new Error("xhigh profile was not rendered");
 if (config.includes("service_tier")) throw new Error("fast mode off should not render service_tier");
+if (!developerAgent.includes('model = "gpt-5.5"')) throw new Error("developer model should be explicit");
+if (!developerAgent.includes('model_reasoning_effort = "xhigh"')) throw new Error("xhigh profile should render xhigh agent reasoning");
 run(["--version"]);
 run(["doctor", "--target", tmp]);
 run(["status", "--target", tmp]);

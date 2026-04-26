@@ -21,13 +21,12 @@ export function normalizeFastMode(value = "off") {
 }
 
 export function renderRootModelConfig(profile, fastMode) {
-  const reasoning = profile === "xhigh" ? "xhigh" : "high";
-  const lines = [`model = "${MODEL}"`, `model_reasoning_effort = "${reasoning}"`];
+  const lines = [`model = "${MODEL}"`, `model_reasoning_effort = "xhigh"`];
   if (fastMode === "on") lines.push('service_tier = "fast"');
   return lines.join("\n");
 }
 
 export function renderAgentModelConfig(role, profile) {
-  if (profile !== "high" || !HIGH_PROFILE_XHIGH_ROLES.has(role)) return "";
-  return `model = "${MODEL}"\nmodel_reasoning_effort = "xhigh"\n`;
+  const reasoning = profile === "xhigh" || HIGH_PROFILE_XHIGH_ROLES.has(role) ? "xhigh" : "high";
+  return `model = "${MODEL}"\nmodel_reasoning_effort = "${reasoning}"\n`;
 }

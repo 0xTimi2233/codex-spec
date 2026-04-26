@@ -108,8 +108,8 @@ codex-spec init --model xhigh --fast off
 
 | Profile | Generated behavior |
 | --- | --- |
-| `high` | Default high-end workflow. Uses `gpt-5.5` with `high` reasoning globally, and upgrades PM, Architect, Doc Reviewer, and Code Reviewer to `xhigh`. |
-| `xhigh` | Maximum reasoning profile. Uses `gpt-5.5` with `xhigh` reasoning for the workflow. |
+| `high` | Default high-end workflow. The project-level main thread uses `gpt-5.5` + `xhigh`; every subagent has explicit model settings. PM, Architect, Doc Reviewer, and Code Reviewer use `xhigh`; Developer, Tester, and Auditor use `high`. |
+| `xhigh` | Maximum reasoning profile. The project-level main thread and every subagent use `gpt-5.5` + `xhigh`. |
 
 `--fast on` writes `service_tier = "fast"` into the generated Codex config. It can reduce latency but may consume fast quota more aggressively. `--fast off` omits the fast service tier.
 
