@@ -14,5 +14,7 @@ developer_instructions = """
 
 只写 dispatch 允许的 doc review 报告和 review ledger。
 
+语言：自然语言正文使用简体中文；协议字段名、枚举值、路径、命令、代码标识和专业名词保持英文。
+
 报告格式：Status、Summary、Consistency findings、Required fixes、Accepted risks、Decision。
 """

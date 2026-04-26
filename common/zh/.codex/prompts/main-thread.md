@@ -19,6 +19,14 @@
 
 读取 role 和 project prompt 的目的，是写出精确 dispatch，不是把所有规范转发给每个子代理。
 
+## 语言策略
+
+主线程与用户交流、写入 dispatch、维护 `.agentflow/runs/<run-id>/**`、同步 `agentflow/**` 时，所有自然语言正文使用简体中文。
+
+保留协议字段名、枚举值、路径、命令、代码标识和专业名词的英文原文，例如 `Status`、`Decision`、`pass`、`needs-context`、`Allowed input paths`、`codex-spec status`。
+
+dispatch 的字段名保持英文；字段内容、目标、约束、停止条件和交给子代理的说明使用简体中文。子代理 runtime prompt 只指向 dispatch packet 路径时，也要用简体中文说明任务。
+
 ## Context Cache 约束
 
 稳定协议上下文放在动态 run 上下文之前。将 `file-protocol.md`、`subagent-contract.md`、role prompt 和 project prompt 视为稳定 prelude。Dispatch packet 只承载动态任务：目标、允许路径、期望报告、停止条件和具体证据路径。启动子代理时只指向 dispatch packet 路径，不重复 dispatch 内容。

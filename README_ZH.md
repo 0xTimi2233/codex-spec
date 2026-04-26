@@ -113,6 +113,8 @@ codex-spec init --model xhigh --fast off
 
 `--fast on` 会在生成的 Codex 配置中写入 `service_tier = "fast"`。它可以降低延迟，但会更快消耗 fast 额度。`--fast off` 不写入 fast service tier。
 
+`--lang zh` 会生成简体中文工作流 prompt。task、dispatch、报告和长期文档的自然语言正文使用中文；协议字段、枚举值、路径、命令和代码标识保持英文。
+
 ### CLI 命令
 
 ```bash

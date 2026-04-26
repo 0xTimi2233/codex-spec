@@ -113,6 +113,8 @@ codex-spec init --model xhigh --fast off
 
 `--fast on` writes `service_tier = "fast"` into the generated Codex config. It can reduce latency but may consume fast quota more aggressively. `--fast off` omits the fast service tier.
 
+`--lang zh` generates Simplified Chinese workflow prompts. Natural-language task files, dispatch text, reports, and long-lived docs should be written in Chinese, while protocol keys, enum values, paths, commands, and code identifiers stay in English.
+
 ### CLI Reference
 
 ```bash
