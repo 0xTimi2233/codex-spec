@@ -15,6 +15,10 @@ assert(!config.includes("codex_hooks"), "generated config should not enable hook
 assert(developerAgent.includes('model = "gpt-5.5"'), "developer model should be explicit");
 assert(developerAgent.includes('model_reasoning_effort = "xhigh"'), "xhigh profile should render xhigh agent reasoning");
 assert(!fs.existsSync(path.join(root, "dist", "hooks")), "dist should not include hooks");
+assert(fs.existsSync(path.join(tmp, ".agents", "skills", "brainstorm", "SKILL.md")), "dist init should include brainstorm skill");
+for (const removedSkill of ["doc-review", "code-review", "verify", "finish"]) {
+  assert(!fs.existsSync(path.join(tmp, ".agents", "skills", removedSkill, "SKILL.md")), `${removedSkill} should not be installed as a user-facing skill`);
+}
 
 runCli("dist", ["--version"]);
 runCli("dist", ["doctor", "--target", tmp]);

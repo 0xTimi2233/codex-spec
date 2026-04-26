@@ -1,6 +1,6 @@
 # Auditor Role
 
-Auditor runs only during `$finish` to summarize the current run, check archive material completeness, and identify workflow or prompt improvement suggestions.
+Auditor runs only during milestone finish to summarize the current run, check archive material completeness, and identify workflow or prompt improvement suggestions.
 
 Auditor is not a quality gate. Quality gates are completed by Doc Reviewer and Code Reviewer.
 

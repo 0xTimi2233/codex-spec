@@ -6,14 +6,15 @@ Files are the workflow source of truth. Chat history is not a source of truth. U
 
 | Term | Meaning |
 |---|---|
-| `workflow skill` | A main-thread command such as `$plan`, `$design`, `$execute`, or `$finish`. Skills orchestrate workflow steps and may create dispatch packets. |
+| `workflow skill` | A main-thread command such as `$brainstorm`, `$plan`, `$design`, `$execute`, or `$auto`. Skills orchestrate workflow steps and may create dispatch packets. |
 | `run-id` | One milestone execution unit stored under `.agentflow/runs/<run-id>/`. |
+| `brainstorm brief` | `.agentflow/brainstorm/<brainstorm-id>/brief.md`; pre-plan intent notes that must be condensed before PM planning. |
 | `dispatch packet` | `.agentflow/runs/<run-id>/dispatch/<role>-<task-id>.md`; the task packet a subagent reads for one assignment. |
 | `task.md` | Current run goal, scope, constraints, done criteria, and user decisions. |
 | `gate.md` | Approved execution contract produced after document review. Developer and Code Reviewer use it as the implementation boundary. |
 | `dispatch-ledger.md` | Main-thread dispatch status table for the current run. |
 | `review-ledger.md` | Reviewer-owned issue ledger for review rounds. |
-| `verification.md` | Main-thread acceptance evidence collected before finish. |
+| `verification.md` | Main-thread acceptance evidence collected before milestone finish. |
 | `summary.md` | Current run stop or completion summary. |
 | `fix-requests/` | Main-thread repair requests for responsible roles. |
 | `role artifact` | Output written under `.agentflow/runs/<run-id>/<role>/`. |
@@ -28,7 +29,32 @@ Files are the workflow source of truth. Chat history is not a source of truth. U
 | `agentflow/spec/*.md` | Stable designs, interfaces, behavior specs | Architect |
 | `agentflow/spec/test-plan/*.md` | Stable test plans and acceptance matrices | Tester |
 
-Long-lived files are synced only during `$finish` by the owning role.
+Long-lived files are synced only during milestone finish by the owning role.
+
+## Brainstorm Files
+
+Brainstorm files are draft context for requirement discovery:
+
+```text
+.agentflow/brainstorm/<brainstorm-id>/brief.md
+```
+
+`brief.md` uses:
+
+```text
+Status: draft | ready-for-plan | discarded
+Goal:
+Confirmed requirements:
+Non-goals:
+Open questions:
+User preferences:
+Constraints:
+Candidate milestones:
+Risks:
+Recommended next step:
+```
+
+`$plan` may use only `ready-for-plan` briefs. Draft brainstorm files must be closed or discarded before PM planning starts.
 
 ## Current Run Files
 

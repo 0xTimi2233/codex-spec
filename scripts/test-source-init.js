@@ -9,6 +9,7 @@ const defaultConfig = readText(tmp, ".codex", "config.toml");
 const zhMainThread = readText(tmp, ".codex", "prompts", "main-thread.md");
 const zhFileProtocol = readText(tmp, ".codex", "prompts", "file-protocol.md");
 const zhSubagentContract = readText(tmp, ".codex", "prompts", "subagent-contract.md");
+const zhBrainstormSkill = readText(tmp, ".agents", "skills", "brainstorm", "SKILL.md");
 const zhPlanSkill = readText(tmp, ".agents", "skills", "plan", "SKILL.md");
 const zhPmRole = readText(tmp, ".codex", "prompts", "roles", "pm.md");
 const zhArchitectRole = readText(tmp, ".codex", "prompts", "roles", "architect.md");
@@ -19,13 +20,21 @@ assert(defaultConfig.includes('model_reasoning_effort = "xhigh"'), "main thread 
 assert(!defaultConfig.includes("service_tier"), "fast mode should be off by default");
 assert(zhMainThread.includes("决策路由"), "zh main-thread should define decision routing");
 assert(zhMainThread.includes("只有 PM 或 Architect"), "zh main-thread should limit user decision escalation");
+assert(zhMainThread.includes("$brainstorm"), "zh main-thread should define brainstorm workflow");
 assert(zhFileProtocol.includes("User decision required"), "zh file protocol should define decision request format");
+assert(zhFileProtocol.includes(".agentflow/brainstorm/<brainstorm-id>/brief.md"), "zh file protocol should define brainstorm brief path");
 assert(zhSubagentContract.includes("跨越当前角色边界"), "zh subagent contract should define decision request boundaries");
+assert(zhBrainstormSkill.includes("不创建 run"), "zh brainstorm skill should stay before run creation");
 assert(zhPlanSkill.includes("PM 决策处理"), "zh plan skill should handle PM decision requests");
+assert(zhPlanSkill.includes("Status: draft"), "zh plan skill should close draft brainstorm briefs");
 assert(zhPmRole.includes("2-4 个选项"), "zh PM role should request numbered options");
 assert(zhArchitectRole.includes("Decision Request"), "zh Architect role should return decision requests");
 assert(zhDocReviewerRole.includes("严格模式"), "zh Doc Reviewer role should enforce strict mode");
 assert(zhCodeReviewerRole.includes("Developer 解释不能免除"), "zh Code Reviewer role should not accept developer rationale alone");
+assert(fs.existsSync(path.join(tmp, ".agentflow", "brainstorm", ".gitkeep")), "brainstorm directory should be initialized");
+for (const removedSkill of ["doc-review", "code-review", "verify", "finish"]) {
+  assert(!fs.existsSync(path.join(tmp, ".agents", "skills", removedSkill, "SKILL.md")), `${removedSkill} should not be a user-facing skill`);
+}
 
 runCli("src", ["--version"]);
 runCli("src", ["doctor", "--target", tmp]);
@@ -54,6 +63,7 @@ const developerAgent = readText(highTmp, ".codex", "agents", "developer.toml");
 const enMainThread = readText(highTmp, ".codex", "prompts", "main-thread.md");
 const enFileProtocol = readText(highTmp, ".codex", "prompts", "file-protocol.md");
 const enSubagentContract = readText(highTmp, ".codex", "prompts", "subagent-contract.md");
+const enBrainstormSkill = readText(highTmp, ".agents", "skills", "brainstorm", "SKILL.md");
 const enPlanSkill = readText(highTmp, ".agents", "skills", "plan", "SKILL.md");
 const enPmRole = readText(highTmp, ".codex", "prompts", "roles", "pm.md");
 const enArchitectRole = readText(highTmp, ".codex", "prompts", "roles", "architect.md");
@@ -67,12 +77,19 @@ assert(developerAgent.includes('model = "gpt-5.5"'), "developer model should be 
 assert(developerAgent.includes('model_reasoning_effort = "high"'), "developer should use explicit high profile reasoning");
 assert(enMainThread.includes("Decision Routing"), "en main-thread should define decision routing");
 assert(enMainThread.includes("Only unresolved PM or Architect"), "en main-thread should limit user decision escalation");
+assert(enMainThread.includes("$brainstorm"), "en main-thread should define brainstorm workflow");
 assert(enFileProtocol.includes("User decision required"), "en file protocol should define decision request format");
+assert(enFileProtocol.includes(".agentflow/brainstorm/<brainstorm-id>/brief.md"), "en file protocol should define brainstorm brief path");
 assert(enSubagentContract.includes("crosses the current role boundary"), "en subagent contract should define decision request boundaries");
+assert(enBrainstormSkill.includes("Do not create a run"), "en brainstorm skill should stay before run creation");
 assert(enPlanSkill.includes("PM Decision Handling"), "en plan skill should handle PM decision requests");
+assert(enPlanSkill.includes("Status: draft"), "en plan skill should close draft brainstorm briefs");
 assert(enPmRole.includes("2-4 options"), "en PM role should request numbered options");
 assert(enArchitectRole.includes("Decision Request"), "en Architect role should return decision requests");
 assert(enDocReviewerRole.includes("Strict mode"), "en Doc Reviewer role should enforce strict mode");
 assert(enCodeReviewerRole.includes("Developer rationale does not waive"), "en Code Reviewer role should not accept developer rationale alone");
+for (const removedSkill of ["doc-review", "code-review", "verify", "finish"]) {
+  assert(!fs.existsSync(path.join(highTmp, ".agents", "skills", removedSkill, "SKILL.md")), `${removedSkill} should not be a user-facing skill`);
+}
 
 console.log(`source init OK: ${tmp}`);

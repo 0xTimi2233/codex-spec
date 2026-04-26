@@ -40,13 +40,10 @@ codex-spec status
 Then start Codex in the project and drive the workflow with skills:
 
 ```text
+$brainstorm
 $plan
 $design
-$doc-review
 $execute
-$code-review
-$verify
-$finish
 ```
 
 For controlled end-to-end progress, use:
@@ -67,7 +64,7 @@ agentflow/
 .agentflow/
 ```
 
-Long-lived project knowledge lives in `agentflow/`: vision, roadmap, ADRs, specs, and test plans. Current work lives in `.agentflow/runs/<run-id>/`: task files, dispatch ledger, dispatch packets, role reports, review ledgers, fix requests, and summaries. Completed runs are moved to immutable `.agentflow/archives/`.
+Long-lived project knowledge lives in `agentflow/`: vision, roadmap, ADRs, specs, and test plans. Brainstorm notes live in `.agentflow/brainstorm/<brainstorm-id>/brief.md` before they are promoted into planning. Current work lives in `.agentflow/runs/<run-id>/`: task files, dispatch ledger, dispatch packets, role reports, review ledgers, fix requests, and summaries. Completed runs are moved to immutable `.agentflow/archives/`.
 
 ### Roles
 
@@ -81,21 +78,19 @@ Code Reviewer
 Auditor
 ```
 
-The main thread orchestrates and integrates. PM defines scope. Architect writes design/spec/ADR drafts. Tester writes test plans and coverage reviews, not implementation code. Doc Reviewer checks document consistency before execution. Developer implements code and tests from an approved gate. Code Reviewer checks implementation after execution. Auditor summarizes the run during `$finish`.
+The main thread orchestrates and integrates. PM defines scope and roadmap milestones. Architect writes design/spec/ADR drafts. Tester writes test plans and coverage reviews, not implementation code. Doc Reviewer checks document consistency before execution. Developer implements code and tests from an approved gate. Code Reviewer checks implementation after execution. Auditor summarizes the run during milestone finish.
 
 ### Workflow
 
 ```text
-$plan        define requirement, scope, milestone, and run task
-$design      produce design/spec/ADR drafts and test plan
-$doc-review  validate document consistency before implementation
-$execute     implement code and tests from the approved gate
-$code-review validate implementation against gate, spec, and test plan
-$verify      collect acceptance evidence before finish
-$finish      summarize, sync long-lived docs, archive the run, clear state
+$brainstorm  explore requirements before formal planning
+$plan        confirm requirements, update roadmap, prepare the next milestone run
+$design      produce design/spec/ADR drafts, test plan, doc review, and approved gate
+$execute     implement, code-review, verify, finish, archive, and commit the current milestone
+$auto        run roadmap milestones serially through design and execute
 ```
 
-`$auto` follows the same gates. When a rejection has a clear owner and fix scope, the main thread routes it to the responsible subagent. It stops only when safe routing is not possible or an external decision is required.
+Doc review, code review, verification, finish, archive, and milestone commit are internal stages. When a rejection has a clear owner and fix scope, the main thread routes it to the responsible subagent. `$auto` stops only when safe routing is not possible or an external decision is required.
 
 ### Model Profiles
 
@@ -132,15 +127,17 @@ codex-spec status
 ## Best Practices
 
 - Keep each milestone small enough to design, implement, review, and finish cleanly.
-- Start with `$plan`; let PM turn ambiguous requests into explicit scope and done criteria.
+- Use `$brainstorm` for early exploration. It writes a brief but does not create a run, update roadmap, or edit code.
+- Start formal work with `$plan`; let PM turn confirmed requirements into explicit scope, roadmap milestones, and done criteria.
+- If `$plan` finds an unfinished brainstorm brief, close or discard it first. After a brief becomes ready for planning, use a clean chat context when practical.
 - Keep context in files, not chat memory. Subagents should read only dispatch-listed paths and their own role prompt.
 - Keep prompt prefixes stable: put protocol and role context first, and keep per-task dispatch as the dynamic suffix.
 - Subagents return short reports; the main thread uses those reports and dispatch status to route the next step.
 - When PM needs a product decision, the main thread presents numbered options with impacts and a recommendation.
 - Treat Doc Reviewer and Code Reviewer as separate gates: document correctness before execution, implementation correctness after execution.
-- Use `$auto` for routine progress, but expect it to stop when the next safe decision is unclear.
-- After `$finish`, commit the completed milestone with a short user-facing message such as `feat: add import workflow`, `fix: handle empty config`, or `docs: update setup guide`.
-- Do not use archived runs as future context. Sync reusable knowledge into `agentflow/` during `$finish`.
+- Use `$auto` for routine roadmap progress, but expect it to stop when the next safe decision is unclear.
+- `$execute` commits the completed milestone with a short user-facing message such as `feat: add import workflow`, `fix: handle empty config`, or `docs: update setup guide`.
+- Do not use archived runs as future context. Sync reusable knowledge into `agentflow/` during milestone finish.
 
 Use the full workflow for multi-step changes, cross-file refactors, or work where review evidence matters. For small edits, exploratory prototypes, or projects without tests, use a shorter manual Codex flow outside an active run. During an active run, Developer and Code Reviewer use the approved run contract as the prompt-level implementation boundary.
 

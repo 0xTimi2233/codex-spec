@@ -11,14 +11,15 @@
 
 | 术语 | 含义 |
 |---|---|
-| `workflow skill` | 主线程命令，例如 `$plan`、`$design`、`$execute`、`$finish`。skill 编排工作流节点，并可创建 dispatch。 |
+| `workflow skill` | 主线程命令，例如 `$brainstorm`、`$plan`、`$design`、`$execute` 或 `$auto`。skill 编排工作流节点，并可创建 dispatch。 |
 | `run-id` | 一个 milestone 执行单元，存放在 `.agentflow/runs/<run-id>/`。 |
+| `brainstorm brief` | `.agentflow/brainstorm/<brainstorm-id>/brief.md`；plan 前的需求探索记录，进入 PM 规划前必须收束。 |
 | `dispatch packet` | `.agentflow/runs/<run-id>/dispatch/<role>-<task-id>.md`；子代理一次任务读取的任务包。 |
 | `task.md` | 当前 run 的目标、范围、约束、完成标准和用户决策。 |
 | `gate.md` | 文档审查通过后生成的执行契约。Developer 和 Code Reviewer 以它作为实现边界。 |
 | `dispatch-ledger.md` | 主线程维护的当前 run 调度状态表。 |
 | `review-ledger.md` | Reviewer 维护的跨轮问题记录。 |
-| `verification.md` | finish 前由主线程收集的验收证据。 |
+| `verification.md` | milestone finish 前由主线程收集的验收证据。 |
 | `summary.md` | 当前 run 的停止或完成摘要。 |
 | `fix-requests/` | 主线程写给责任角色的修复请求。 |
 | `role artifact` | 写入 `.agentflow/runs/<run-id>/<role>/` 的角色产物。 |
@@ -33,7 +34,32 @@
 | `agentflow/spec/*.md` | 稳定方案、接口、行为规格 | Architect |
 | `agentflow/spec/test-plan/*.md` | 稳定测试计划和验收矩阵 | Tester |
 
-长期文件只在 `$finish` 阶段由对应 owner 同步。
+长期文件只在 milestone finish 阶段由对应 owner 同步。
+
+## Brainstorm 文件
+
+Brainstorm 文件用于需求探索草稿：
+
+```text
+.agentflow/brainstorm/<brainstorm-id>/brief.md
+```
+
+`brief.md` 使用：
+
+```text
+Status: draft | ready-for-plan | discarded
+Goal:
+Confirmed requirements:
+Non-goals:
+Open questions:
+User preferences:
+Constraints:
+Candidate milestones:
+Risks:
+Recommended next step:
+```
+
+`$plan` 只使用 `ready-for-plan` brief。进入 PM 规划前，draft brainstorm 必须结束或废弃。
 
 ## 当前 run 文件
 

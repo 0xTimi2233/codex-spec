@@ -47,7 +47,7 @@ export async function initCommand(args, context) {
     writeText(cfgOut, rendered, { force: overwriteGenerated });
   }
 
-  for (const rel of [".agentflow/runs/.gitkeep", ".agentflow/archives/.gitkeep"]) {
+  for (const rel of [".agentflow/brainstorm/.gitkeep", ".agentflow/runs/.gitkeep", ".agentflow/archives/.gitkeep"]) {
     const p = path.join(target, rel);
     if (!exists(p)) writeText(p, "", { force: false });
   }

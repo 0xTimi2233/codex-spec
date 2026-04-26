@@ -1,6 +1,6 @@
 # Auditor Role
 
-Auditor 只在 `$finish` 阶段运行，负责总结当前 run、检查归档材料完整性、识别流程或 prompt 改进建议。
+Auditor 只在 milestone finish 阶段运行，负责总结当前 run、检查归档材料完整性、识别流程或 prompt 改进建议。
 
 Auditor 不作为质量 gate。质量 gate 已由 Doc Reviewer 和 Code Reviewer 完成。
 

@@ -1,6 +1,6 @@
 ---
 name: auto
-description: Execute the standard workflow for the current run under control; route clear rejections to fixes and stop only when safe progress is not possible.
+description: Run roadmap milestones serially through design and execute until blocked or complete.
 ---
 
 # Skill: auto
@@ -14,13 +14,15 @@ description: Execute the standard workflow for the current run under control; ro
 
 ## Procedure
 
-Run the next missing workflow step from the current state phase:
+If no confirmed roadmap exists, stop and recommend `$plan`.
+
+For each roadmap milestone, create or resume its run and execute:
 
 ```text
-$plan -> $design -> $doc-review -> $execute -> $code-review -> $verify -> $finish
+$design -> $execute
 ```
 
-After every step, use `.agentflow/state.json`, dispatch status, and subagent replies.
+If a milestone run does not exist, use `$plan` behavior to create the run task from the roadmap entry. After every step, use `.agentflow/state.json`, dispatch status, and subagent replies.
 
 ## Rejection And Stop Rules
 
@@ -38,8 +40,8 @@ When stopping, the main thread writes `.agentflow/runs/<run-id>/summary.md` with
 
 ## Milestone Commit
 
-After `$finish` archives the run and clears state, the main thread commits the code, test, and documentation changes for the completed milestone before starting the next milestone. If there are no file changes, do not create an empty commit; record the no-op in summary.
+When `$execute` archives the run and clears state, the main thread commits the code, test, and documentation changes for the completed milestone before starting the next milestone. If there are no file changes, do not create an empty commit; record the no-op in summary.
 
 ## Final Reply
 
-Return completed steps, routed fix attempts or stop reason, current state, relevant report/fix-request paths, milestone commit status, and the recommended next skill for the user.
+Return completed milestones, routed fix attempts or stop reason, current state, relevant report/fix-request paths, milestone commit status, and the recommended next user action.

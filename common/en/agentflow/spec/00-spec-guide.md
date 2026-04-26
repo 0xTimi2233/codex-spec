@@ -2,7 +2,7 @@
 
 Architect owns stable specs under `agentflow/spec/`.
 
-Use specs for accepted design, interfaces, data contracts, and behavior. Drafts stay in `.agentflow/runs/<run-id>/architect/` until `$finish` syncs accepted content.
+Use specs for accepted design, interfaces, data contracts, and behavior. Drafts stay in `.agentflow/runs/<run-id>/architect/` until milestone finish syncs accepted content.
 
 Suggested sections:
 

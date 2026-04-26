@@ -27,13 +27,10 @@ const REQUIRED = [
   ".codex/prompts/project/testing-standards.md",
   ".codex/prompts/project/doc-review-policy.md",
   ".codex/prompts/project/code-review-policy.md",
+  ".agents/skills/brainstorm/SKILL.md",
   ".agents/skills/plan/SKILL.md",
   ".agents/skills/design/SKILL.md",
-  ".agents/skills/doc-review/SKILL.md",
   ".agents/skills/execute/SKILL.md",
-  ".agents/skills/code-review/SKILL.md",
-  ".agents/skills/verify/SKILL.md",
-  ".agents/skills/finish/SKILL.md",
   ".agents/skills/auto/SKILL.md",
   ".agents/skills/status/SKILL.md",
   ".agents/skills/resume/SKILL.md",
@@ -43,6 +40,7 @@ const REQUIRED = [
   "agentflow/spec/00-spec-guide.md",
   "agentflow/spec/test-plan/00-test-plan-guide.md",
   ".agentflow/state.json",
+  ".agentflow/brainstorm/.gitkeep",
   ".agentflow/runs/.gitkeep",
   ".agentflow/archives/.gitkeep"
 ];
