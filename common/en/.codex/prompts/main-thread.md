@@ -19,6 +19,10 @@ At startup, the main thread reads:
 
 Role and project prompts are read to write precise dispatch packets, not to forward every rule to every subagent.
 
+## Context Cache Hygiene
+
+Keep stable protocol context before dynamic run context. Treat `file-protocol.md`, `subagent-contract.md`, role prompts, and project prompts as the stable prelude. Dispatch packets carry only the dynamic assignment: goal, allowed paths, expected report, stop condition, and specific evidence paths. When launching a subagent, point to the dispatch packet path instead of repeating its contents.
+
 ## State Machine
 
 ```text
@@ -126,6 +130,8 @@ The main thread preserves review ledgers across rounds and passes the relevant l
 Before `$execute`, `gate.md` must be an approved contract with allowed source/test paths and required tests. Do not dispatch Developer for source edits outside that contract.
 
 `$code-review`: dispatch Code Reviewer. Dispatch Tester when test results need coverage review against the test plan. On failure, the main thread writes `fix-requests/code-fix-<n>.md` and returns to `$execute`.
+
+`$verify`: collect acceptance evidence from the approved gate, test plan, implementation report, and code review result. If evidence is missing, route a fix request to the responsible workflow node.
 
 `$finish`: dispatch Auditor to summarize the run; dispatch owners to sync long-lived docs; archive the run; clear the current run; end subagent context for the milestone.
 

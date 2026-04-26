@@ -45,6 +45,7 @@ $design
 $doc-review
 $execute
 $code-review
+$verify
 $finish
 ```
 
@@ -90,6 +91,7 @@ $design      produce design/spec/ADR drafts and test plan
 $doc-review  validate document consistency before implementation
 $execute     implement code and tests from the approved gate
 $code-review validate implementation against gate, spec, and test plan
+$verify      collect acceptance evidence before finish
 $finish      summarize, sync long-lived docs, archive the run, clear state
 ```
 
@@ -129,11 +131,14 @@ codex-spec status
 - Keep each milestone small enough to design, implement, review, and finish cleanly.
 - Start with `$plan`; let PM turn ambiguous requests into explicit scope and done criteria.
 - Keep context in files, not chat memory. Subagents should read only dispatch-listed paths and their own role prompt.
+- Keep prompt prefixes stable: put protocol and role context first, and keep per-task dispatch as the dynamic suffix.
 - Subagents return short reports; the main thread uses those reports and dispatch status to route the next step.
 - Treat Doc Reviewer and Code Reviewer as separate gates: document correctness before execution, implementation correctness after execution.
 - Use `$auto` for routine progress, but expect it to stop when the next safe decision is unclear.
 - After `$finish`, commit the completed milestone with a short user-facing message such as `feat: add import workflow`, `fix: handle empty config`, or `docs: update setup guide`.
 - Do not use archived runs as future context. Sync reusable knowledge into `agentflow/` during `$finish`.
+
+Use the full workflow for multi-step changes, cross-file refactors, or work where review evidence matters. For small edits, exploratory prototypes, or projects without tests, use a shorter manual Codex flow instead of forcing every role.
 
 ## Development
 

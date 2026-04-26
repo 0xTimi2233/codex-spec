@@ -17,7 +17,7 @@ description: Execute the standard workflow for the current run under control; ro
 Run the next missing workflow step from the current state phase:
 
 ```text
-$plan -> $design -> $doc-review -> $execute -> $code-review -> $finish
+$plan -> $design -> $doc-review -> $execute -> $code-review -> $verify -> $finish
 ```
 
 After every step, use `.agentflow/state.json`, dispatch status, and subagent replies.

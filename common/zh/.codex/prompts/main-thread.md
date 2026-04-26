@@ -19,6 +19,10 @@
 
 读取 role 和 project prompt 的目的，是写出精确 dispatch，不是把所有规范转发给每个子代理。
 
+## Context Cache 约束
+
+稳定协议上下文放在动态 run 上下文之前。将 `file-protocol.md`、`subagent-contract.md`、role prompt 和 project prompt 视为稳定 prelude。Dispatch packet 只承载动态任务：目标、允许路径、期望报告、停止条件和具体证据路径。启动子代理时只指向 dispatch packet 路径，不重复 dispatch 内容。
+
 ## 状态机
 
 ```text
@@ -126,6 +130,8 @@ Verification:
 `$execute` 前，`gate.md` 必须是已通过的执行契约，包含允许的源码/测试路径和必须运行的测试。不要调度 Developer 修改契约之外的源码。
 
 `$code-review`：调度 Code Reviewer。必要时调度 Tester 审查测试结果是否覆盖 test plan。失败时主线程写 `fix-requests/code-fix-<n>.md` 并回到 `$execute`。
+
+`$verify`：根据 approved gate、测试计划、实现报告和 code review 结果收集验收证据。证据缺失时，向责任工作流节点路由 fix request。
 
 `$finish`：调度 Auditor 总结当前 run；调度 owner 同步长期文档；归档 run；清空 current run；结束当前 milestone 子代理上下文。
 

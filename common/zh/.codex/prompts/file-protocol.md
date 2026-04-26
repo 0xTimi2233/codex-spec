@@ -13,6 +13,7 @@
 | `gate.md` | 文档审查通过后生成的执行契约。Developer 和 Code Reviewer 以它作为实现边界。 |
 | `dispatch-ledger.md` | 主线程维护的当前 run 调度状态表。 |
 | `review-ledger.md` | Reviewer 维护的跨轮问题记录。 |
+| `verification.md` | finish 前由主线程收集的验收证据。 |
 | `summary.md` | 当前 run 的停止或完成摘要。 |
 | `fix-requests/` | 主线程写给责任角色的修复请求。 |
 | `role artifact` | 写入 `.agentflow/runs/<run-id>/<role>/` 的角色产物。 |
@@ -45,6 +46,7 @@
   developer/
   code-reviewer/
   auditor/
+  verification.md
   fix-requests/
   fix-responses/
 ```

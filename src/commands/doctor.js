@@ -34,6 +34,7 @@ const REQUIRED = [
   ".agents/skills/doc-review/SKILL.md",
   ".agents/skills/execute/SKILL.md",
   ".agents/skills/code-review/SKILL.md",
+  ".agents/skills/verify/SKILL.md",
   ".agents/skills/finish/SKILL.md",
   ".agents/skills/auto/SKILL.md",
   ".agents/skills/status/SKILL.md",

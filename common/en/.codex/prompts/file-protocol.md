@@ -13,6 +13,7 @@ Files are the workflow source of truth. Chat history is not a source of truth. U
 | `gate.md` | Approved execution contract produced after document review. Developer and Code Reviewer use it as the implementation boundary. |
 | `dispatch-ledger.md` | Main-thread dispatch status table for the current run. |
 | `review-ledger.md` | Reviewer-owned issue ledger for review rounds. |
+| `verification.md` | Main-thread acceptance evidence collected before finish. |
 | `summary.md` | Current run stop or completion summary. |
 | `fix-requests/` | Main-thread repair requests for responsible roles. |
 | `role artifact` | Output written under `.agentflow/runs/<run-id>/<role>/`. |
@@ -45,6 +46,7 @@ Long-lived files are synced only during `$finish` by the owning role.
   developer/
   code-reviewer/
   auditor/
+  verification.md
   fix-requests/
   fix-responses/
 ```

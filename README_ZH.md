@@ -45,6 +45,7 @@ $design
 $doc-review
 $execute
 $code-review
+$verify
 $finish
 ```
 
@@ -90,6 +91,7 @@ $design      产出设计、spec、ADR 草案和测试计划
 $doc-review  实现前审查文档一致性
 $execute     根据通过 gate 的方案实现代码和测试
 $code-review 根据 gate、spec 和测试计划审查实现
+$verify      finish 前收集验收证据
 $finish      总结、同步长期文档、归档 run、清理状态
 ```
 
@@ -129,11 +131,14 @@ codex-spec status
 - 每个 milestone 保持足够小，确保可以完整完成设计、实现、审查和 finish。
 - 从 `$plan` 开始，让 PM 把模糊需求整理成清晰范围和完成标准。
 - 把上下文放在文件里，不依赖聊天记忆。子代理只读取 dispatch 指定路径和自己的角色 prompt。
+- 保持 prompt 前缀稳定：协议和角色上下文放前面，单次任务 dispatch 作为动态后缀。
 - 子代理返回简短报告；主线程根据报告和调度状态安排下一步。
 - 区分 Doc Reviewer 和 Code Reviewer：先验证文档正确性，再验证实现正确性。
 - 常规推进可以使用 `$auto`，但当下一步无法安全判断时应停止。
 - `$finish` 后提交完成的 milestone，提交信息使用简洁的用户可见描述，例如 `feat: add import workflow`、`fix: handle empty config`、`docs: update setup guide`。
 - 归档 run 是历史记录，不作为后续上下文来源。可复用信息应在 `$finish` 阶段同步到 `agentflow/`。
+
+完整流程适合多步骤改动、跨文件重构或需要审查证据的工作。小改动、探索性原型或缺少测试基础的项目，不必强行启用全部角色。
 
 ## 开发
 
