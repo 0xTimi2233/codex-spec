@@ -1,40 +1,9 @@
 import path from "node:path";
-import { createInterface } from "node:readline/promises";
-import { copyTemplate, listTemplateOutputs, renderConfigToml, templateRoot } from "../lib/templates.js";
+import { copyTemplate, renderConfigToml, templateRoot } from "../lib/templates.js";
 import { ensureDir, exists, readText, writeText } from "../lib/fs.js";
+import { findInitConflicts, resolveOverwriteChoice, shouldPreserveInitTarget } from "../lib/init-plan.js";
 import { normalizeFastMode, normalizeModelProfile } from "../lib/model-profile.js";
 import { println, exitWith } from "../lib/output.js";
-
-function normalizeRel(rel) {
-  return rel.replaceAll(path.sep, "/").replace(/^\.\/+/, "");
-}
-
-function isPlaceholderArtifact(rel) {
-  const normalized = normalizeRel(rel);
-  return normalized.startsWith("agentflow/") || normalized.startsWith(".agentflow/");
-}
-
-function existingGeneratedFiles(packageRoot, target, lang) {
-  return listTemplateOutputs(packageRoot, lang)
-    .filter((rel) => !isPlaceholderArtifact(rel))
-    .filter((rel) => exists(path.join(target, rel)));
-}
-
-async function confirmOverwrite(conflicts) {
-  if (!conflicts.length) return false;
-  if (!process.stdin.isTTY) return false;
-  println("codex-spec init found existing generated files:");
-  for (const rel of conflicts.slice(0, 20)) println(`- ${rel}`);
-  if (conflicts.length > 20) println(`- ...and ${conflicts.length - 20} more`);
-
-  const rl = createInterface({ input: process.stdin, output: process.stdout });
-  try {
-    const answer = await rl.question("Overwrite these files? [y/N] ");
-    return ["y", "yes"].includes(answer.trim().toLowerCase());
-  } finally {
-    rl.close();
-  }
-}
 
 export async function initCommand(args, context) {
   const lang = String(args.lang || "en").toLowerCase();
@@ -59,8 +28,8 @@ export async function initCommand(args, context) {
     return;
   }
   ensureDir(target);
-  const conflicts = force ? [] : existingGeneratedFiles(context.packageRoot, target, lang);
-  const overwriteGenerated = force || (await confirmOverwrite(conflicts));
+  const conflicts = force ? [] : findInitConflicts({ packageRoot: context.packageRoot, target, lang });
+  const overwriteGenerated = await resolveOverwriteChoice({ conflicts, force, print: println });
   const copied = copyTemplate({
     packageRoot: context.packageRoot,
     targetRoot: target,
@@ -68,7 +37,7 @@ export async function initCommand(args, context) {
     force: overwriteGenerated,
     modelProfile,
     fastMode,
-    preserveExisting: (dstPath) => isPlaceholderArtifact(path.relative(target, dstPath)) && exists(dstPath)
+    preserveExisting: (dstPath) => shouldPreserveInitTarget(target, dstPath)
   });
 
   const cfgTpl = path.join(src, ".codex", "config.toml.tpl");
