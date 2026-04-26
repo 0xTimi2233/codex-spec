@@ -20,7 +20,7 @@ const context = { packageRoot, target: resolveTarget(args) };
 if (!command || command === "help" || args.help) {
   printHelp(args._[1]);
 } else if (command === "init") {
-  initCommand(args, context);
+  await initCommand(args, context);
 } else if (command === "doctor") {
   doctorCommand(args, context);
 } else if (command === "status") {

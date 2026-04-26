@@ -40,6 +40,16 @@ if (defaultConfig.includes("service_tier")) throw new Error("fast mode should be
 run(["--version"]);
 run(["doctor", "--target", tmp]);
 run(["status", "--target", tmp]);
+const customAgents = "# Custom agents\n";
+const customVision = "# Custom vision\n";
+fs.writeFileSync(path.join(tmp, "AGENTS.md"), customAgents, "utf8");
+fs.writeFileSync(path.join(tmp, "agentflow", "vision.md"), customVision, "utf8");
+run(["init", "--lang", "zh", "--target", tmp]);
+if (fs.readFileSync(path.join(tmp, "AGENTS.md"), "utf8") !== customAgents) throw new Error("init should preserve existing generated files by default");
+if (fs.readFileSync(path.join(tmp, "agentflow", "vision.md"), "utf8") !== customVision) throw new Error("init should preserve existing agentflow files by default");
+run(["init", "--lang", "zh", "--force", "--target", tmp]);
+if (fs.readFileSync(path.join(tmp, "AGENTS.md"), "utf8") === customAgents) throw new Error("--force should overwrite existing non-agentflow generated files");
+if (fs.readFileSync(path.join(tmp, "agentflow", "vision.md"), "utf8") !== customVision) throw new Error("--force should not overwrite existing agentflow files");
 const idleSourceWrite = runHook("pre-tool-use", tmp, {
   cwd: tmp,
   tool_name: "Write",

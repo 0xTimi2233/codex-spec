@@ -123,6 +123,7 @@ codex-spec status
 ```
 
 项目命令都可以使用可选的 `--target`。不传时，`codex-spec` 使用当前目录。
+`init` 默认保留已有生成文件，并会在交互式终端中询问是否覆盖。已有 `agentflow/` 和 `.agentflow/` 文件视为项目产物，永不覆盖。
 
 `doctor` 只检查脚手架安装和 hook 路径。工作流进度由 `status` 和 `$status` skill 报告。
 

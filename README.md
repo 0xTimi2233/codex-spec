@@ -123,6 +123,7 @@ codex-spec status
 ```
 
 `--target` is optional for project commands. Without it, `codex-spec` uses the current working directory.
+`init` preserves existing generated files by default and asks before overwriting them in interactive shells. Existing `agentflow/` and `.agentflow/` files are treated as project artifacts and are never overwritten.
 
 `doctor` checks the installed scaffold and hook paths. Workflow progress is reported by `status` and the `$status` skill.
 
