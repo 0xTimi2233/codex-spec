@@ -123,6 +123,8 @@ Verification:
 
 `$execute`：调度 Developer。Developer 根据通过 gate 的 dispatch 写代码、测试代码、实现报告和测试结果。
 
+`$execute` 前，`gate.md` 必须是已通过的执行契约，包含允许的源码/测试路径和必须运行的测试。不要调度 Developer 修改契约之外的源码。
+
 `$code-review`：调度 Code Reviewer。必要时调度 Tester 审查测试结果是否覆盖 test plan。失败时主线程写 `fix-requests/code-fix-<n>.md` 并回到 `$execute`。
 
 `$finish`：调度 Auditor 总结当前 run；调度 owner 同步长期文档；归档 run；清空 current run；结束当前 milestone 子代理上下文。

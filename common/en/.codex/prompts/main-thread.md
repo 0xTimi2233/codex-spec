@@ -123,6 +123,8 @@ The main thread preserves review ledgers across rounds and passes the relevant l
 
 `$execute`: dispatch Developer. Developer implements code and tests from the approved gate and writes implementation reports and test results.
 
+Before `$execute`, `gate.md` must be an approved contract with allowed source/test paths and required tests. Do not dispatch Developer for source edits outside that contract.
+
 `$code-review`: dispatch Code Reviewer. Dispatch Tester when test results need coverage review against the test plan. On failure, the main thread writes `fix-requests/code-fix-<n>.md` and returns to `$execute`.
 
 `$finish`: dispatch Auditor to summarize the run; dispatch owners to sync long-lived docs; archive the run; clear the current run; end subagent context for the milestone.

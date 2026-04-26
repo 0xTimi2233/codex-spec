@@ -49,6 +49,25 @@
   fix-responses/
 ```
 
+## Gate 契约
+
+`gate.md` 必须以机器可读 frontmatter 开头：
+
+```yaml
+---
+status: approved
+allowed_source_paths:
+  - src/**
+allowed_test_paths:
+  - tests/**
+required_tests:
+  - npm test
+doc_review_report: .agentflow/runs/<run-id>/doc-reviewer/review-report.md
+---
+```
+
+Doc Reviewer 返回 `pass` 后，由主线程写入该文件。源码和测试写入只允许发生在 `executing` 阶段，并且目标路径必须被 `allowed_source_paths` 或 `allowed_test_paths` 覆盖。
+
 ## 归档文件
 
 ```text

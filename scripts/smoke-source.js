@@ -14,6 +14,19 @@ function run(args) {
   }
   return res.stdout;
 }
+function runHook(name, cwd, payload) {
+  const res = spawnSync(process.execPath, [path.join(root, "src", "hooks", `${name}.js`)], {
+    cwd,
+    input: JSON.stringify(payload),
+    encoding: "utf8"
+  });
+  if (res.status !== 0) {
+    console.error(res.stdout);
+    console.error(res.stderr);
+    process.exit(res.status || 1);
+  }
+  return JSON.parse(res.stdout);
+}
 run(["init", "--lang", "zh", "--target", tmp]);
 const defaultConfig = fs.readFileSync(path.join(tmp, ".codex", "config.toml"), "utf8");
 if (!defaultConfig.includes('model = "gpt-5.5"')) throw new Error("default model was not rendered");
@@ -36,4 +49,37 @@ const runDir = path.join(tmp, ".agentflow", "runs", "smoke-run");
 fs.mkdirSync(runDir, { recursive: true });
 fs.writeFileSync(path.join(runDir, "summary.md"), "Status: pass\n", "utf8");
 run(["archive", "--run", "smoke-run", "--target", tmp]);
+fs.mkdirSync(runDir, { recursive: true });
+fs.writeFileSync(path.join(tmp, ".agentflow", "state.json"), JSON.stringify({
+  version: 1,
+  mode: "active",
+  current_run: "smoke-run",
+  current_phase: "executing",
+  current_milestone: "smoke",
+  blocked: false,
+  updated_by: "smoke"
+}, null, 2));
+fs.writeFileSync(path.join(runDir, "gate.md"), `---
+status: approved
+allowed_source_paths:
+  - src/**
+allowed_test_paths:
+  - tests/**
+required_tests:
+  - npm test
+doc_review_report: .agentflow/runs/smoke-run/doc-reviewer/review-report.md
+---
+`, "utf8");
+const allowedHook = runHook("pre-tool-use", tmp, {
+  cwd: tmp,
+  tool_name: "Write",
+  tool_input: { file_path: "src/example.js" }
+});
+if (allowedHook.continue !== true) throw new Error("approved gate should allow source path");
+const deniedHook = runHook("pre-tool-use", tmp, {
+  cwd: tmp,
+  tool_name: "Write",
+  tool_input: { file_path: "README.md" }
+});
+if (deniedHook.hookSpecificOutput?.permissionDecision !== "deny") throw new Error("approved gate should deny paths outside allowed scope");
 console.log(`source smoke OK: ${tmp}`);

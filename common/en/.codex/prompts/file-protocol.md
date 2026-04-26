@@ -49,6 +49,25 @@ Long-lived files are synced only during `$finish` by the owning role.
   fix-responses/
 ```
 
+## Gate Contract
+
+`gate.md` must start with machine-readable frontmatter:
+
+```yaml
+---
+status: approved
+allowed_source_paths:
+  - src/**
+allowed_test_paths:
+  - tests/**
+required_tests:
+  - npm test
+doc_review_report: .agentflow/runs/<run-id>/doc-reviewer/review-report.md
+---
+```
+
+The main thread writes this file after Doc Reviewer returns `pass`. Source and test edits are allowed only during `executing` and only when the target path is covered by `allowed_source_paths` or `allowed_test_paths`.
+
 ## Archive Files
 
 ```text

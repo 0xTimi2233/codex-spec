@@ -62,6 +62,45 @@ export function isWorkflowPath(toolInput) {
   return text.includes("agentflow/") || text.includes(".agentflow/") || text.includes("AGENTS.md") || text.includes(".codex/") || text.includes(".agents/");
 }
 
+function collectStringValues(value, out = []) {
+  if (typeof value === "string") {
+    out.push(value);
+  } else if (Array.isArray(value)) {
+    for (const item of value) collectStringValues(item, out);
+  } else if (value && typeof value === "object") {
+    for (const item of Object.values(value)) collectStringValues(item, out);
+  }
+  return out;
+}
+
+export function writeTargetsFromToolInput(tool, toolInput) {
+  const input = toolInput || {};
+  if (/^(Write|Edit)$/.test(tool)) {
+    return collectStringValues({
+      file_path: input.file_path,
+      path: input.path,
+      filename: input.filename,
+      target_file: input.target_file
+    }).filter(Boolean);
+  }
+  if (tool === "apply_patch") {
+    const text = JSON.stringify(input);
+    const matches = [...text.matchAll(/\*\*\* (?:Add|Update|Delete) File: ([^\\n"]+)/g)];
+    return matches.map((match) => match[1].trim()).filter(Boolean);
+  }
+  if (tool === "Bash") {
+    const cmd = String(input.command || input.cmd || "");
+    const targets = [];
+    for (const match of cmd.matchAll(/(?:^|[\s;])(?:>|>>)\s*([^\s;&|]+)/g)) targets.push(match[1]);
+    for (const match of cmd.matchAll(/(?:^|[\s;])(?:touch|mkdir|rm|cp|mv)\s+(?:-[A-Za-z0-9]+\s+)*([^\s;&|]+)(?:\s+([^\s;&|]+))?/g)) {
+      targets.push(match[2] || match[1]);
+    }
+    for (const match of cmd.matchAll(/(?:^|[\s;])(?:tee)\s+(?:-[A-Za-z0-9]+\s+)*([^\s;&|]+)/g)) targets.push(match[1]);
+    return targets.filter(Boolean);
+  }
+  return [];
+}
+
 export function requiredRunFiles(runPath, phase) {
   if (!runPath) return [];
   const base = [path.join(runPath, "dispatch-ledger.md")];

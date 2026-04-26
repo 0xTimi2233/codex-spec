@@ -18,7 +18,7 @@ description: Review consistency across requirements, design, spec, ADR draft, an
 2. Write `.agentflow/runs/<run-id>/dispatch/doc-reviewer-001.md`.
 3. Use PM, Architect, and Tester artifact paths as Doc Reviewer allowed inputs. Append the Doc Reviewer dispatch row, dispatch Doc Reviewer, record the runtime agent id, and update the row when the Doc Reviewer response arrives.
 4. Doc Reviewer writes review report and review ledger.
-5. On pass, main thread writes `.agentflow/runs/<run-id>/gate.md` and runs `codex-spec state set --phase ready-to-execute --run <run-id> --blocked false`.
+5. On pass, main thread writes `.agentflow/runs/<run-id>/gate.md` with `status: approved`, allowed source/test paths, required tests, and the Doc Reviewer report path; then runs `codex-spec state set --phase ready-to-execute --run <run-id> --blocked false`.
 6. On fail, main thread writes `.agentflow/runs/<run-id>/fix-requests/doc-fix-001.md` and returns to `$design`.
 
 ## Required Outputs
