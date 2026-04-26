@@ -5,7 +5,9 @@ description: Explore requirements before planning and write a concise brief for 
 
 # Skill: brainstorm
 
-## Read First
+## Context Inputs
+
+Read these paths only when they are not already in the active context or their contents may have changed:
 
 - `.codex/prompts/main-thread.md`
 - `.codex/prompts/file-protocol.md`
@@ -14,10 +16,10 @@ description: Explore requirements before planning and write a concise brief for 
 
 ## Procedure
 
-1. Choose or reuse a brainstorm id.
-2. Discuss goal, scope, non-goals, constraints, risks, user preferences, and candidate milestones.
-3. Read only user-provided files. If more context is needed, ask for the specific path or decision.
-4. Write `.agentflow/brainstorm/<brainstorm-id>/brief.md`.
+1. Discuss goal, scope, non-goals, constraints, risks, user preferences, and candidate milestones.
+2. Read only user-provided files. If more context is needed, ask for the specific path or decision.
+3. Write `.agentflow/brainstorm/brief.md`.
+4. Keep exactly one active brainstorm brief.
 5. Keep `Status: draft` until the user confirms the brief is ready for planning.
 6. When confirmed, update the brief to `Status: ready-for-plan` and recommend starting `$plan` from a clean chat context.
 

@@ -64,7 +64,7 @@ agentflow/
 .agentflow/
 ```
 
-长期项目知识保存在 `agentflow/`：vision、roadmap、ADR、spec 和测试计划。Brainstorm 记录保存在 `.agentflow/brainstorm/<brainstorm-id>/brief.md`，进入 planning 后才沉淀为正式需求。当前工作保存在 `.agentflow/runs/<run-id>/`：任务文件、调度 ledger、dispatch、角色报告、review ledger、修复请求和总结。完成的 run 会移动归档到不可变的 `.agentflow/archives/`。
+长期项目知识保存在 `agentflow/`：vision、roadmap、ADR、spec 和测试计划。Brainstorm 记录保存在 `.agentflow/brainstorm/brief.md`，进入 planning 后才沉淀为正式需求。当前工作保存在 `.agentflow/runs/<run-id>/`：任务文件、调度 ledger、dispatch、角色报告、review ledger、修复请求和总结。完成的 run 会移动归档到不可变的 `.agentflow/archives/`。
 
 ### 角色
 

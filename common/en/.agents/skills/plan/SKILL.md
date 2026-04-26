@@ -5,18 +5,20 @@ description: Confirm requirements, update the roadmap, and prepare the next mile
 
 # Skill: plan
 
-## Read First
+## Context Inputs
+
+Read these paths only when they are not already in the active context or their contents may have changed:
 
 - `.codex/prompts/main-thread.md`
 - `.codex/prompts/file-protocol.md`
 - `agentflow/vision.md`
 - `agentflow/roadmap.md`
-- `.agentflow/brainstorm/*/brief.md`
+- `.agentflow/brainstorm/brief.md`
 - `.agentflow/state.json`
 
 ## Procedure
 
-1. Check brainstorm briefs. If any brief is `Status: draft`, ask the user to close it as `ready-for-plan` or `discarded` before PM planning.
+1. Check `.agentflow/brainstorm/brief.md` when it exists. If it is `Status: draft`, ask the user to close it as `ready-for-plan` or `discarded` before PM planning.
 2. Recommend clearing chat context after a brainstorm brief becomes `ready-for-plan`.
 3. Choose the `ready-for-plan` brief or user-provided requirement input for PM planning.
 4. Dispatch PM to confirm requirements, scope, non-goals, roadmap milestones, and acceptance criteria.

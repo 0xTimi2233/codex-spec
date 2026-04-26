@@ -5,7 +5,9 @@ description: Produce and review the current milestone design, then create an app
 
 # Skill: design
 
-## Read First
+## Context Inputs
+
+Read these paths only when they are not already in the active context or their contents may have changed:
 
 - `.codex/prompts/main-thread.md`
 - `.codex/prompts/file-protocol.md`

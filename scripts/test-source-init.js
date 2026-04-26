@@ -22,9 +22,12 @@ assert(zhMainThread.includes("决策路由"), "zh main-thread should define deci
 assert(zhMainThread.includes("只有 PM 或 Architect"), "zh main-thread should limit user decision escalation");
 assert(zhMainThread.includes("$brainstorm"), "zh main-thread should define brainstorm workflow");
 assert(zhFileProtocol.includes("User decision required"), "zh file protocol should define decision request format");
-assert(zhFileProtocol.includes(".agentflow/brainstorm/<brainstorm-id>/brief.md"), "zh file protocol should define brainstorm brief path");
+assert(zhFileProtocol.includes(".agentflow/brainstorm/brief.md"), "zh file protocol should define brainstorm brief path");
 assert(zhSubagentContract.includes("跨越当前角色边界"), "zh subagent contract should define decision request boundaries");
 assert(zhBrainstormSkill.includes("不创建 run"), "zh brainstorm skill should stay before run creation");
+assert(zhBrainstormSkill.includes("上下文输入"), "zh brainstorm skill should use context input wording");
+assert(zhBrainstormSkill.includes(".agentflow/brainstorm/brief.md"), "zh brainstorm skill should write one brief path");
+assert(!zhPlanSkill.includes("brainstorm/*/brief.md"), "zh plan skill should not use brainstorm glob paths");
 assert(zhPlanSkill.includes("PM 决策处理"), "zh plan skill should handle PM decision requests");
 assert(zhPlanSkill.includes("Status: draft"), "zh plan skill should close draft brainstorm briefs");
 assert(zhPmRole.includes("2-4 个选项"), "zh PM role should request numbered options");
@@ -79,9 +82,12 @@ assert(enMainThread.includes("Decision Routing"), "en main-thread should define 
 assert(enMainThread.includes("Only unresolved PM or Architect"), "en main-thread should limit user decision escalation");
 assert(enMainThread.includes("$brainstorm"), "en main-thread should define brainstorm workflow");
 assert(enFileProtocol.includes("User decision required"), "en file protocol should define decision request format");
-assert(enFileProtocol.includes(".agentflow/brainstorm/<brainstorm-id>/brief.md"), "en file protocol should define brainstorm brief path");
+assert(enFileProtocol.includes(".agentflow/brainstorm/brief.md"), "en file protocol should define brainstorm brief path");
 assert(enSubagentContract.includes("crosses the current role boundary"), "en subagent contract should define decision request boundaries");
 assert(enBrainstormSkill.includes("Do not create a run"), "en brainstorm skill should stay before run creation");
+assert(enBrainstormSkill.includes("Context Inputs"), "en brainstorm skill should use context input wording");
+assert(enBrainstormSkill.includes(".agentflow/brainstorm/brief.md"), "en brainstorm skill should write one brief path");
+assert(!enPlanSkill.includes("brainstorm/*/brief.md"), "en plan skill should not use brainstorm glob paths");
 assert(enPlanSkill.includes("PM Decision Handling"), "en plan skill should handle PM decision requests");
 assert(enPlanSkill.includes("Status: draft"), "en plan skill should close draft brainstorm briefs");
 assert(enPmRole.includes("2-4 options"), "en PM role should request numbered options");

@@ -132,9 +132,9 @@ Verification:
 
 ## 工作流节点职责
 
-`$brainstorm`：在 planning 前探索需求。主线程主持讨论，只读取用户提供的输入，写 `.agentflow/brainstorm/<brainstorm-id>/brief.md`，不创建 run、不推进 state、不更新 roadmap、不修改源码。
+`$brainstorm`：在 planning 前探索需求。主线程主持讨论，只读取用户提供的输入，写 `.agentflow/brainstorm/brief.md`，不创建 run、不推进 state、不更新 roadmap、不修改源码。
 
-`$plan`：调度 PM 前检查 `.agentflow/brainstorm/*/brief.md`。若存在 `draft` brief，先根据用户输入结束为 `ready-for-plan` 或 `discarded`，再建议清空聊天上下文后继续。调度 PM 确认需求、按需更新 vision/roadmap、选择下一 milestone、创建 milestone run、写 `task.md` 和 PM 产物。
+`$plan`：调度 PM 前检查已存在的 `.agentflow/brainstorm/brief.md`。若 brief 为 `draft`，先根据用户输入结束为 `ready-for-plan` 或 `discarded`，再建议清空聊天上下文后继续。调度 PM 确认需求、按需更新 vision/roadmap、选择下一 milestone、创建 milestone run、写 `task.md` 和 PM 产物。
 
 `$design`：调度 Architect 和 Tester。Architect 写设计、spec、ADR 草案；Tester 根据设计写测试计划。随后调度 Doc Reviewer 审查需求、设计、spec、ADR、test plan 的一致性。通过时写 `gate.md` 并进入 `ready-to-execute`；失败时写 `fix-requests/doc-fix-<n>.md` 并路由修复。
 

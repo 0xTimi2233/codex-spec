@@ -5,7 +5,9 @@ description: Complete the current milestone from an approved gate through implem
 
 # Skill: execute
 
-## Read First
+## Context Inputs
+
+Read these paths only when they are not already in the active context or their contents may have changed:
 
 - `.codex/prompts/main-thread.md`
 - `.codex/prompts/file-protocol.md`

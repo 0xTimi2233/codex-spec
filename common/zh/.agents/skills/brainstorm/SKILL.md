@@ -5,7 +5,9 @@ description: 在 plan 前探索需求，并写出供 PM 规划使用的简短 br
 
 # Skill: brainstorm
 
-## 先读
+## 上下文输入
+
+当这些路径不在当前上下文中，或文件内容可能已变化时读取：
 
 - `.codex/prompts/main-thread.md`
 - `.codex/prompts/file-protocol.md`
@@ -14,10 +16,10 @@ description: 在 plan 前探索需求，并写出供 PM 规划使用的简短 br
 
 ## 操作
 
-1. 选择或复用 brainstorm id。
-2. 讨论 goal、scope、non-goals、constraints、risks、用户偏好和候选 milestones。
-3. 只读取用户提供的文件。需要更多上下文时，请用户给出具体路径或决策。
-4. 写 `.agentflow/brainstorm/<brainstorm-id>/brief.md`。
+1. 讨论 goal、scope、non-goals、constraints、risks、用户偏好和候选 milestones。
+2. 只读取用户提供的文件。需要更多上下文时，请用户给出具体路径或决策。
+3. 写 `.agentflow/brainstorm/brief.md`。
+4. 只保留一个 active brainstorm brief。
 5. 用户确认可进入 planning 前，保持 `Status: draft`。
 6. 用户确认后，将 brief 更新为 `Status: ready-for-plan`，并建议在干净聊天上下文中开始 `$plan`。
 

@@ -13,7 +13,7 @@
 |---|---|
 | `workflow skill` | 主线程命令，例如 `$brainstorm`、`$plan`、`$design`、`$execute` 或 `$auto`。skill 编排工作流节点，并可创建 dispatch。 |
 | `run-id` | 一个 milestone 执行单元，存放在 `.agentflow/runs/<run-id>/`。 |
-| `brainstorm brief` | `.agentflow/brainstorm/<brainstorm-id>/brief.md`；plan 前的需求探索记录，进入 PM 规划前必须收束。 |
+| `brainstorm brief` | `.agentflow/brainstorm/brief.md`；plan 前的需求探索记录，进入 PM 规划前必须收束。 |
 | `dispatch packet` | `.agentflow/runs/<run-id>/dispatch/<role>-<task-id>.md`；子代理一次任务读取的任务包。 |
 | `task.md` | 当前 run 的目标、范围、约束、完成标准和用户决策。 |
 | `gate.md` | 文档审查通过后生成的执行契约。Developer 和 Code Reviewer 以它作为实现边界。 |
@@ -41,7 +41,7 @@
 Brainstorm 文件用于需求探索草稿：
 
 ```text
-.agentflow/brainstorm/<brainstorm-id>/brief.md
+.agentflow/brainstorm/brief.md
 ```
 
 `brief.md` 使用：
@@ -59,7 +59,7 @@ Risks:
 Recommended next step:
 ```
 
-`$plan` 只使用 `ready-for-plan` brief。进入 PM 规划前，draft brainstorm 必须结束或废弃。
+`$plan` 只在 `.agentflow/brainstorm/brief.md` 为 `ready-for-plan` 时使用它。进入 PM 规划前，draft brainstorm brief 必须结束或废弃。
 
 ## 当前 run 文件
 

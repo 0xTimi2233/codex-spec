@@ -5,18 +5,20 @@ description: 确认需求、更新 roadmap，并准备下一 milestone run。
 
 # Skill: plan
 
-## 先读
+## 上下文输入
+
+当这些路径不在当前上下文中，或文件内容可能已变化时读取：
 
 - `.codex/prompts/main-thread.md`
 - `.codex/prompts/file-protocol.md`
 - `agentflow/vision.md`
 - `agentflow/roadmap.md`
-- `.agentflow/brainstorm/*/brief.md`
+- `.agentflow/brainstorm/brief.md`
 - `.agentflow/state.json`
 
 ## 操作
 
-1. 检查 brainstorm brief。若存在 `Status: draft`，先让用户选择结束为 `ready-for-plan` 或 `discarded`，再进入 PM planning。
+1. `.agentflow/brainstorm/brief.md` 存在时检查该文件。若它是 `Status: draft`，先让用户选择结束为 `ready-for-plan` 或 `discarded`，再进入 PM planning。
 2. 当 brainstorm brief 变为 `ready-for-plan` 后，建议用户清空聊天上下文。
 3. 选择 `ready-for-plan` brief 或用户提供的需求输入作为 PM planning 输入。
 4. 调度 PM 确认需求、scope、non-goals、roadmap milestones 和验收标准。

@@ -5,7 +5,9 @@ description: 产出并审查当前 milestone 方案，然后创建 approved gate
 
 # Skill: design
 
-## 先读
+## 上下文输入
+
+当这些路径不在当前上下文中，或文件内容可能已变化时读取：
 
 - `.codex/prompts/main-thread.md`
 - `.codex/prompts/file-protocol.md`

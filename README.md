@@ -64,7 +64,7 @@ agentflow/
 .agentflow/
 ```
 
-Long-lived project knowledge lives in `agentflow/`: vision, roadmap, ADRs, specs, and test plans. Brainstorm notes live in `.agentflow/brainstorm/<brainstorm-id>/brief.md` before they are promoted into planning. Current work lives in `.agentflow/runs/<run-id>/`: task files, dispatch ledger, dispatch packets, role reports, review ledgers, fix requests, and summaries. Completed runs are moved to immutable `.agentflow/archives/`.
+Long-lived project knowledge lives in `agentflow/`: vision, roadmap, ADRs, specs, and test plans. Brainstorm notes live in `.agentflow/brainstorm/brief.md` before they are promoted into planning. Current work lives in `.agentflow/runs/<run-id>/`: task files, dispatch ledger, dispatch packets, role reports, review ledgers, fix requests, and summaries. Completed runs are moved to immutable `.agentflow/archives/`.
 
 ### Roles
 

@@ -127,9 +127,9 @@ The main thread preserves review ledgers across rounds and passes the relevant l
 
 ## Workflow Step Duties
 
-`$brainstorm`: explore intent before planning. The main thread hosts the discussion, reads only user-provided inputs, writes `.agentflow/brainstorm/<brainstorm-id>/brief.md`, and does not create a run, change workflow state, update roadmap, or edit source files.
+`$brainstorm`: explore intent before planning. The main thread hosts the discussion, reads only user-provided inputs, writes `.agentflow/brainstorm/brief.md`, and does not create a run, change workflow state, update roadmap, or edit source files.
 
-`$plan`: before dispatching PM, check `.agentflow/brainstorm/*/brief.md`. If any brief is `draft`, close it as `ready-for-plan` or `discarded` based on user input, then recommend clearing chat context before continuing. Dispatch PM to confirm requirements, update vision/roadmap when requested, select the next milestone, create the milestone run, write `task.md`, and collect PM artifacts.
+`$plan`: before dispatching PM, check `.agentflow/brainstorm/brief.md` when it exists. If the brief is `draft`, close it as `ready-for-plan` or `discarded` based on user input, then recommend clearing chat context before continuing. Dispatch PM to confirm requirements, update vision/roadmap when requested, select the next milestone, create the milestone run, write `task.md`, and collect PM artifacts.
 
 `$design`: dispatch Architect and Tester. Architect writes design, spec, and ADR drafts; Tester writes a test plan from the design. Then dispatch Doc Reviewer to check consistency across requirements, design, spec, ADR, and test plan. On pass, write `gate.md` and move to `ready-to-execute`; on failure, write `fix-requests/doc-fix-<n>.md` and route the fix.
 

@@ -8,7 +8,7 @@ Files are the workflow source of truth. Chat history is not a source of truth. U
 |---|---|
 | `workflow skill` | A main-thread command such as `$brainstorm`, `$plan`, `$design`, `$execute`, or `$auto`. Skills orchestrate workflow steps and may create dispatch packets. |
 | `run-id` | One milestone execution unit stored under `.agentflow/runs/<run-id>/`. |
-| `brainstorm brief` | `.agentflow/brainstorm/<brainstorm-id>/brief.md`; pre-plan intent notes that must be condensed before PM planning. |
+| `brainstorm brief` | `.agentflow/brainstorm/brief.md`; pre-plan intent notes that must be condensed before PM planning. |
 | `dispatch packet` | `.agentflow/runs/<run-id>/dispatch/<role>-<task-id>.md`; the task packet a subagent reads for one assignment. |
 | `task.md` | Current run goal, scope, constraints, done criteria, and user decisions. |
 | `gate.md` | Approved execution contract produced after document review. Developer and Code Reviewer use it as the implementation boundary. |
@@ -36,7 +36,7 @@ Long-lived files are synced only during milestone finish by the owning role.
 Brainstorm files are draft context for requirement discovery:
 
 ```text
-.agentflow/brainstorm/<brainstorm-id>/brief.md
+.agentflow/brainstorm/brief.md
 ```
 
 `brief.md` uses:
@@ -54,7 +54,7 @@ Risks:
 Recommended next step:
 ```
 
-`$plan` may use only `ready-for-plan` briefs. Draft brainstorm files must be closed or discarded before PM planning starts.
+`$plan` may use only `.agentflow/brainstorm/brief.md` when it is `ready-for-plan`. A draft brainstorm brief must be closed or discarded before PM planning starts.
 
 ## Current Run Files
 

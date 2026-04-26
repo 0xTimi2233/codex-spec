@@ -5,7 +5,9 @@ description: 按 roadmap 串行执行 milestone，直到阻塞或完成。
 
 # Skill: auto
 
-## 先读
+## 上下文输入
+
+当这些路径不在当前上下文中，或文件内容可能已变化时读取：
 
 - `.codex/prompts/main-thread.md`
 - `.codex/prompts/file-protocol.md`
