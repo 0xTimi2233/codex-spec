@@ -145,7 +145,7 @@ codex-spec status
 ```bash
 bun run test
 npm pack --dry-run
-sh scripts/publish.sh patch
+./publish.sh patch
 ```
 
 构建产物会写入 `dist/`，npm 包包含 `dist/`、`common/`、`README.md`、`README_ZH.md` 和 `LICENSE`。

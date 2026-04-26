@@ -1,6 +1,10 @@
 #!/usr/bin/env sh
 set -eu
 
+SCRIPT_DIR=$(CDPATH= cd "$(dirname "$0")" && pwd)
+REPO_ROOT=$(CDPATH= cd "$SCRIPT_DIR/.." && pwd)
+cd "$REPO_ROOT"
+
 BUMP="${1:-patch}"
 REGISTRY="https://registry.npmjs.org/"
 
@@ -8,7 +12,7 @@ case "$BUMP" in
   patch|minor|major|prepatch|preminor|premajor|prerelease|[0-9]*.[0-9]*.[0-9]*)
     ;;
   *)
-    echo "Usage: sh scripts/publish.sh [patch|minor|major|x.y.z]" >&2
+    echo "Usage: ./publish.sh [patch|minor|major|x.y.z]" >&2
     exit 1
     ;;
 esac
@@ -35,6 +39,6 @@ fi
 
 npm whoami --registry "$REGISTRY" >/dev/null
 bun run test
-npm version "$BUMP" -m "chore: release %s"
 npm pack --dry-run --registry "$REGISTRY"
+npm version "$BUMP" -m "chore: release %s"
 npm publish --access public --registry "$REGISTRY"

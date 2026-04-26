@@ -145,7 +145,7 @@ Use the full workflow for multi-step changes, cross-file refactors, or work wher
 ```bash
 bun run test
 npm pack --dry-run
-sh scripts/publish.sh patch
+./publish.sh patch
 ```
 
 The build output is written to `dist/`, and the npm package includes `dist/`, `common/`, `README.md`, `README_ZH.md`, and `LICENSE`.
