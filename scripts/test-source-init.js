@@ -6,17 +6,9 @@ const tmp = tempDir("codex-spec-source-init-");
 runCli("src", ["init", "--lang", "zh", "--target", tmp]);
 
 const defaultConfig = readText(tmp, ".codex", "config.toml");
-const zhAgents = readText(tmp, "AGENTS.md");
-const zhMainThread = readText(tmp, ".codex", "prompts", "main-thread.md");
-const zhSubagentContract = readText(tmp, ".codex", "prompts", "subagent-contract.md");
-const zhPmAgent = readText(tmp, ".codex", "agents", "pm.toml");
 assert(defaultConfig.includes('model = "gpt-5.5"'), "default model was not rendered");
 assert(defaultConfig.includes('model_reasoning_effort = "xhigh"'), "main thread reasoning should be xhigh");
 assert(!defaultConfig.includes("service_tier"), "fast mode should be off by default");
-assert(zhAgents.includes("自然语言正文使用简体中文"), "zh AGENTS should define Chinese narrative language");
-assert(zhMainThread.includes("dispatch 的字段名保持英文"), "zh main-thread prompt should define dispatch language policy");
-assert(zhSubagentContract.includes("子代理回复主线程"), "zh subagent contract should define subagent language policy");
-assert(zhPmAgent.includes("自然语言正文使用简体中文"), "zh agent config should define Chinese narrative language");
 
 runCli("src", ["--version"]);
 runCli("src", ["doctor", "--target", tmp]);

@@ -16,7 +16,5 @@ developer_instructions = """
 
 只写 dispatch 允许的输出路径。只有 `$finish` 阶段且 dispatch 明确要求时，才能同步长期 ADR/spec。
 
-语言：自然语言正文使用简体中文；协议字段名、枚举值、路径、命令、代码标识和专业名词保持英文。
-
 报告格式：Status、Summary、Architecture decision、Boundary impact、ADR/spec updates、Risks、Required next action。
 """
