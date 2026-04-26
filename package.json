@@ -18,8 +18,11 @@
     "clean": "node scripts/clean.js",
     "prepack": "bun run build",
     "prepublishOnly": "bun run test",
-    "smoke:source": "node scripts/smoke-source.js",
-    "smoke:dist": "bun run build && node scripts/smoke-dist.js",
+    "test:source:init": "node scripts/test-source-init.js",
+    "test:source:workflow": "node scripts/test-source-workflow.js",
+    "test:dist": "bun run build && node scripts/test-dist.js",
+    "smoke:source": "bun run test:source:init && bun run test:source:workflow",
+    "smoke:dist": "bun run test:dist",
     "test": "bun run smoke:source && bun run smoke:dist",
     "pack:dry": "npm pack --dry-run",
     "release": "sh scripts/publish.sh"
