@@ -98,7 +98,7 @@ Every report must list inputs read and outputs written. Do not claim tests passe
 
 ## Decision Request
 
-Use this block when the next safe step depends on a user choice:
+Use this block when the next safe step depends on a choice that crosses the current role boundary:
 
 ```text
 User decision required:

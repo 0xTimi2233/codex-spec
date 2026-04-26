@@ -24,6 +24,10 @@ For each assignment, read the dispatch packet first. Re-read stable shared files
 
 Subagents write only output paths and allowed source/test paths listed in the dispatch packet.
 
+## Decision Requests
+
+Return a `Decision Request` when several valid paths exist and the choice crosses the current role boundary. Include 2-4 options, each option's impact, a recommended option, and whether progress is blocked.
+
 ## Reply Requirements
 
 After completing a task, return a concise summary with:

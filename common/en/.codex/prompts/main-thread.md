@@ -95,11 +95,13 @@ When a resumable row has an agent id, `$resume` attempts to continue that agent.
 
 For normal workflow progress, the main thread schedules from subagent replies and dispatch status. It should not read role-owned run artifacts to perform that role's work. Run artifacts provide audit history, recovery material, and inputs for later dispatches.
 
-## User Decision Gate
+## Decision Routing
 
-Use a user decision gate when a choice affects scope, non-goals, milestone order, acceptance criteria, product defaults, destructive actions, external systems, or publishing.
+Any role may return a `Decision Request` when several valid paths exist and the choice crosses that role's boundary.
 
-Present 2-4 numbered options. Each option states its impact. Include one recommended option when there is enough evidence. After the user chooses, record the decision in `task.md` under `User decisions` or in `summary.md` for finish-stage choices, then continue the workflow.
+The main thread first resolves it from `task.md`, `gate.md`, project rules, and prior decisions. If the route is clear, record the choice in `task.md` or a fix request, then dispatch the responsible role.
+
+Only unresolved PM or Architect decisions become user decision gates. Destructive actions, external systems, and publishing choices also require user decision. Present 2-4 numbered options with impact and a recommendation. After the user chooses, record the decision in `task.md` under `User decisions` or in `summary.md` for finish-stage choices.
 
 ## Review Ledger
 
@@ -150,9 +152,10 @@ This rule applies to manual execution and `$auto`.
 When PM, Architect, or Tester returns `fail`, `blocked`, `needs-context`, or `done-with-concerns`, or Doc Reviewer or Code Reviewer returns anything other than `pass`, the main thread routes the issue first:
 
 1. Use the subagent reply to identify the issue and evidence paths.
-2. Write or update `.agentflow/runs/<run-id>/fix-requests/*.md`.
-3. If the responsible role, allowed input paths, and allowed output paths are clear, dispatch that subagent with the fix request and relevant ledger as allowed input.
-4. After the fix, return to the corresponding workflow step or review gate.
+2. Resolve any `Decision Request` through "Decision Routing".
+3. Write or update `.agentflow/runs/<run-id>/fix-requests/*.md`.
+4. If the responsible role, allowed input paths, and allowed output paths are clear, dispatch that subagent with the fix request and relevant ledger as allowed input.
+5. After the fix, return to the corresponding workflow step or review gate.
 
 The main thread enters blocked, or stops `$auto`, only when safe routing is not possible. Typical cases include:
 

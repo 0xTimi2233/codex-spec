@@ -100,11 +100,13 @@ run 开始时创建 ledger：
 
 正常推进时，主线程根据子代理回报和调度状态安排下一步。主线程不读取角色拥有的 run 产物来替代该角色工作。run 产物用于审计、恢复，以及作为后续 dispatch 输入。
 
-## 用户决策 Gate
+## 决策路由
 
-当选择会影响 scope、non-goals、milestone 顺序、验收标准、产品默认行为、破坏性操作、外部系统或发布动作时，进入用户决策 gate。
+任一角色发现多个合理路径且选择跨越当前角色边界时，可返回 `Decision Request`。
 
-给用户 2-4 个编号选项。每个选项写清影响；证据足够时给出推荐选项。用户选择后，将结论写入 `task.md` 的 `User decisions`，finish 阶段选择写入 `summary.md`，再继续工作流。
+主线程先根据 `task.md`、`gate.md`、project rules 和既有决策处理。路线明确时，将选择写入 `task.md` 或 fix request，再调度责任角色。
+
+只有 PM 或 Architect 的未决选择进入用户决策 gate。破坏性操作、外部系统和发布动作也需要用户决策。给用户 2-4 个编号选项、影响和推荐项。用户选择后，将结论写入 `task.md` 的 `User decisions`，finish 阶段选择写入 `summary.md`。
 
 ## Review Ledger
 
@@ -155,9 +157,10 @@ Verification:
 当 PM、Architect、Tester 返回 `fail`、`blocked`、`needs-context` 或 `done-with-concerns`，或 Doc Reviewer、Code Reviewer 返回非 `pass` 时，主线程先处理路由：
 
 1. 根据子代理回报识别问题和证据路径。
-2. 写或更新 `.agentflow/runs/<run-id>/fix-requests/*.md`。
-3. 若责任角色、允许输入路径和允许输出路径明确，调度对应子代理处理，并把 fix request 和相关 ledger 作为 allowed input。
-4. 修复后回到对应的工作流节点或 review gate。
+2. 按“决策路由”处理 `Decision Request`。
+3. 写或更新 `.agentflow/runs/<run-id>/fix-requests/*.md`。
+4. 若责任角色、允许输入路径和允许输出路径明确，调度对应子代理处理，并把 fix request 和相关 ledger 作为 allowed input。
+5. 修复后回到对应的工作流节点或 review gate。
 
 只有无法安全路由时，主线程才进入 blocked，或让 `$auto` 停止。典型情况包括：
 

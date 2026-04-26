@@ -29,6 +29,10 @@
 
 子代理只写 dispatch 中列出的 output paths 和 allowed source/test paths。
 
+## Decision Request
+
+当存在多个合理路径且选择跨越当前角色边界时，返回 `Decision Request`。包含 2-4 个选项、各自影响、推荐项和是否阻塞。
+
 ## 回复要求
 
 每次完成任务后，返回简短摘要，并使用：

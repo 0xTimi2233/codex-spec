@@ -103,7 +103,7 @@ Decision: pass | fail | blocked | needs-context | done-with-concerns
 
 ## Decision Request
 
-下一步需要用户选择时使用：
+下一步依赖跨越当前角色边界的选择时使用：
 
 ```text
 User decision required:
