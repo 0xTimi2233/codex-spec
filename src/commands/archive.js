@@ -12,7 +12,7 @@ function resolveRun(args, root) {
 export function archiveCommand(args, context) {
   const runId = resolveRun(args, context.target);
   if (!runId) {
-    exitWith("Usage: codex-spec archive --run <run-id> [--force]");
+    exitWith("Usage: codex-spec archive --run <run-id>");
     return;
   }
 
@@ -26,12 +26,9 @@ export function archiveCommand(args, context) {
   const archivePath = path.join(archiveRoot, runId);
   ensureDir(archiveRoot);
   if (exists(archivePath)) {
-    if (!args.force) {
-      exitWith(`Archive already exists: ${path.relative(context.target, archivePath)}. Use --force to overwrite.`);
-      return;
-    }
-    fs.rmSync(archivePath, { recursive: true, force: true });
+    exitWith(`Archive already exists: ${path.relative(context.target, archivePath)}. Archives are immutable.`);
+    return;
   }
-  fs.cpSync(runPath, archivePath, { recursive: true });
+  fs.renameSync(runPath, archivePath);
   println(`Archived run: ${path.relative(context.target, archivePath)}`);
 }

@@ -66,7 +66,7 @@ agentflow/
 .agentflow/
 ```
 
-Long-lived project knowledge lives in `agentflow/`: vision, roadmap, ADRs, specs, and test plans. Current work lives in `.agentflow/runs/<run-id>/`: task files, dispatch ledger, dispatch packets, role reports, review ledgers, fix requests, and summaries. Completed runs are copied to `.agentflow/archives/`.
+Long-lived project knowledge lives in `agentflow/`: vision, roadmap, ADRs, specs, and test plans. Current work lives in `.agentflow/runs/<run-id>/`: task files, dispatch ledger, dispatch packets, role reports, review ledgers, fix requests, and summaries. Completed runs are moved to immutable `.agentflow/archives/`.
 
 ### Roles
 

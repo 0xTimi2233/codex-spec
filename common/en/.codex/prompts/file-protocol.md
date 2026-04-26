@@ -74,7 +74,7 @@ The main thread writes this file after Doc Reviewer returns `pass`. Source and t
 .agentflow/archives/<run-id>/
 ```
 
-`archives/` is immutable history. Later runs do not read context from `archives/`; reusable facts must be synced into `agentflow/` or written into the current run's `task.md`.
+`archives/` is immutable history. `codex-spec archive` moves the completed run from `.agentflow/runs/<run-id>/` into `.agentflow/archives/<run-id>/` and must not overwrite an existing archive. Later runs do not read context from `archives/`; reusable facts must be synced into `agentflow/` or written into the current run's `task.md`.
 
 ## Report Format
 

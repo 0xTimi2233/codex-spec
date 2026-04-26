@@ -26,4 +26,6 @@ const runDir = path.join(tmp, ".agentflow", "runs", "smoke-run");
 fs.mkdirSync(runDir, { recursive: true });
 fs.writeFileSync(path.join(runDir, "summary.md"), "Status: pass\n", "utf8");
 run(["archive", "--run", "smoke-run", "--target", tmp]);
+if (fs.existsSync(runDir)) throw new Error("archive should move run out of runs/");
+if (!fs.existsSync(path.join(tmp, ".agentflow", "archives", "smoke-run"))) throw new Error("archive directory was not created");
 console.log(`dist smoke OK: ${tmp}`);

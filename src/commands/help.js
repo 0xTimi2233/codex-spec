@@ -7,7 +7,7 @@ const COMMANDS = {
   status: `codex-spec status [--target <dir>]\n\nPrint .agentflow/state.json, current run dispatch ledger, and current run summary.`,
   "rebind-hooks": `codex-spec rebind-hooks [--target <dir>] [--lang en|zh]\n\nRewrite .codex/config.toml hook commands to the current installed script paths.`,
   state: `codex-spec state set --phase <phase> [--mode <mode>] [--run <run-id>] [--milestone <id>] [--blocked true|false]\n\nAllowed phases:\n  ${PHASES.join("\n  ")}`,
-  archive: `codex-spec archive --run <run-id> [--target <dir>] [--force]\n\nCopy .agentflow/runs/<run-id>/ into .agentflow/archives/<run-id>/.`
+  archive: `codex-spec archive --run <run-id> [--target <dir>]\n\nMove .agentflow/runs/<run-id>/ into immutable .agentflow/archives/<run-id>/.`
 };
 
 export function printHelp(command = null) {
