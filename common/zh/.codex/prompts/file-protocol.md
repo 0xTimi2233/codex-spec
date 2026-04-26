@@ -14,7 +14,7 @@
 | `workflow skill` | 主线程命令，例如 `$plan`、`$design`、`$execute`、`$finish`。skill 编排工作流节点，并可创建 dispatch。 |
 | `run-id` | 一个 milestone 执行单元，存放在 `.agentflow/runs/<run-id>/`。 |
 | `dispatch packet` | `.agentflow/runs/<run-id>/dispatch/<role>-<task-id>.md`；子代理一次任务读取的任务包。 |
-| `task.md` | 当前 run 的目标、范围、约束和完成标准。 |
+| `task.md` | 当前 run 的目标、范围、约束、完成标准和用户决策。 |
 | `gate.md` | 文档审查通过后生成的执行契约。Developer 和 Code Reviewer 以它作为实现边界。 |
 | `dispatch-ledger.md` | 主线程维护的当前 run 调度状态表。 |
 | `review-ledger.md` | Reviewer 维护的跨轮问题记录。 |
@@ -100,3 +100,17 @@ Decision: pass | fail | blocked | needs-context | done-with-concerns
 ```
 
 每份报告必须列出读取输入和写入输出。没有运行测试时，不得声称测试通过。
+
+## Decision Request
+
+下一步需要用户选择时使用：
+
+```text
+User decision required:
+Question:
+Options:
+1. <方案> - <影响>
+2. <方案> - <影响>
+Recommended option:
+Blocking:
+```

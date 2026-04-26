@@ -9,7 +9,7 @@ Files are the workflow source of truth. Chat history is not a source of truth. U
 | `workflow skill` | A main-thread command such as `$plan`, `$design`, `$execute`, or `$finish`. Skills orchestrate workflow steps and may create dispatch packets. |
 | `run-id` | One milestone execution unit stored under `.agentflow/runs/<run-id>/`. |
 | `dispatch packet` | `.agentflow/runs/<run-id>/dispatch/<role>-<task-id>.md`; the task packet a subagent reads for one assignment. |
-| `task.md` | Current run goal, scope, constraints, and done criteria. |
+| `task.md` | Current run goal, scope, constraints, done criteria, and user decisions. |
 | `gate.md` | Approved execution contract produced after document review. Developer and Code Reviewer use it as the implementation boundary. |
 | `dispatch-ledger.md` | Main-thread dispatch status table for the current run. |
 | `review-ledger.md` | Reviewer-owned issue ledger for review rounds. |
@@ -95,3 +95,17 @@ Decision: pass | fail | blocked | needs-context | done-with-concerns
 ```
 
 Every report must list inputs read and outputs written. Do not claim tests passed unless tests were run or a test report was read.
+
+## Decision Request
+
+Use this block when the next safe step depends on a user choice:
+
+```text
+User decision required:
+Question:
+Options:
+1. <option> - <impact>
+2. <option> - <impact>
+Recommended option:
+Blocking:
+```

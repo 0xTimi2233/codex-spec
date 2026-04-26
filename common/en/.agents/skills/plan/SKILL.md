@@ -23,6 +23,10 @@ description: Define requirements, scope, roadmap milestone, and create the curre
 6. Write or update `.agentflow/runs/<run-id>/summary.md`.
 7. Run `codex-spec state set --phase planning --run <run-id> --blocked false`.
 
+## PM Decision Handling
+
+If PM returns `User decision required`, present the numbered options to the user, record the selected answer in `task.md` under `User decisions`, and dispatch PM again with that decision as input.
+
 ## Required Outputs
 
 - `.agentflow/runs/<run-id>/task.md`

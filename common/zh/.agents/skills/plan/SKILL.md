@@ -23,6 +23,10 @@ description: 定义需求、范围、roadmap milestone，并创建当前 run。
 6. 写或更新 `.agentflow/runs/<run-id>/summary.md`。
 7. 执行 `codex-spec state set --phase planning --run <run-id> --blocked false`。
 
+## PM 决策处理
+
+若 PM 返回 `User decision required`，将编号选项呈现给用户；把用户选择写入 `task.md` 的 `User decisions`，再带着该决策重新调度 PM。
+
 ## 必须产出
 
 - `.agentflow/runs/<run-id>/task.md`

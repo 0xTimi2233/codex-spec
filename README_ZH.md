@@ -136,6 +136,7 @@ codex-spec status
 - 把上下文放在文件里，不依赖聊天记忆。子代理只读取 dispatch 指定路径和自己的角色 prompt。
 - 保持 prompt 前缀稳定：协议和角色上下文放前面，单次任务 dispatch 作为动态后缀。
 - 子代理返回简短报告；主线程根据报告和调度状态安排下一步。
+- PM 需要产品决策时，主线程给出带影响和推荐项的编号选项。
 - 区分 Doc Reviewer 和 Code Reviewer：先验证文档正确性，再验证实现正确性。
 - 常规推进可以使用 `$auto`，但当下一步无法安全判断时应停止。
 - `$finish` 后提交完成的 milestone，提交信息使用简洁的用户可见描述，例如 `feat: add import workflow`、`fix: handle empty config`、`docs: update setup guide`。

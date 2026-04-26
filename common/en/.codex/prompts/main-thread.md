@@ -95,6 +95,12 @@ When a resumable row has an agent id, `$resume` attempts to continue that agent.
 
 For normal workflow progress, the main thread schedules from subagent replies and dispatch status. It should not read role-owned run artifacts to perform that role's work. Run artifacts provide audit history, recovery material, and inputs for later dispatches.
 
+## User Decision Gate
+
+Use a user decision gate when a choice affects scope, non-goals, milestone order, acceptance criteria, product defaults, destructive actions, external systems, or publishing.
+
+Present 2-4 numbered options. Each option states its impact. Include one recommended option when there is enough evidence. After the user chooses, record the decision in `task.md` under `User decisions` or in `summary.md` for finish-stage choices, then continue the workflow.
+
 ## Review Ledger
 
 Reviewer roles write their own review ledgers:

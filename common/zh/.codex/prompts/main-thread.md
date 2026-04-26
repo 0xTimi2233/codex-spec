@@ -100,6 +100,12 @@ run 开始时创建 ledger：
 
 正常推进时，主线程根据子代理回报和调度状态安排下一步。主线程不读取角色拥有的 run 产物来替代该角色工作。run 产物用于审计、恢复，以及作为后续 dispatch 输入。
 
+## 用户决策 Gate
+
+当选择会影响 scope、non-goals、milestone 顺序、验收标准、产品默认行为、破坏性操作、外部系统或发布动作时，进入用户决策 gate。
+
+给用户 2-4 个编号选项。每个选项写清影响；证据足够时给出推荐选项。用户选择后，将结论写入 `task.md` 的 `User decisions`，finish 阶段选择写入 `summary.md`，再继续工作流。
+
 ## Review Ledger
 
 Reviewer 角色写自己的 review ledger：

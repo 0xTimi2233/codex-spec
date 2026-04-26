@@ -136,6 +136,7 @@ codex-spec status
 - Keep context in files, not chat memory. Subagents should read only dispatch-listed paths and their own role prompt.
 - Keep prompt prefixes stable: put protocol and role context first, and keep per-task dispatch as the dynamic suffix.
 - Subagents return short reports; the main thread uses those reports and dispatch status to route the next step.
+- When PM needs a product decision, the main thread presents numbered options with impacts and a recommendation.
 - Treat Doc Reviewer and Code Reviewer as separate gates: document correctness before execution, implementation correctness after execution.
 - Use `$auto` for routine progress, but expect it to stop when the next safe decision is unclear.
 - After `$finish`, commit the completed milestone with a short user-facing message such as `feat: add import workflow`, `fix: handle empty config`, or `docs: update setup guide`.
