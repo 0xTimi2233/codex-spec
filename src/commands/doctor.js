@@ -1,7 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
 import { exists, listMissing, readText } from "../lib/fs.js";
-import { readState, currentRunPath } from "../lib/state.js";
 import { println, exitWith } from "../lib/output.js";
 
 const REQUIRED = [
@@ -49,54 +48,6 @@ const REQUIRED = [
   ".agentflow/archives/.gitkeep"
 ];
 
-function requiredForPhase(root, state) {
-  if (!state.current_run) return [];
-  const runPath = currentRunPath(root, state);
-  const base = [path.join(runPath, "dispatch-ledger.md")];
-  if (state.current_phase === "planning") {
-    return [...base, path.join(runPath, "task.md"), path.join(runPath, "pm", "requirements.md")];
-  }
-  if (state.current_phase === "designing") {
-    return [
-      ...base,
-      path.join(runPath, "architect", "design.md"),
-      path.join(runPath, "architect", "spec-draft.md"),
-      path.join(runPath, "architect", "adr-draft.md"),
-      path.join(runPath, "tester", "test-plan.md")
-    ];
-  }
-  if (state.current_phase === "doc-reviewing") {
-    return [
-      ...base,
-      path.join(runPath, "doc-reviewer", "review-report.md"),
-      path.join(runPath, "doc-reviewer", "review-ledger.md")
-    ];
-  }
-  if (state.current_phase === "ready-to-execute") return [...base, path.join(runPath, "gate.md")];
-  if (state.current_phase === "executing") {
-    return [
-      ...base,
-      path.join(runPath, "gate.md"),
-      path.join(runPath, "developer", "implementation-report.md"),
-      path.join(runPath, "developer", "changed-files.md"),
-      path.join(runPath, "developer", "test-result.md")
-    ];
-  }
-  if (state.current_phase === "code-reviewing") {
-    return [
-      ...base,
-      path.join(runPath, "code-reviewer", "review-report.md"),
-      path.join(runPath, "code-reviewer", "review-ledger.md")
-    ];
-  }
-  if (state.current_phase === "ready-to-finish") {
-    return [...base, path.join(runPath, "gate.md"), path.join(runPath, "code-reviewer", "review-report.md")];
-  }
-  if (state.current_phase === "finishing") return [...base, path.join(runPath, "auditor", "audit-report.md"), path.join(runPath, "summary.md")];
-  if (state.current_phase === "blocked") return [...base, path.join(runPath, "summary.md")];
-  return base;
-}
-
 export function doctorCommand(_args, context) {
   const root = context.target;
   const missing = listMissing(root, REQUIRED);
@@ -111,12 +62,6 @@ export function doctorCommand(_args, context) {
       const hookPath = match[1] || match[2];
       if (hookPath && !fs.existsSync(hookPath)) problems.push(`Hook script not found: ${hookPath}`);
     }
-  }
-
-  if (exists(path.join(root, ".agentflow", "state.json"))) {
-    const state = readState(root);
-    const phaseMissing = requiredForPhase(root, state).filter((p) => !fs.existsSync(p)).map((p) => path.relative(root, p));
-    if (phaseMissing.length) problems.push(`Current phase '${state.current_phase}' is missing run artifacts:\n${phaseMissing.map((m) => `  - ${m}`).join("\n")}`);
   }
 
   if (problems.length) {

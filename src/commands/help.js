@@ -3,7 +3,7 @@ import { PHASES } from "../lib/state.js";
 
 const COMMANDS = {
   init: `codex-spec init [--lang en|zh] [--model high|xhigh] [--fast off|on] [--target <dir>] [--force]\n\nCreate project-local Codex workflow files. Default language is English. Default model profile is high and fast mode is off.`,
-  doctor: `codex-spec doctor [--target <dir>]\n\nCheck required workflow files, hook script paths, and current run artifacts.`,
+  doctor: `codex-spec doctor [--target <dir>]\n\nCheck required workflow files and hook script paths.`,
   status: `codex-spec status [--target <dir>]\n\nPrint .agentflow/state.json, current run dispatch ledger, and current run summary.`,
   "rebind-hooks": `codex-spec rebind-hooks [--target <dir>] [--lang en|zh]\n\nRewrite .codex/config.toml hook commands to the current installed script paths.`,
   state: `codex-spec state set --phase <phase> [--mode <mode>] [--run <run-id>] [--milestone <id>] [--blocked true|false]\n\nAllowed phases:\n  ${PHASES.join("\n  ")}`,
@@ -15,5 +15,5 @@ export function printHelp(command = null) {
     println(COMMANDS[command]);
     return;
   }
-  println(`codex-spec\n\nUsage:\n  codex-spec help [command]\n  codex-spec init [--lang en|zh] [--model high|xhigh] [--fast off|on] [--target <dir>] [--force]\n  codex-spec doctor [--target <dir>]\n  codex-spec status [--target <dir>]\n\nCommands:\n  init    Create AGENTS.md, .codex, .agents, agentflow, and .agentflow.\n  doctor  Validate workflow scaffold, hook paths, and current run artifacts.\n  status  Show current workflow state.\n  help    Show command help.\n\nWorkflow phases:\n  ${PHASES.join(" -> ")}\n`);
+  println(`codex-spec\n\nUsage:\n  codex-spec help [command]\n  codex-spec init [--lang en|zh] [--model high|xhigh] [--fast off|on] [--target <dir>] [--force]\n  codex-spec doctor [--target <dir>]\n  codex-spec status [--target <dir>]\n\nCommands:\n  init    Create AGENTS.md, .codex, .agents, agentflow, and .agentflow.\n  doctor  Validate workflow scaffold and hook paths.\n  status  Show current workflow state.\n  help    Show command help.\n\nWorkflow phases:\n  ${PHASES.join(" -> ")}\n`);
 }

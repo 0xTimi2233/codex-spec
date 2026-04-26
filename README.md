@@ -122,6 +122,8 @@ codex-spec status
 
 `--target` is optional for project commands. Without it, `codex-spec` uses the current working directory.
 
+`doctor` checks the installed scaffold and hook paths. Workflow progress is reported by `status` and the `$status` skill.
+
 ## Best Practices
 
 - Keep each milestone small enough to design, implement, review, and finish cleanly.

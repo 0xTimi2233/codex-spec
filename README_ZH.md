@@ -122,6 +122,8 @@ codex-spec status
 
 项目命令都可以使用可选的 `--target`。不传时，`codex-spec` 使用当前目录。
 
+`doctor` 只检查脚手架安装和 hook 路径。工作流进度由 `status` 和 `$status` skill 报告。
+
 ## 最佳实践
 
 - 每个 milestone 保持足够小，确保可以完整完成设计、实现、审查和 finish。

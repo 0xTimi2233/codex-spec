@@ -59,6 +59,7 @@ fs.writeFileSync(path.join(tmp, ".agentflow", "state.json"), JSON.stringify({
   blocked: false,
   updated_by: "smoke"
 }, null, 2));
+run(["doctor", "--target", tmp]);
 fs.writeFileSync(path.join(runDir, "gate.md"), `---
 status: approved
 allowed_source_paths:
