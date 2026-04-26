@@ -23,7 +23,8 @@ Read these paths only when they are not already in the active context or their c
 5. Update `.agentflow/brainstorm/<brainstorm-id>/notes.md`, `questions.md`, and `source-map.md` when they add useful audit context.
 6. Keep `brief.md` as `Status: draft` until the user confirms the brief is ready for planning.
 7. When confirmed, update `brief.md` to `Status: ready-for-plan` or `Status: discarded`, write `summary.md`, run `codex-spec archive --brainstorm <brainstorm-id>`, then run `codex-spec state set --brainstorm null`.
-8. Recommend starting `$plan` from a clean chat context.
+8. Use `.agentflow/archives/brainstorm/<brainstorm-id>/brief.md` as the planning brief path after archive.
+9. Recommend starting `$plan` from a clean chat context.
 
 ## Brief Format
 

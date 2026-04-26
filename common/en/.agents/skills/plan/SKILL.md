@@ -14,6 +14,7 @@ Read these paths only when they are not already in the active context or their c
 - `agentflow/vision.md`
 - `agentflow/roadmap.md`
 - `.agentflow/brainstorm/<current_brainstorm>/brief.md` when `.agentflow/state.json.current_brainstorm` is set
+- `.agentflow/archives/brainstorm/<brainstorm-id>/brief.md` after brainstorm archive
 - the brainstorm `brief.md` path specified by the main thread
 - `.agentflow/state.json`
 
@@ -21,7 +22,7 @@ Read these paths only when they are not already in the active context or their c
 
 1. If `.agentflow/state.json.current_brainstorm` is set, use `.agentflow/brainstorm/<current_brainstorm>/brief.md` to close the brainstorm as `ready-for-plan` or `discarded`, archive it, and clear `current_brainstorm`.
 2. Recommend clearing chat context after a brainstorm brief becomes `ready-for-plan`.
-3. Use the specified `ready-for-plan` brainstorm brief or user-provided requirement input for PM planning.
+3. Use the specified `ready-for-plan` brainstorm brief from `.agentflow/archives/brainstorm/<brainstorm-id>/brief.md` or user-provided requirement input for PM planning.
 4. Dispatch PM to confirm requirements, scope, non-goals, roadmap milestones, and acceptance criteria.
 5. When requested by dispatch, PM may update `agentflow/vision.md` and `agentflow/roadmap.md`.
 6. Select the next milestone, choose or create a run id, and write `.agentflow/runs/<run-id>/task.md`.

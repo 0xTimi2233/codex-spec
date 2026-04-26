@@ -23,7 +23,8 @@ description: 在 plan 前探索需求，并写出供 PM 规划使用的简短 br
 5. 当内容具备审计价值时，更新 `.agentflow/brainstorm/<brainstorm-id>/notes.md`、`questions.md` 和 `source-map.md`。
 6. 用户确认可进入 planning 前，`brief.md` 保持 `Status: draft`。
 7. 用户确认后，将 `brief.md` 更新为 `Status: ready-for-plan` 或 `Status: discarded`，写 `summary.md`，执行 `codex-spec archive --brainstorm <brainstorm-id>`，再执行 `codex-spec state set --brainstorm null`。
-8. 建议在干净聊天上下文中开始 `$plan`。
+8. 归档后使用 `.agentflow/archives/brainstorm/<brainstorm-id>/brief.md` 作为 planning brief 路径。
+9. 建议在干净聊天上下文中开始 `$plan`。
 
 ## Brief 格式
 
