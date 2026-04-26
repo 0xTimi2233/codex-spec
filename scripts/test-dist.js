@@ -27,6 +27,23 @@ runCli("dist", ["status", "--target", tmp]);
 const runDir = path.join(tmp, ".agentflow", "runs", "smoke-run");
 fs.mkdirSync(runDir, { recursive: true });
 fs.writeFileSync(path.join(runDir, "summary.md"), "Status: pass\n", "utf8");
+fs.writeFileSync(
+  path.join(tmp, ".agentflow", "state.json"),
+  JSON.stringify(
+    {
+      version: 1,
+      mode: "active",
+      current_brainstorm: null,
+      current_run: "smoke-run",
+      current_phase: "finishing",
+      current_milestone: "smoke",
+      blocked: false,
+      updated_by: "smoke"
+    },
+    null,
+    2
+  )
+);
 
 const invalidArchive = runCliFail("dist", ["archive", "--run", "../bad", "--target", tmp]);
 assert(invalidArchive.includes("Invalid run id"), "archive should reject unsafe run ids");
@@ -34,13 +51,32 @@ assert(invalidArchive.includes("Invalid run id"), "archive should reject unsafe 
 runCli("dist", ["archive", "--run", "smoke-run", "--target", tmp]);
 assert(!fs.existsSync(runDir), "archive should move run out of runs/");
 assert(fs.existsSync(path.join(tmp, ".agentflow", "archives", "smoke-run")), "archive directory was not created");
+assert(JSON.parse(readText(tmp, ".agentflow", "state.json")).current_run === null, "archive should clear current run");
 
 const brainstormDir = path.join(tmp, ".agentflow", "brainstorm", "smoke-brainstorm");
 fs.mkdirSync(brainstormDir, { recursive: true });
 fs.writeFileSync(path.join(brainstormDir, "brief.md"), "Status: ready-for-plan\n", "utf8");
+fs.writeFileSync(
+  path.join(tmp, ".agentflow", "state.json"),
+  JSON.stringify(
+    {
+      version: 1,
+      mode: "idle",
+      current_brainstorm: "smoke-brainstorm",
+      current_run: null,
+      current_phase: "idle",
+      current_milestone: null,
+      blocked: false,
+      updated_by: "smoke"
+    },
+    null,
+    2
+  )
+);
 
 runCli("dist", ["archive", "--brainstorm", "smoke-brainstorm", "--target", tmp]);
 assert(!fs.existsSync(brainstormDir), "archive should move brainstorm out of brainstorm/");
 assert(fs.existsSync(path.join(tmp, ".agentflow", "archives", "brainstorm", "smoke-brainstorm")), "brainstorm archive directory was not created");
+assert(JSON.parse(readText(tmp, ".agentflow", "state.json")).current_brainstorm === null, "archive should clear current brainstorm");
 
 console.log(`dist smoke OK: ${tmp}`);

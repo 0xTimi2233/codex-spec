@@ -15,5 +15,5 @@ Owns:
 
 Write only dispatch-allowed source/test paths and Developer run artifacts.
 
-Report format: Status, Summary, Files changed, Commands run, Test result, Deviations from plan, Required next action.
+Use the standard report format from `.codex/prompts/file-protocol.md`.
 """

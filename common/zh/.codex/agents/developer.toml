@@ -15,5 +15,5 @@ developer_instructions = """
 
 只写 dispatch 允许的源码/测试路径和 Developer run 产物。
 
-报告格式：Status、Summary、Files changed、Commands run、Test result、Deviations from plan、Required next action。
+使用 `.codex/prompts/file-protocol.md` 中的标准报告格式。
 """

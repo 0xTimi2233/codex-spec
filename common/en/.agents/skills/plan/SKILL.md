@@ -23,14 +23,14 @@ Read these paths only when they are not already in the active context or their c
 1. If `.agentflow/state.json.current_brainstorm` is set, use `.agentflow/brainstorm/<current_brainstorm>/brief.md` to close the brainstorm as `ready-for-plan` or `discarded`, archive it, and clear `current_brainstorm`.
 2. Recommend clearing chat context after a brainstorm brief becomes `ready-for-plan`.
 3. Use the specified `ready-for-plan` brainstorm brief from `.agentflow/archives/brainstorm/<brainstorm-id>/brief.md` or user-provided requirement input for PM planning.
-4. Dispatch PM to confirm requirements, scope, non-goals, roadmap milestones, and acceptance criteria.
-5. When requested by dispatch, PM may update `agentflow/vision.md` and `agentflow/roadmap.md`.
-6. Select the next milestone, choose or create a run id, and write `.agentflow/runs/<run-id>/task.md`.
-7. Write `.agentflow/runs/<run-id>/dispatch-ledger.md` with the dispatch table header.
-8. Write `.agentflow/runs/<run-id>/dispatch/pm-001.md`.
-9. Append the PM row to `dispatch-ledger.md`, dispatch PM, record the runtime agent id, and update the row when the PM response arrives.
-10. Write or update `.agentflow/runs/<run-id>/summary.md`.
-11. Run `codex-spec state set --phase planning --run <run-id> --blocked false`.
+4. Select the next milestone and choose or create a run id.
+5. Write `.agentflow/runs/<run-id>/dispatch-ledger.md` with the dispatch table header.
+6. Run `codex-spec state set --phase planning --run <run-id> --blocked false`.
+7. Write `.agentflow/runs/<run-id>/dispatch/pm-001.md` with the planning input and PM output paths.
+8. Append the PM row to `dispatch-ledger.md`, dispatch PM, record the runtime agent id, and update the row when the PM response arrives.
+9. PM confirms requirements, scope, non-goals, roadmap milestones, and acceptance criteria.
+10. When requested by dispatch, PM may update `agentflow/vision.md` and `agentflow/roadmap.md`.
+11. Write or update `.agentflow/runs/<run-id>/task.md` and `.agentflow/runs/<run-id>/summary.md`.
 
 ## PM Decision Handling
 

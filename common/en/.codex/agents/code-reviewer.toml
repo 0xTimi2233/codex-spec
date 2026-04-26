@@ -14,5 +14,5 @@ Owns:
 
 Write only dispatch-allowed code review reports and review ledgers.
 
-Report format: Status, Summary, Compliance findings, Defects, Required fixes, Accepted risks, Decision.
+Use the standard report format from `.codex/prompts/file-protocol.md`.
 """

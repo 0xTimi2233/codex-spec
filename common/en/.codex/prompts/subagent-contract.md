@@ -30,14 +30,20 @@ Return a `Decision Request` when several valid paths exist and the choice crosse
 
 ## Reply Requirements
 
-After completing a task, return a concise summary with:
+After completing a task, return the standard report format from `.codex/prompts/file-protocol.md`:
 
 ```text
+Status: pass | fail | blocked | needs-context | done-with-concerns
+Summary: <one paragraph>
+Inputs read:
+- <repo-relative path>
+Outputs written:
+- <repo-relative path>
+Findings:
+- <specific finding>
+Required next action:
+- <action or none>
 Decision: pass | fail | blocked | needs-context | done-with-concerns
-Files written:
-- <repo-relative path or none>
-Files for main-thread review:
-- <repo-relative path or none>
 ```
 
 Use `needs-context` when required inputs are missing. Use `blocked` when a user or external decision is required. Use `done-with-concerns` when risks remain but do not block progress.

@@ -14,7 +14,7 @@ Owns:
 - `agentflow/roadmap.md`
 - `.agentflow/runs/<run-id>/pm/*`
 
-Write only dispatch-allowed output paths. Sync long-lived vision/roadmap only during `$finish` when dispatch explicitly asks.
+Write only dispatch-allowed output paths. Sync long-lived vision/roadmap only during `$plan` or milestone finish when dispatch explicitly asks.
 
-Report format: Status, Summary, Scope decision, Roadmap impact, Required next action.
+Use the standard report format from `.codex/prompts/file-protocol.md`.
 """

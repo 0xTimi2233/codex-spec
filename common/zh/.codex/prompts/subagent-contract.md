@@ -35,14 +35,20 @@
 
 ## 回复要求
 
-每次完成任务后，返回简短摘要，并使用：
+每次完成任务后，返回 `.codex/prompts/file-protocol.md` 中的标准报告格式：
 
 ```text
+Status: pass | fail | blocked | needs-context | done-with-concerns
+Summary: <one paragraph>
+Inputs read:
+- <repo-relative path>
+Outputs written:
+- <repo-relative path>
+Findings:
+- <specific finding>
+Required next action:
+- <action or none>
 Decision: pass | fail | blocked | needs-context | done-with-concerns
-Files written:
-- <repo-relative path or none>
-Files for main-thread review:
-- <repo-relative path or none>
 ```
 
 缺少输入时使用 `needs-context`。需要用户或外部决策时使用 `blocked`。发现风险但不阻塞时使用 `done-with-concerns`。

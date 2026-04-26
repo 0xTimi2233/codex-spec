@@ -23,14 +23,14 @@ description: 确认需求、更新 roadmap，并准备下一 milestone run。
 1. 若 `.agentflow/state.json.current_brainstorm` 存在，使用 `.agentflow/brainstorm/<current_brainstorm>/brief.md` 将 brainstorm 结束为 `ready-for-plan` 或 `discarded`，归档后清空 `current_brainstorm`。
 2. 当 brainstorm brief 变为 `ready-for-plan` 后，建议用户清空聊天上下文。
 3. 使用主线程指定的 `.agentflow/archives/brainstorm/<brainstorm-id>/brief.md` 或用户提供的需求输入作为 PM planning 输入。
-4. 调度 PM 确认需求、scope、non-goals、roadmap milestones 和验收标准。
-5. dispatch 明确要求时，PM 可以更新 `agentflow/vision.md` 和 `agentflow/roadmap.md`。
-6. 选择下一 milestone，选择或创建 run id，并写 `.agentflow/runs/<run-id>/task.md`。
-7. 写 `.agentflow/runs/<run-id>/dispatch-ledger.md`，包含调度表格表头。
-8. 写 `.agentflow/runs/<run-id>/dispatch/pm-001.md`。
-9. 在 `dispatch-ledger.md` 追加 PM 记录，调度 PM，写入 runtime agent id，并在收到 PM 回复后更新该行。
-10. 写或更新 `.agentflow/runs/<run-id>/summary.md`。
-11. 执行 `codex-spec state set --phase planning --run <run-id> --blocked false`。
+4. 选择下一 milestone，并选择或创建 run id。
+5. 写 `.agentflow/runs/<run-id>/dispatch-ledger.md`，包含调度表格表头。
+6. 执行 `codex-spec state set --phase planning --run <run-id> --blocked false`。
+7. 写 `.agentflow/runs/<run-id>/dispatch/pm-001.md`，包含 planning 输入和 PM 输出路径。
+8. 在 `dispatch-ledger.md` 追加 PM 记录，调度 PM，写入 runtime agent id，并在收到 PM 回复后更新该行。
+9. PM 确认需求、scope、non-goals、roadmap milestones 和验收标准。
+10. dispatch 明确要求时，PM 可以更新 `agentflow/vision.md` 和 `agentflow/roadmap.md`。
+11. 写或更新 `.agentflow/runs/<run-id>/task.md` 和 `.agentflow/runs/<run-id>/summary.md`。
 
 ## PM 决策处理
 

@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { ensureDir, exists } from "../lib/fs.js";
-import { readState } from "../lib/state.js";
+import { readState, writeState } from "../lib/state.js";
 import { println, exitWith } from "../lib/output.js";
 
 function resolveRun(args, root) {
@@ -30,6 +30,26 @@ function moveImmutable({ root, kind, srcPath, archivePath }) {
   return true;
 }
 
+function clearArchivedBrainstorm(root, brainstormId) {
+  const state = readState(root);
+  if (state.current_brainstorm !== brainstormId) return;
+  state.current_brainstorm = null;
+  state.updated_by = "codex-spec archive";
+  writeState(root, state);
+}
+
+function clearArchivedRun(root, runId) {
+  const state = readState(root);
+  if (state.current_run !== runId) return;
+  state.mode = "idle";
+  state.current_run = null;
+  state.current_phase = "idle";
+  state.current_milestone = null;
+  state.blocked = false;
+  state.updated_by = "codex-spec archive";
+  writeState(root, state);
+}
+
 export function archiveCommand(args, context) {
   if (args.brainstorm) {
     const brainstormId = String(args.brainstorm);
@@ -37,12 +57,13 @@ export function archiveCommand(args, context) {
       exitWith(`Invalid brainstorm id: ${brainstormId}`);
       return;
     }
-    moveImmutable({
+    const archived = moveImmutable({
       root: context.target,
       kind: "Brainstorm",
       srcPath: path.join(context.target, ".agentflow", "brainstorm", brainstormId),
       archivePath: path.join(context.target, ".agentflow", "archives", "brainstorm", brainstormId)
     });
+    if (archived) clearArchivedBrainstorm(context.target, brainstormId);
     return;
   }
 
@@ -57,10 +78,11 @@ export function archiveCommand(args, context) {
     return;
   }
 
-  moveImmutable({
+  const archived = moveImmutable({
     root: context.target,
     kind: "Run",
     srcPath: path.join(context.target, ".agentflow", "runs", runId),
     archivePath: path.join(context.target, ".agentflow", "archives", runId)
   });
+  if (archived) clearArchivedRun(context.target, runId);
 }

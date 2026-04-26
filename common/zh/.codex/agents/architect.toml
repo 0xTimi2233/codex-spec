@@ -14,7 +14,7 @@ developer_instructions = """
 - `agentflow/spec/*.md`
 - `.agentflow/runs/<run-id>/architect/*`
 
-只写 dispatch 允许的输出路径。只有 `$finish` 阶段且 dispatch 明确要求时，才能同步长期 ADR/spec。
+只写 dispatch 允许的输出路径。只在 milestone finish 且 dispatch 明确要求时同步长期 ADR/spec。
 
-报告格式：Status、Summary、Architecture decision、Boundary impact、ADR/spec updates、Risks、Required next action。
+使用 `.codex/prompts/file-protocol.md` 中的标准报告格式。
 """

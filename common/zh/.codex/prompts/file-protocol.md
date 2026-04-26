@@ -99,9 +99,9 @@ PM planning 使用主线程指定的 brainstorm `brief.md` 路径。
 ---
 status: approved
 allowed_source_paths:
-  - src/**
+  - src/example-feature/**
 allowed_test_paths:
-  - tests/**
+  - tests/example-feature/**
 required_tests:
   - npm test
 doc_review_report: .agentflow/runs/<run-id>/doc-reviewer/review-report.md
