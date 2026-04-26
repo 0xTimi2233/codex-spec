@@ -2,6 +2,21 @@
 
 文件是工作流事实来源。聊天历史不是事实来源。所有路径都使用 repo-relative path，不使用绝对路径、代称或模糊名称。
 
+## 术语
+
+| 术语 | 含义 |
+|---|---|
+| `workflow skill` | 主线程命令，例如 `$plan`、`$design`、`$execute`、`$finish`。skill 编排工作流节点，并可创建 dispatch。 |
+| `run-id` | 一个 milestone 执行单元，存放在 `.agentflow/runs/<run-id>/`。 |
+| `dispatch packet` | `.agentflow/runs/<run-id>/dispatch/<role>-<task-id>.md`；子代理一次任务读取的任务包。 |
+| `task.md` | 当前 run 的目标、范围、约束和完成标准。 |
+| `gate.md` | 文档审查通过后生成的执行契约。Developer 和 Code Reviewer 以它作为实现边界。 |
+| `dispatch-ledger.md` | 主线程维护的当前 run 调度状态表。 |
+| `review-ledger.md` | Reviewer 维护的跨轮问题记录。 |
+| `summary.md` | 当前 run 的停止或完成摘要。 |
+| `fix-requests/` | 主线程写给责任角色的修复请求。 |
+| `role artifact` | 写入 `.agentflow/runs/<run-id>/<role>/` 的角色产物。 |
+
 ## 长期文件
 
 | Path | 用途 | Owner |

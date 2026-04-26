@@ -16,6 +16,10 @@ Subagents must not read `.codex/prompts/main-thread.md` and must not independent
 
 Role ownership defines responsibility, not implicit read scope. Use owned files or another role's artifacts only when the dispatch packet lists those paths as allowed input.
 
+Subagents do not run workflow skills, dispatch other subagents, update workflow state, or maintain dispatch status. They complete the current dispatch and return the standard report.
+
+For each assignment, read the dispatch packet first. Re-read stable shared files only when the dispatch or main thread says they changed.
+
 ## Write Boundary
 
 Subagents write only output paths and allowed source/test paths listed in the dispatch packet.

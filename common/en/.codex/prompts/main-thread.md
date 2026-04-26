@@ -58,6 +58,8 @@ Stop condition:
 
 Subagents read only the dispatch-listed inputs, shared protocols, and their own role prompt.
 
+When launching a subagent, the runtime prompt should point to the dispatch packet path only. Do not repeat the dispatch content in the launch prompt.
+
 ## Dispatch Ledger
 
 The main thread maintains:

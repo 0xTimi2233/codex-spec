@@ -2,6 +2,21 @@
 
 Files are the workflow source of truth. Chat history is not a source of truth. Use repo-relative paths only; do not use absolute paths, aliases, or vague labels.
 
+## Terms
+
+| Term | Meaning |
+|---|---|
+| `workflow skill` | A main-thread command such as `$plan`, `$design`, `$execute`, or `$finish`. Skills orchestrate workflow steps and may create dispatch packets. |
+| `run-id` | One milestone execution unit stored under `.agentflow/runs/<run-id>/`. |
+| `dispatch packet` | `.agentflow/runs/<run-id>/dispatch/<role>-<task-id>.md`; the task packet a subagent reads for one assignment. |
+| `task.md` | Current run goal, scope, constraints, and done criteria. |
+| `gate.md` | Approved execution contract produced after document review. Developer and Code Reviewer use it as the implementation boundary. |
+| `dispatch-ledger.md` | Main-thread dispatch status table for the current run. |
+| `review-ledger.md` | Reviewer-owned issue ledger for review rounds. |
+| `summary.md` | Current run stop or completion summary. |
+| `fix-requests/` | Main-thread repair requests for responsible roles. |
+| `role artifact` | Output written under `.agentflow/runs/<run-id>/<role>/`. |
+
 ## Long-Lived Files
 
 | Path | Purpose | Owner |

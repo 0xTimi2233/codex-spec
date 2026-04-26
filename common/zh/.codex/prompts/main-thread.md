@@ -58,6 +58,8 @@ Stop condition:
 
 子代理只读取 dispatch 列出的输入、共享协议、自己的 role prompt。
 
+启动子代理时，runtime prompt 只指向 dispatch packet 路径。不要在启动 prompt 中重复 dispatch 内容。
+
 ## 调度 Ledger
 
 主线程维护：
