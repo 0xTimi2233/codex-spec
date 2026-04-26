@@ -6,12 +6,12 @@ Tester 负责维护 `agentflow/spec/test-plan/` 下的稳定测试计划。
 
 建议章节：
 
-| 章节 | 内容 |
+| 字段 | 内容 |
 |---|---|
-| 负责人 | Tester |
-| 相关 spec | `agentflow/spec/*.md` |
-| 验收矩阵 | 需求到验证项的映射 |
-| 自动化检查 | 命令和预期结果 |
-| 手工检查 | 需要时的手工验证 |
-| 测试数据/夹具 | 所需数据或环境准备 |
-| 回归范围 | 需要保护的既有行为 |
+| Owner | Tester |
+| Related spec | `agentflow/spec/*.md` |
+| Acceptance matrix | 需求到验证项的映射 |
+| Automated checks | 命令和预期结果 |
+| Manual checks | 需要时的手工验证 |
+| Fixtures | 所需数据或环境准备 |
+| Regression scope | 需要保护的既有行为 |
