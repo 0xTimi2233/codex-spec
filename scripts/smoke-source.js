@@ -134,4 +134,10 @@ const ambiguousBash = runHook("pre-tool-use", tmp, {
   tool_input: { command: "sed -i 's/a/b/' src/example.js" }
 });
 if (ambiguousBash.hookSpecificOutput?.permissionDecision !== "deny") throw new Error("ambiguous in-place Bash writes should be denied");
+const inlinePythonBash = runHook("pre-tool-use", tmp, {
+  cwd: tmp,
+  tool_name: "Bash",
+  tool_input: { command: "python3 -c \"open('src/generated.py', 'w').write('ok')\"" }
+});
+if (inlinePythonBash.hookSpecificOutput?.permissionDecision !== "deny") throw new Error("inline Python Bash writes should be denied");
 console.log(`source smoke OK: ${tmp}`);

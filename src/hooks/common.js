@@ -163,6 +163,10 @@ function nonOptionArgs(args) {
   return args.filter((arg) => !isOption(arg));
 }
 
+function hasAnyFlag(args, flags) {
+  return args.some((arg) => flags.some((flag) => arg === flag || arg.startsWith(`${flag}=`)));
+}
+
 function analyzeBash(command) {
   const tokens = tokenizeShell(command);
   const targets = [];
@@ -206,7 +210,10 @@ function analyzeBash(command) {
     } else if (["sed", "perl"].includes(commandName) && args.some((arg) => /^-[A-Za-z]*i/.test(arg) || /^-[A-Za-z]*p[A-Za-z]*i/.test(arg))) {
       writes = true;
       ambiguous = true;
-    } else if (["python", "python3", "node"].includes(commandName) && args.includes("-e")) {
+    } else if (["python", "python3"].includes(commandName) && hasAnyFlag(args, ["-c"])) {
+      writes = true;
+      ambiguous = true;
+    } else if (commandName === "node" && hasAnyFlag(args, ["-e", "--eval"])) {
       writes = true;
       ambiguous = true;
     } else if (commandName === "git" && ["checkout", "reset", "clean", "restore"].includes(args[0])) {
