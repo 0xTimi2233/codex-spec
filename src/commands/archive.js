@@ -9,10 +9,20 @@ function resolveRun(args, root) {
   return readState(root).current_run;
 }
 
+function isSafeRunId(runId) {
+  const value = String(runId);
+  return /^[A-Za-z0-9._-]+$/.test(value) && value !== "." && value !== ".." && !value.includes("..");
+}
+
 export function archiveCommand(args, context) {
-  const runId = resolveRun(args, context.target);
-  if (!runId) {
+  const resolvedRunId = resolveRun(args, context.target);
+  if (!resolvedRunId) {
     exitWith("Usage: codex-spec archive --run <run-id>");
+    return;
+  }
+  const runId = String(resolvedRunId);
+  if (!isSafeRunId(runId)) {
+    exitWith(`Invalid run id: ${runId}`);
     return;
   }
 

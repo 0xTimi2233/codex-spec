@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { readState, currentRunPath } from "../lib/state.js";
 import { findProjectRoot } from "../lib/paths.js";
+import { normalizeRepoPath } from "../lib/gate.js";
 
 export async function readStdinJson() {
   const chunks = [];
@@ -57,9 +58,16 @@ export function fileExists(p) {
   return p ? fs.existsSync(p) : false;
 }
 
-export function isWorkflowPath(toolInput) {
-  const text = JSON.stringify(toolInput || {});
-  return text.includes("agentflow/") || text.includes(".agentflow/") || text.includes("AGENTS.md") || text.includes(".codex/") || text.includes(".agents/");
+export function isWorkflowPath(root, target) {
+  const rel = normalizeRepoPath(root, target);
+  return Boolean(
+    rel &&
+      (rel === "AGENTS.md" ||
+        rel.startsWith("agentflow/") ||
+        rel.startsWith(".agentflow/") ||
+        rel.startsWith(".codex/") ||
+        rel.startsWith(".agents/"))
+  );
 }
 
 function collectStringValues(value, out = []) {
@@ -73,32 +81,171 @@ function collectStringValues(value, out = []) {
   return out;
 }
 
-export function writeTargetsFromToolInput(tool, toolInput) {
+function patchTextFromInput(input) {
+  if (typeof input === "string") return input;
+  for (const key of ["patch", "input", "text", "diff", "content"]) {
+    if (typeof input?.[key] === "string" && input[key].includes("*** Begin Patch")) return input[key];
+  }
+  return collectStringValues(input).find((value) => value.includes("*** Begin Patch")) || "";
+}
+
+function tokenizeShell(command) {
+  const tokens = [];
+  let current = "";
+  let quote = null;
+  for (let i = 0; i < command.length; i += 1) {
+    const char = command[i];
+    const next = command[i + 1];
+    if (quote) {
+      if (char === quote) quote = null;
+      else if (char === "\\" && quote === "\"" && next) {
+        current += next;
+        i += 1;
+      } else {
+        current += char;
+      }
+      continue;
+    }
+    if (char === "'" || char === "\"") {
+      quote = char;
+      continue;
+    }
+    if (char === "\\" && next) {
+      current += next;
+      i += 1;
+      continue;
+    }
+    if (/\s/.test(char)) {
+      if (current) {
+        tokens.push(current);
+        current = "";
+      }
+      continue;
+    }
+    if (";&|()".includes(char)) {
+      if (current) {
+        tokens.push(current);
+        current = "";
+      }
+      tokens.push(char);
+      continue;
+    }
+    if (char === ">") {
+      if (current) {
+        tokens.push(current);
+        current = "";
+      }
+      tokens.push(next === ">" ? ">>" : ">");
+      if (next === ">") i += 1;
+      continue;
+    }
+    current += char;
+  }
+  if (current) tokens.push(current);
+  return tokens;
+}
+
+function isBoundaryToken(token) {
+  return [";", "&", "|", "(", ")"].includes(token);
+}
+
+function isOption(token) {
+  return token.startsWith("-") && token !== "-";
+}
+
+function collectCommandArgs(tokens, index) {
+  const args = [];
+  for (let i = index + 1; i < tokens.length && !isBoundaryToken(tokens[i]); i += 1) args.push(tokens[i]);
+  return args;
+}
+
+function nonOptionArgs(args) {
+  return args.filter((arg) => !isOption(arg));
+}
+
+function analyzeBash(command) {
+  const tokens = tokenizeShell(command);
+  const targets = [];
+  let writes = false;
+  let ambiguous = false;
+
+  for (let i = 0; i < tokens.length; i += 1) {
+    const token = tokens[i];
+    if (/^\d?>{1,2}$/.test(token)) {
+      writes = true;
+      if (tokens[i + 1] && !isBoundaryToken(tokens[i + 1])) targets.push(tokens[i + 1]);
+      else ambiguous = true;
+    }
+  }
+
+  for (let i = 0; i < tokens.length; i += 1) {
+    const commandName = path.basename(tokens[i]);
+    const args = collectCommandArgs(tokens, i);
+    if (!args.length && !["git"].includes(commandName)) continue;
+
+    if (["touch", "mkdir", "rm", "tee", "truncate"].includes(commandName)) {
+      writes = true;
+      const paths = nonOptionArgs(args);
+      if (paths.length) targets.push(...paths);
+      else ambiguous = true;
+    } else if (commandName === "cp") {
+      writes = true;
+      const paths = nonOptionArgs(args);
+      if (paths.length >= 2) targets.push(paths[paths.length - 1]);
+      else ambiguous = true;
+    } else if (commandName === "mv") {
+      writes = true;
+      const paths = nonOptionArgs(args);
+      if (paths.length >= 2) targets.push(...paths);
+      else ambiguous = true;
+    } else if (commandName === "dd") {
+      writes = true;
+      const out = args.find((arg) => arg.startsWith("of="));
+      if (out) targets.push(out.slice(3));
+      else ambiguous = true;
+    } else if (["sed", "perl"].includes(commandName) && args.some((arg) => /^-[A-Za-z]*i/.test(arg) || /^-[A-Za-z]*p[A-Za-z]*i/.test(arg))) {
+      writes = true;
+      ambiguous = true;
+    } else if (["python", "python3", "node"].includes(commandName) && args.includes("-e")) {
+      writes = true;
+      ambiguous = true;
+    } else if (commandName === "git" && ["checkout", "reset", "clean", "restore"].includes(args[0])) {
+      writes = true;
+      ambiguous = true;
+    }
+  }
+
+  return { writes, targets, ambiguous };
+}
+
+export function analyzeWriteEffect(tool, toolInput) {
   const input = toolInput || {};
   if (/^(Write|Edit)$/.test(tool)) {
-    return collectStringValues({
+    return {
+      writes: true,
+      ambiguous: false,
+      targets: collectStringValues({
       file_path: input.file_path,
       path: input.path,
       filename: input.filename,
       target_file: input.target_file
-    }).filter(Boolean);
+      }).filter(Boolean)
+    };
   }
   if (tool === "apply_patch") {
-    const text = JSON.stringify(input);
-    const matches = [...text.matchAll(/\*\*\* (?:Add|Update|Delete) File: ([^\\n"]+)/g)];
-    return matches.map((match) => match[1].trim()).filter(Boolean);
+    const patch = patchTextFromInput(input);
+    const matches = [...patch.matchAll(/^\*\*\* (?:Add|Update|Delete) File: (.+)$/gm), ...patch.matchAll(/^\*\*\* Move to: (.+)$/gm)];
+    return {
+      writes: true,
+      ambiguous: !patch || !matches.length,
+      targets: matches.map((match) => match[1].trim()).filter(Boolean)
+    };
   }
   if (tool === "Bash") {
     const cmd = String(input.command || input.cmd || "");
-    const targets = [];
-    for (const match of cmd.matchAll(/(?:^|[\s;])(?:>|>>)\s*([^\s;&|]+)/g)) targets.push(match[1]);
-    for (const match of cmd.matchAll(/(?:^|[\s;])(?:touch|mkdir|rm|cp|mv)\s+(?:-[A-Za-z0-9]+\s+)*([^\s;&|]+)(?:\s+([^\s;&|]+))?/g)) {
-      targets.push(match[2] || match[1]);
-    }
-    for (const match of cmd.matchAll(/(?:^|[\s;])(?:tee)\s+(?:-[A-Za-z0-9]+\s+)*([^\s;&|]+)/g)) targets.push(match[1]);
-    return targets.filter(Boolean);
+    return analyzeBash(cmd);
   }
-  return [];
+  return { writes: false, ambiguous: false, targets: [] };
 }
 
 export function requiredRunFiles(runPath, phase) {

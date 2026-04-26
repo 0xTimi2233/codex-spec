@@ -15,7 +15,7 @@ description: Summarize the run, sync long-lived docs, archive the run, and clear
 ## Procedure
 
 1. Confirm phase is `ready-to-finish`.
-2. Confirm `.agentflow/runs/<run-id>/verification.md` exists or record why verification is not applicable in summary.
+2. Confirm `.agentflow/runs/<run-id>/verification.md` exists. If verification is not applicable, keep a short rationale and include it when writing summary.
 3. Run `codex-spec state set --phase finishing --run <run-id>`.
 4. Write `.agentflow/runs/<run-id>/dispatch/auditor-001.md`.
 5. Use current run artifact paths as Auditor allowed inputs. Append the Auditor dispatch row, dispatch Auditor, record the runtime agent id, and update the row when the Auditor response arrives.

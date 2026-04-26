@@ -14,6 +14,11 @@ function run(args) {
   }
   return res.stdout;
 }
+function runFail(args) {
+  const res = spawnSync(process.execPath, [path.join(root, "src", "cli.js"), ...args], { encoding: "utf8" });
+  if (res.status === 0) throw new Error(`Expected command to fail: ${args.join(" ")}`);
+  return `${res.stdout}${res.stderr}`;
+}
 function runHook(name, cwd, payload) {
   const res = spawnSync(process.execPath, [path.join(root, "src", "hooks", `${name}.js`)], {
     cwd,
@@ -35,6 +40,12 @@ if (defaultConfig.includes("service_tier")) throw new Error("fast mode should be
 run(["--version"]);
 run(["doctor", "--target", tmp]);
 run(["status", "--target", tmp]);
+const idleSourceWrite = runHook("pre-tool-use", tmp, {
+  cwd: tmp,
+  tool_name: "Write",
+  tool_input: { file_path: "README.md" }
+});
+if (idleSourceWrite.continue !== true) throw new Error("idle manual source writes should be allowed outside active runs");
 const highTmp = fs.mkdtempSync(path.join(os.tmpdir(), "codex-spec-source-high-"));
 run(["init", "--lang", "en", "--model", "high", "--fast", "on", "--target", highTmp]);
 const highConfig = fs.readFileSync(path.join(highTmp, ".codex", "config.toml"), "utf8");
@@ -48,6 +59,8 @@ if (developerAgent.includes('model_reasoning_effort = "xhigh"')) throw new Error
 const runDir = path.join(tmp, ".agentflow", "runs", "smoke-run");
 fs.mkdirSync(runDir, { recursive: true });
 fs.writeFileSync(path.join(runDir, "summary.md"), "Status: pass\n", "utf8");
+const invalidArchive = runFail(["archive", "--run", "../bad", "--target", tmp]);
+if (!invalidArchive.includes("Invalid run id")) throw new Error("archive should reject unsafe run ids");
 run(["archive", "--run", "smoke-run", "--target", tmp]);
 if (fs.existsSync(runDir)) throw new Error("archive should move run out of runs/");
 if (!fs.existsSync(path.join(tmp, ".agentflow", "archives", "smoke-run"))) throw new Error("archive directory was not created");
@@ -79,10 +92,46 @@ const allowedHook = runHook("pre-tool-use", tmp, {
   tool_input: { file_path: "src/example.js" }
 });
 if (allowedHook.continue !== true) throw new Error("approved gate should allow source path");
+const allowedPatch = runHook("pre-tool-use", tmp, {
+  cwd: tmp,
+  tool_name: "apply_patch",
+  tool_input: { patch: "*** Begin Patch\n*** Add File: src/main.js\n+console.log('ok');\n*** End Patch\n" }
+});
+if (allowedPatch.continue !== true) throw new Error("apply_patch should parse full allowed paths containing n");
+const allowedBash = runHook("pre-tool-use", tmp, {
+  cwd: tmp,
+  tool_name: "Bash",
+  tool_input: { command: "touch src/generated.js" }
+});
+if (allowedBash.continue !== true) throw new Error("Bash touch should allow approved target paths");
 const deniedHook = runHook("pre-tool-use", tmp, {
   cwd: tmp,
   tool_name: "Write",
   tool_input: { file_path: "README.md" }
 });
 if (deniedHook.hookSpecificOutput?.permissionDecision !== "deny") throw new Error("approved gate should deny paths outside allowed scope");
+const traversalHook = runHook("pre-tool-use", tmp, {
+  cwd: tmp,
+  tool_name: "Write",
+  tool_input: { file_path: "src/../README.md" }
+});
+if (traversalHook.hookSpecificOutput?.permissionDecision !== "deny") throw new Error("gate should deny traversal outside allowed paths");
+const deniedPatch = runHook("pre-tool-use", tmp, {
+  cwd: tmp,
+  tool_name: "apply_patch",
+  tool_input: { patch: "*** Begin Patch\n*** Update File: README.md\n@@\n-test\n+test\n*** End Patch\n" }
+});
+if (deniedPatch.hookSpecificOutput?.permissionDecision !== "deny") throw new Error("apply_patch should deny paths outside allowed scope");
+const deniedBash = runHook("pre-tool-use", tmp, {
+  cwd: tmp,
+  tool_name: "Bash",
+  tool_input: { command: "rm README.md src/example.js" }
+});
+if (deniedBash.hookSpecificOutput?.permissionDecision !== "deny") throw new Error("Bash multi-target writes should deny outside gate paths");
+const ambiguousBash = runHook("pre-tool-use", tmp, {
+  cwd: tmp,
+  tool_name: "Bash",
+  tool_input: { command: "sed -i 's/a/b/' src/example.js" }
+});
+if (ambiguousBash.hookSpecificOutput?.permissionDecision !== "deny") throw new Error("ambiguous in-place Bash writes should be denied");
 console.log(`source smoke OK: ${tmp}`);

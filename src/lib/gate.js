@@ -7,6 +7,26 @@ function normalizeRel(value) {
   return String(value || "").replaceAll("\\", "/").replace(/^\.\/+/, "").replace(/^\/+/, "");
 }
 
+function stripOuterQuotes(value) {
+  const trimmed = String(value || "").trim();
+  if (
+    (trimmed.startsWith("\"") && trimmed.endsWith("\"")) ||
+    (trimmed.startsWith("'") && trimmed.endsWith("'"))
+  ) {
+    return trimmed.slice(1, -1);
+  }
+  return trimmed;
+}
+
+export function normalizeRepoPath(root, candidatePath) {
+  const raw = stripOuterQuotes(candidatePath);
+  if (!raw || raw === "-") return null;
+  const abs = path.resolve(root, raw);
+  const rel = path.relative(root, abs).replaceAll("\\", "/");
+  if (!rel || rel === ".." || rel.startsWith("../") || path.isAbsolute(rel)) return null;
+  return normalizeRel(rel);
+}
+
 function escapeRegExp(value) {
   return value.replace(/[|\\{}()[\]^$+?.]/g, "\\$&");
 }
@@ -45,10 +65,11 @@ function parseScalar(value) {
 }
 
 export function parseFrontmatter(text) {
-  if (!text.startsWith("---\n")) return {};
-  const end = text.indexOf("\n---", 4);
+  const normalized = String(text || "").replace(/\r\n/g, "\n");
+  if (!normalized.startsWith("---\n")) return {};
+  const end = normalized.indexOf("\n---", 4);
   if (end === -1) return {};
-  const lines = text.slice(4, end).split(/\r?\n/);
+  const lines = normalized.slice(4, end).split("\n");
   const data = {};
   let currentKey = null;
   for (const line of lines) {
@@ -92,9 +113,8 @@ export function readGate(gatePath) {
 
 export function isPathAllowedByGate(root, gate, candidatePath) {
   if (!gate?.allowedPaths?.length || !candidatePath) return false;
-  const rel = path.isAbsolute(candidatePath)
-    ? normalizeRel(path.relative(root, candidatePath))
-    : normalizeRel(candidatePath);
+  const rel = normalizeRepoPath(root, candidatePath);
+  if (!rel) return false;
   return gate.allowedPaths.some((pattern) => {
     const normalized = normalizeRel(pattern);
     if (!normalized) return false;
@@ -103,4 +123,3 @@ export function isPathAllowedByGate(root, gate, candidatePath) {
     return regex ? regex.test(rel) : false;
   });
 }
-

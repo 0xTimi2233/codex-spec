@@ -138,7 +138,7 @@ codex-spec status
 - After `$finish`, commit the completed milestone with a short user-facing message such as `feat: add import workflow`, `fix: handle empty config`, or `docs: update setup guide`.
 - Do not use archived runs as future context. Sync reusable knowledge into `agentflow/` during `$finish`.
 
-Use the full workflow for multi-step changes, cross-file refactors, or work where review evidence matters. For small edits, exploratory prototypes, or projects without tests, use a shorter manual Codex flow instead of forcing every role.
+Use the full workflow for multi-step changes, cross-file refactors, or work where review evidence matters. For small edits, exploratory prototypes, or projects without tests, use a shorter manual Codex flow outside an active run. Once `.agentflow/state.json` has an active `current_run`, source and test writes are gated by the approved run contract.
 
 ## Development
 

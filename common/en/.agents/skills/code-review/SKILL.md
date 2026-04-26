@@ -30,4 +30,4 @@ description: Review implementation against gate, spec, test plan, coding standar
 
 ## Next
 
-Return Decision. On pass, next step `$finish`; on fail, return fix request path.
+Return Decision. On pass, next step `$verify`; on fail, return fix request path.

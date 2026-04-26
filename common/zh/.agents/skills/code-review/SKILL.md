@@ -30,4 +30,4 @@ description: 审查实现是否符合 gate、spec、test-plan、代码规范和 
 
 ## 下一步
 
-返回 Decision。通过时下一步 `$finish`，失败时返回修复请求路径。
+返回 Decision。通过时下一步 `$verify`，失败时返回修复请求路径。

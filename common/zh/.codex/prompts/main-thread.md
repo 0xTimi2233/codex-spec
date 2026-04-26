@@ -133,6 +133,8 @@ Verification:
 
 `$verify`：根据 approved gate、测试计划、实现报告和 code review 结果收集验收证据。证据缺失时，向责任工作流节点路由 fix request。
 
+`$verify` 不是独立的状态机 phase。它在 `.agentflow/state.json.current_phase` 为 `ready-to-finish` 时执行；`$finish` 才会将 phase 推进到 `finishing`。
+
 `$finish`：调度 Auditor 总结当前 run；调度 owner 同步长期文档；归档 run；清空 current run；结束当前 milestone 子代理上下文。
 
 ## 打回与路由

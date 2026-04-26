@@ -14,6 +14,11 @@ function run(args) {
   }
   return res.stdout;
 }
+function runFail(args) {
+  const res = spawnSync(process.execPath, [path.join(root, "dist", "cli.js"), ...args], { encoding: "utf8" });
+  if (res.status === 0) throw new Error(`Expected command to fail: ${args.join(" ")}`);
+  return `${res.stdout}${res.stderr}`;
+}
 run(["init", "--lang", "en", "--model", "xhigh", "--fast", "off", "--target", tmp]);
 const config = fs.readFileSync(path.join(tmp, ".codex", "config.toml"), "utf8");
 if (!config.includes('model = "gpt-5.5"')) throw new Error("model was not rendered");
@@ -25,6 +30,7 @@ run(["status", "--target", tmp]);
 const runDir = path.join(tmp, ".agentflow", "runs", "smoke-run");
 fs.mkdirSync(runDir, { recursive: true });
 fs.writeFileSync(path.join(runDir, "summary.md"), "Status: pass\n", "utf8");
+if (!runFail(["archive", "--run", "../bad", "--target", tmp]).includes("Invalid run id")) throw new Error("archive should reject unsafe run ids");
 run(["archive", "--run", "smoke-run", "--target", tmp]);
 if (fs.existsSync(runDir)) throw new Error("archive should move run out of runs/");
 if (!fs.existsSync(path.join(tmp, ".agentflow", "archives", "smoke-run"))) throw new Error("archive directory was not created");

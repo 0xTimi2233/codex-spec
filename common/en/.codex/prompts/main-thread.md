@@ -133,6 +133,8 @@ Before `$execute`, `gate.md` must be an approved contract with allowed source/te
 
 `$verify`: collect acceptance evidence from the approved gate, test plan, implementation report, and code review result. If evidence is missing, route a fix request to the responsible workflow node.
 
+`$verify` is not a separate state-machine phase. It runs while `.agentflow/state.json.current_phase` is `ready-to-finish`; `$finish` is the step that advances the phase to `finishing`.
+
 `$finish`: dispatch Auditor to summarize the run; dispatch owners to sync long-lived docs; archive the run; clear the current run; end subagent context for the milestone.
 
 ## Rejection Routing
