@@ -48,12 +48,12 @@ export async function initCommand(args, context) {
   }
 
   for (const rel of [
-    ".agentflow/explore/.gitkeep",
-    ".agentflow/preflight/.gitkeep",
-    ".agentflow/runs/.gitkeep",
-    ".agentflow/archives/.gitkeep",
-    ".agentflow/archives/explore/.gitkeep",
-    ".agentflow/archives/preflight/.gitkeep"
+    "agentflow/runtime/explore/.gitkeep",
+    "agentflow/runtime/preflight/.gitkeep",
+    "agentflow/runtime/runs/.gitkeep",
+    "agentflow/runtime/archives/.gitkeep",
+    "agentflow/runtime/archives/explore/.gitkeep",
+    "agentflow/runtime/archives/preflight/.gitkeep"
   ]) {
     const p = path.join(target, rel);
     if (!exists(p)) writeText(p, "", { force: false });
@@ -65,5 +65,5 @@ export async function initCommand(args, context) {
   println(`Fast mode: ${fastMode}`);
   println(`Files created or updated: ${copied.length}`);
   if (conflicts.length && !overwriteGenerated) println("Existing generated files were preserved. Use --force or answer y to overwrite generated non-agentflow files.");
-  if (overwriteGenerated) println("Existing agentflow/ and .agentflow/ files were preserved.");
+  if (overwriteGenerated) println("Existing agentflow/ files were preserved.");
 }

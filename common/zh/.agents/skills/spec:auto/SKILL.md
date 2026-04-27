@@ -12,7 +12,7 @@ description: 按 roadmap 串行执行 milestone，直到阻塞或完成。
 - `.codex/prompts/main-thread.md`
 - `.codex/prompts/file-protocol.md`
 - `agentflow/roadmap.md`
-- `.agentflow/state.json`
+- `agentflow/runtime/state.json`
 
 ## 操作
 
@@ -26,7 +26,7 @@ description: 按 roadmap 串行执行 milestone，直到阻塞或完成。
 $spec:design -> $spec:execute
 ```
 
-若 milestone run 不存在，使用 `$spec:plan` 行为从 roadmap 条目创建 run task。每个节点结束后使用 `.agentflow/state.json`、调度状态和子代理回报。
+若 milestone run 不存在，使用 `$spec:plan` 行为从 roadmap 条目创建 run task。每个节点结束后使用 `agentflow/runtime/state.json`、调度状态和子代理回报。
 
 ## 打回与停止
 

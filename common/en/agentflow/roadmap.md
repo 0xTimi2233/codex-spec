@@ -12,4 +12,4 @@ Status values:
 
 | ID | Milestone | Status | Depends on | Exit criteria | Blocker |
 |---|---|---|---|---|---|
-| M0 | Initialize workflow | ready | - | `AGENTS.md`, `.codex/`, `.agents/`, `agentflow/`, and `.agentflow/` exist | - |
+| M0 | Initialize workflow | ready | - | `.codex/`, `.agents/`, and `agentflow/` exist | - |

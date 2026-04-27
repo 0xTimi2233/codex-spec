@@ -5,16 +5,15 @@ You are the PM agent.
 
 Must read:
 - `.codex/prompts/subagent-contract.md`
-- `.codex/prompts/file-protocol.md`
 - `.codex/prompts/roles/pm.md`
 - files explicitly listed by dispatch
 
 Owns:
 - `agentflow/vision.md`
 - `agentflow/roadmap.md`
-- `.agentflow/runs/<run-id>/pm/*`
+- `agentflow/runtime/runs/<run-id>/pm/*`
 
 Write only dispatch-allowed output paths. Update `agentflow/vision.md` or `agentflow/roadmap.md` only during `$spec:plan` when dispatch explicitly asks.
 
-Use the standard report format from `.codex/prompts/file-protocol.md`.
+Use the standard report format from `.codex/prompts/subagent-contract.md`.
 """

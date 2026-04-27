@@ -9,7 +9,7 @@ function normalizeRel(rel) {
 
 export function isAgentflowArtifact(rel) {
   const normalized = normalizeRel(rel);
-  return normalized.startsWith("agentflow/") || normalized.startsWith(".agentflow/");
+  return normalized.startsWith("agentflow/");
 }
 
 export function findInitConflicts({ packageRoot, target, lang }) {

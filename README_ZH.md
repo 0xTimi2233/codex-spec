@@ -55,14 +55,12 @@ $spec:auto
 ### 生成内容
 
 ```text
-AGENTS.md
 .codex/
 .agents/
 agentflow/
-.agentflow/
 ```
 
-长期项目知识保存在 `agentflow/`：vision、roadmap、ADR、spec 和测试计划。`$spec:plan` 可以执行 `.agentflow/explore/<explore-id>/` 下的 explore track、`.agentflow/preflight/<preflight-id>/` 下的 preflight track，或创建 `.agentflow/runs/<run-id>/` 的正式 commit track。Explore 和 preflight session 会归档到 `.agentflow/archives/`。正式 planning 会在当前 run 中产出自包含 PM package，因此 `$spec:design` 可以依赖 run package，而不是归档 session 或原始需求笔记。
+长期项目知识保存在顶层 `agentflow/` 文件和目录中：vision、roadmap、ADR、spec 和测试计划。运行时状态和审计记录保存在 `agentflow/runtime/` 下。`$spec:plan` 可以执行 `agentflow/runtime/explore/<explore-id>/` 下的 explore track、`agentflow/runtime/preflight/<preflight-id>/` 下的 preflight track，或创建 `agentflow/runtime/runs/<run-id>/` 的正式 commit track。Explore 和 preflight session 会归档到 `agentflow/runtime/archives/`。正式 planning 会在当前 run 中产出自包含 PM package，因此 `$spec:design` 可以依赖 run package，而不是归档 session 或原始需求笔记。
 
 ### 角色
 
@@ -118,7 +116,7 @@ codex-spec --version
 ```
 
 项目命令都可以使用可选的 `--target`。不传时，`codex-spec` 使用当前目录。
-`init` 默认保留已有生成文件，并会在交互式终端中询问是否覆盖。已有 `agentflow/` 和 `.agentflow/` 文件视为项目产物，永不覆盖。
+`init` 默认保留已有生成文件，并会在交互式终端中询问是否覆盖。已有 `agentflow/` 文件视为项目产物，永不覆盖。
 
 `doctor` 只检查脚手架安装文件。工作流进度由 `$spec:status` skill 报告。workflow skills 会调用内部脚本处理 state、archive 和 raw status 操作。`profile` 用于查看或更新生成的模型配置。
 

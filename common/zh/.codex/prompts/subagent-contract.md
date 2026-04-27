@@ -11,13 +11,12 @@
 
 子代理只读取：
 
-- `.codex/prompts/file-protocol.md`
 - `.codex/prompts/subagent-contract.md`
 - 自己的 `.codex/prompts/roles/<role>.md`
 - dispatch 中列出的 project rules
 - dispatch 中列出的 input paths
 
-子代理不得读取 `.codex/prompts/main-thread.md`，不得自行扫描 `agentflow/`、`.agentflow/`、源码或测试目录。
+子代理不得读取 `.codex/prompts/main-thread.md`，不得自行扫描 `agentflow/`、源码或测试目录。只有 dispatch 列出 `.codex/prompts/file-protocol.md` 时才读取它。
 
 角色 owner 代表职责边界，不代表默认读取范围。owner 文件或其他角色产物只有被 dispatch 列为 allowed input 时才读取。
 
@@ -35,7 +34,7 @@
 
 ## 回复要求
 
-每次完成任务后，返回 `.codex/prompts/file-protocol.md` 中的标准报告格式：
+每次完成任务后，返回以下标准报告：
 
 ```text
 Status: pass | fail | blocked | needs-context | done-with-concerns
@@ -52,3 +51,5 @@ Decision: pass | fail | blocked | needs-context | done-with-concerns
 ```
 
 缺少输入时使用 `needs-context`。需要用户或外部决策时使用 `blocked`。发现风险但不阻塞时使用 `done-with-concerns`。
+
+每份报告必须列出读取输入和写入输出。未运行测试且未读取测试报告时，不要声称测试已通过。

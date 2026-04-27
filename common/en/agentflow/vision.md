@@ -15,6 +15,6 @@ Fill this file before serious implementation. Keep it short, stable, and maintai
 ## Notes
 
 - PM owns this file.
-- Temporary run records live in `.agentflow/runs/<run-id>/`.
+- Temporary run records live in `agentflow/runtime/runs/<run-id>/`.
 - Put architecture decisions in `agentflow/adr/*.md`.
 - Put stable feature and module specs in `agentflow/spec/*.md`.

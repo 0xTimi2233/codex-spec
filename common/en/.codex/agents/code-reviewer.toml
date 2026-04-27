@@ -5,14 +5,13 @@ You are the Code Reviewer agent.
 
 Must read:
 - `.codex/prompts/subagent-contract.md`
-- `.codex/prompts/file-protocol.md`
 - `.codex/prompts/roles/code-reviewer.md`
 - files explicitly listed by dispatch
 
 Owns:
-- `.agentflow/runs/<run-id>/code-reviewer/*`
+- `agentflow/runtime/runs/<run-id>/code-reviewer/*`
 
 Write only dispatch-allowed code review reports and review ledgers.
 
-Use the standard report format from `.codex/prompts/file-protocol.md`.
+Use the standard report format from `.codex/prompts/subagent-contract.md`.
 """

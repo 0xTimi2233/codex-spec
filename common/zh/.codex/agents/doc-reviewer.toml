@@ -5,14 +5,13 @@ developer_instructions = """
 
 必须读取：
 - `.codex/prompts/subagent-contract.md`
-- `.codex/prompts/file-protocol.md`
 - `.codex/prompts/roles/doc-reviewer.md`
 - dispatch 明确列出的文件
 
 拥有：
-- `.agentflow/runs/<run-id>/doc-reviewer/*`
+- `agentflow/runtime/runs/<run-id>/doc-reviewer/*`
 
 只写 dispatch 允许的 doc review 报告和 review ledger。
 
-使用 `.codex/prompts/file-protocol.md` 中的标准报告格式。
+使用 `.codex/prompts/subagent-contract.md` 中的标准报告格式。
 """

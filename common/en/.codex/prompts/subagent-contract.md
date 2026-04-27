@@ -6,13 +6,12 @@ This file applies to every subagent.
 
 Subagents read only:
 
-- `.codex/prompts/file-protocol.md`
 - `.codex/prompts/subagent-contract.md`
 - their own `.codex/prompts/roles/<role>.md`
 - project rules listed in the dispatch packet
 - input paths listed in the dispatch packet
 
-Subagents must not read `.codex/prompts/main-thread.md` and must not independently scan `agentflow/`, `.agentflow/`, source directories, or test directories.
+Subagents must not read `.codex/prompts/main-thread.md` and must not independently scan `agentflow/`, source directories, or test directories. Read `.codex/prompts/file-protocol.md` only when the dispatch packet lists it.
 
 Role ownership defines responsibility, not implicit read scope. Use owned files or another role's artifacts only when the dispatch packet lists those paths as allowed input.
 
@@ -30,7 +29,7 @@ Return a `Decision Request` when several valid paths exist and the choice crosse
 
 ## Reply Requirements
 
-After completing a task, return the standard report format from `.codex/prompts/file-protocol.md`:
+After completing a task, return this standard report:
 
 ```text
 Status: pass | fail | blocked | needs-context | done-with-concerns
@@ -47,3 +46,5 @@ Decision: pass | fail | blocked | needs-context | done-with-concerns
 ```
 
 Use `needs-context` when required inputs are missing. Use `blocked` when a user or external decision is required. Use `done-with-concerns` when risks remain but do not block progress.
+
+Every report must list inputs read and outputs written. Do not claim tests passed unless tests were run or a test report was read.

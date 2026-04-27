@@ -2,7 +2,7 @@
 
 Architect owns stable specs under `agentflow/spec/`.
 
-Use specs for accepted design, interfaces, data contracts, and behavior. During `$spec:design`, Architect updates dispatch-listed specs directly; `.agentflow/runs/<run-id>/architect/` stores reports and evidence only.
+Use specs for accepted design, interfaces, data contracts, and behavior. During `$spec:design`, Architect updates dispatch-listed specs directly; `agentflow/runtime/runs/<run-id>/architect/` stores reports and evidence only.
 
 Suggested sections:
 

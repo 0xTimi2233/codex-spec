@@ -13,7 +13,7 @@ export function statusCommand(_args, context) {
   println(`Run: ${state.current_run || "-"}`);
   println(`Milestone: ${state.current_milestone || "-"}`);
   println(`Blocked: ${state.blocked ? "yes" : "no"}`);
-  const run = state.current_run ? path.join(root, ".agentflow", "runs", state.current_run) : null;
+  const run = state.current_run ? path.join(root, "agentflow", "runtime", "runs", state.current_run) : null;
   if (run && exists(path.join(run, "dispatch-ledger.md"))) {
     println("\nDispatch ledger:");
     println(readText(path.join(run, "dispatch-ledger.md")));

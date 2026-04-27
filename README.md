@@ -55,14 +55,12 @@ $spec:auto
 ### What It Creates
 
 ```text
-AGENTS.md
 .codex/
 .agents/
 agentflow/
-.agentflow/
 ```
 
-Long-lived project knowledge lives in `agentflow/`: vision, roadmap, ADRs, specs, and test plans. `$spec:plan` can run an explore track under `.agentflow/explore/<explore-id>/`, a preflight track under `.agentflow/preflight/<preflight-id>/`, or a formal commit track that creates `.agentflow/runs/<run-id>/`. Explore and preflight sessions are archived under `.agentflow/archives/`. Formal planning produces a self-contained PM package in the current run, so `$spec:design` can rely on the run package instead of archived sessions or original source notes.
+Long-lived project knowledge lives in the top-level `agentflow/` files and folders: vision, roadmap, ADRs, specs, and test plans. Runtime state and audit records live under `agentflow/runtime/`. `$spec:plan` can run an explore track under `agentflow/runtime/explore/<explore-id>/`, a preflight track under `agentflow/runtime/preflight/<preflight-id>/`, or a formal commit track that creates `agentflow/runtime/runs/<run-id>/`. Explore and preflight sessions are archived under `agentflow/runtime/archives/`. Formal planning produces a self-contained PM package in the current run, so `$spec:design` can rely on the run package instead of archived sessions or original source notes.
 
 ### Roles
 
@@ -118,7 +116,7 @@ codex-spec --version
 ```
 
 `--target` is optional for project commands. Without it, `codex-spec` uses the current working directory.
-`init` preserves existing generated files by default and asks before overwriting them in interactive shells. Existing `agentflow/` and `.agentflow/` files are treated as project artifacts and are never overwritten.
+`init` preserves existing generated files by default and asks before overwriting them in interactive shells. Existing `agentflow/` files are treated as project artifacts and are never overwritten.
 
 `doctor` checks the installed scaffold files. Workflow progress is reported by the `$spec:status` skill. Workflow skills call internal scripts for state, archive, and raw status operations. `profile` shows or updates generated model settings.
 

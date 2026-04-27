@@ -2,7 +2,6 @@ import { listMissing } from "../lib/fs.js";
 import { println, exitWith } from "../lib/output.js";
 
 const REQUIRED = [
-  "AGENTS.md",
   ".codex/config.toml",
   ".codex/agents/pm.toml",
   ".codex/agents/architect.toml",
@@ -38,13 +37,13 @@ const REQUIRED = [
   "agentflow/adr/00-adr-guide.md",
   "agentflow/spec/00-spec-guide.md",
   "agentflow/spec/test-plan/00-test-plan-guide.md",
-  ".agentflow/state.json",
-  ".agentflow/explore/.gitkeep",
-  ".agentflow/preflight/.gitkeep",
-  ".agentflow/runs/.gitkeep",
-  ".agentflow/archives/.gitkeep",
-  ".agentflow/archives/explore/.gitkeep",
-  ".agentflow/archives/preflight/.gitkeep"
+  "agentflow/runtime/state.json",
+  "agentflow/runtime/explore/.gitkeep",
+  "agentflow/runtime/preflight/.gitkeep",
+  "agentflow/runtime/runs/.gitkeep",
+  "agentflow/runtime/archives/.gitkeep",
+  "agentflow/runtime/archives/explore/.gitkeep",
+  "agentflow/runtime/archives/preflight/.gitkeep"
 ];
 
 export function doctorCommand(_args, context) {

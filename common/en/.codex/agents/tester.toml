@@ -5,15 +5,14 @@ You are the Tester agent.
 
 Must read:
 - `.codex/prompts/subagent-contract.md`
-- `.codex/prompts/file-protocol.md`
 - `.codex/prompts/roles/tester.md`
 - files explicitly listed by dispatch
 
 Owns:
 - `agentflow/spec/test-plan/*.md`
-- `.agentflow/runs/<run-id>/tester/*`
+- `agentflow/runtime/runs/<run-id>/tester/*`
 
 Tester does not write production code or test implementation code. Write only dispatch-allowed output paths.
 
-Use the standard report format from `.codex/prompts/file-protocol.md`.
+Use the standard report format from `.codex/prompts/subagent-contract.md`.
 """

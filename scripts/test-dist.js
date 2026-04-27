@@ -3,7 +3,7 @@ import path from "node:path";
 import { assert, readText, root, runCli, runCliFail, runInternal, runInternalFail, tempDir } from "./test-utils.js";
 
 function writeState(rootDir, state) {
-  fs.writeFileSync(path.join(rootDir, ".agentflow", "state.json"), JSON.stringify(state, null, 2), "utf8");
+  fs.writeFileSync(path.join(rootDir, "agentflow/runtime", "state.json"), JSON.stringify(state, null, 2), "utf8");
 }
 
 const tmp = tempDir("codex-spec-dist-");
@@ -49,7 +49,7 @@ assert(runCliFail("dist", ["state", "set", "--target", tmp]).includes("Unknown c
 assert(runCliFail("dist", ["archive", "--target", tmp]).includes("Unknown command"), "public dist cli should reject archive");
 runInternal("dist", ["status", "--target", tmp]);
 
-const runDir = path.join(tmp, ".agentflow", "runs", "smoke-run");
+const runDir = path.join(tmp, "agentflow/runtime", "runs", "smoke-run");
 fs.mkdirSync(runDir, { recursive: true });
 fs.writeFileSync(path.join(runDir, "summary.md"), "Status: pass\n", "utf8");
 writeState(tmp, {
@@ -68,10 +68,10 @@ assert(invalidArchive.includes("Invalid run id"), "archive should reject unsafe 
 
 runInternal("dist", ["archive", "--run", "smoke-run", "--target", tmp]);
 assert(!fs.existsSync(runDir), "archive should move run out of runs/");
-assert(fs.existsSync(path.join(tmp, ".agentflow", "archives", "smoke-run")), "archive directory was not created");
-assert(JSON.parse(readText(tmp, ".agentflow", "state.json")).current_run === "smoke-run", "archive should not clear current run");
+assert(fs.existsSync(path.join(tmp, "agentflow/runtime", "archives", "smoke-run")), "archive directory was not created");
+assert(JSON.parse(readText(tmp, "agentflow/runtime", "state.json")).current_run === "smoke-run", "archive should not clear current run");
 
-const stateRunDir = path.join(tmp, ".agentflow", "runs", "state-run");
+const stateRunDir = path.join(tmp, "agentflow/runtime", "runs", "state-run");
 fs.mkdirSync(stateRunDir, { recursive: true });
 writeState(tmp, {
   version: 1,
@@ -85,10 +85,10 @@ writeState(tmp, {
 });
 runInternal("dist", ["archive", "--target", tmp]);
 assert(!fs.existsSync(stateRunDir), "archive should use current run when --run is omitted");
-assert(fs.existsSync(path.join(tmp, ".agentflow", "archives", "state-run")), "state run archive directory was not created");
-assert(JSON.parse(readText(tmp, ".agentflow", "state.json")).current_run === "state-run", "archive without --run should not clear current run");
+assert(fs.existsSync(path.join(tmp, "agentflow/runtime", "archives", "state-run")), "state run archive directory was not created");
+assert(JSON.parse(readText(tmp, "agentflow/runtime", "state.json")).current_run === "state-run", "archive without --run should not clear current run");
 
-const exploreDir = path.join(tmp, ".agentflow", "explore", "smoke-explore");
+const exploreDir = path.join(tmp, "agentflow/runtime", "explore", "smoke-explore");
 fs.mkdirSync(exploreDir, { recursive: true });
 fs.writeFileSync(path.join(exploreDir, "brief.md"), "Status: ready-for-plan\n", "utf8");
 writeState(tmp, {
@@ -104,10 +104,10 @@ writeState(tmp, {
 
 runInternal("dist", ["archive", "--explore", "smoke-explore", "--target", tmp]);
 assert(!fs.existsSync(exploreDir), "archive should move explore out of explore/");
-assert(fs.existsSync(path.join(tmp, ".agentflow", "archives", "explore", "smoke-explore")), "explore archive directory was not created");
-assert(JSON.parse(readText(tmp, ".agentflow", "state.json")).current_planning_session === "smoke-explore", "archive should not clear current planning session");
+assert(fs.existsSync(path.join(tmp, "agentflow/runtime", "archives", "explore", "smoke-explore")), "explore archive directory was not created");
+assert(JSON.parse(readText(tmp, "agentflow/runtime", "state.json")).current_planning_session === "smoke-explore", "archive should not clear current planning session");
 
-const preflightDir = path.join(tmp, ".agentflow", "preflight", "smoke-preflight");
+const preflightDir = path.join(tmp, "agentflow/runtime", "preflight", "smoke-preflight");
 fs.mkdirSync(preflightDir, { recursive: true });
 fs.writeFileSync(path.join(preflightDir, "brief.md"), "Status: ready-for-plan\n", "utf8");
 writeState(tmp, {
@@ -123,8 +123,8 @@ writeState(tmp, {
 
 runInternal("dist", ["archive", "--preflight", "smoke-preflight", "--target", tmp]);
 assert(!fs.existsSync(preflightDir), "archive should move preflight out of preflight/");
-assert(fs.existsSync(path.join(tmp, ".agentflow", "archives", "preflight", "smoke-preflight")), "preflight archive directory was not created");
-const stateAfterPreflight = JSON.parse(readText(tmp, ".agentflow", "state.json"));
+assert(fs.existsSync(path.join(tmp, "agentflow/runtime", "archives", "preflight", "smoke-preflight")), "preflight archive directory was not created");
+const stateAfterPreflight = JSON.parse(readText(tmp, "agentflow/runtime", "state.json"));
 assert(stateAfterPreflight.current_planning_session === "smoke-preflight", "archive should not clear current planning session after preflight");
 assert(stateAfterPreflight.planning_track === "preflight", "archive should not clear planning track after preflight");
 

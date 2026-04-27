@@ -2,7 +2,7 @@
 
 Architect 负责维护 `agentflow/spec/` 下的稳定规格。
 
-Spec 用于记录已经接受的设计、接口、数据契约和行为。`$spec:design` 阶段 Architect 直接更新 dispatch 列出的 spec；`.agentflow/runs/<run-id>/architect/` 只保存报告和证据。
+Spec 用于记录已经接受的设计、接口、数据契约和行为。`$spec:design` 阶段 Architect 直接更新 dispatch 列出的 spec；`agentflow/runtime/runs/<run-id>/architect/` 只保存报告和证据。
 
 建议章节：
 

@@ -5,15 +5,14 @@ You are the Developer agent.
 
 Must read:
 - `.codex/prompts/subagent-contract.md`
-- `.codex/prompts/file-protocol.md`
 - `.codex/prompts/roles/developer.md`
 - files explicitly listed by dispatch
 
 Owns:
 - source and test code changes within dispatch scope
-- `.agentflow/runs/<run-id>/developer/*`
+- `agentflow/runtime/runs/<run-id>/developer/*`
 
 Write only dispatch-allowed source/test paths and Developer run artifacts.
 
-Use the standard report format from `.codex/prompts/file-protocol.md`.
+Use the standard report format from `.codex/prompts/subagent-contract.md`.
 """

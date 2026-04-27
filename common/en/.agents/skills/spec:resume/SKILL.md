@@ -9,15 +9,15 @@ description: Resume workflow from state, planning session, and dispatch ledger.
 
 Read these paths only when they are not already in the active context or their contents may have changed:
 
-- `.agentflow/state.json`
+- `agentflow/runtime/state.json`
 - `.codex/prompts/main-thread.md`
 - `.codex/prompts/file-protocol.md`
-- `.agentflow/explore/<current_planning_session>/brief.md` when `planning_track` is `explore`
-- `.agentflow/explore/<current_planning_session>/rounds/<round-id>/round.md` when an active explore round is present
-- `.agentflow/preflight/<current_planning_session>/brief.md` when `planning_track` is `preflight`
-- `.agentflow/preflight/<current_planning_session>/decisions/queue.md` when `planning_track` is `preflight`
-- `.agentflow/runs/<run-id>/dispatch-ledger.md`
-- `.agentflow/runs/<run-id>/summary.md` when present
+- `agentflow/runtime/explore/<current_planning_session>/brief.md` when `planning_track` is `explore`
+- `agentflow/runtime/explore/<current_planning_session>/rounds/<round-id>/round.md` when an active explore round is present
+- `agentflow/runtime/preflight/<current_planning_session>/brief.md` when `planning_track` is `preflight`
+- `agentflow/runtime/preflight/<current_planning_session>/decisions/queue.md` when `planning_track` is `preflight`
+- `agentflow/runtime/runs/<run-id>/dispatch-ledger.md`
+- `agentflow/runtime/runs/<run-id>/summary.md` when present
 
 ## Procedure
 

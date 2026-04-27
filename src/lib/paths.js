@@ -23,7 +23,7 @@ export function resolveTarget(args) {
 export function findProjectRoot(start = process.cwd()) {
   let dir = path.resolve(start);
   while (true) {
-    if (fs.existsSync(path.join(dir, "agentflow")) && fs.existsSync(path.join(dir, ".agentflow"))) return dir;
+    if (fs.existsSync(path.join(dir, "agentflow", "runtime", "state.json"))) return dir;
     const parent = path.dirname(dir);
     if (parent === dir) return null;
     dir = parent;

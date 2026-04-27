@@ -12,4 +12,4 @@ Status 取值：
 
 | ID | Milestone | Status | Depends on | Exit criteria | Blocker |
 |---|---|---|---|---|---|
-| M0 | Initialize workflow | ready | - | `AGENTS.md`、`.codex/`、`.agents/`、`agentflow/`、`.agentflow/` 已存在 | - |
+| M0 | Initialize workflow | ready | - | `.codex/`、`.agents/` 和 `agentflow/` 已存在 | - |
