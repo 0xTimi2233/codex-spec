@@ -10,7 +10,8 @@ description: 按 roadmap 串行执行 milestone，直到阻塞或完成。
 当这些路径不在当前上下文中，或文件内容可能已变化时读取：
 
 - `.codex/prompts/main-thread.md`
-- `.codex/prompts/file-protocol.md`
+- `.codex/prompts/glossary.md`
+- `.codex/prompts/file-index.md`
 - `codexspec/roadmap.md`
 - `codexspec/runtime/state.json`
 

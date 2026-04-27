@@ -11,7 +11,8 @@ Read these paths only when they are not already in the active context or their c
 
 - `codexspec/runtime/state.json`
 - `.codex/prompts/main-thread.md`
-- `.codex/prompts/file-protocol.md`
+- `.codex/prompts/glossary.md`
+- `.codex/prompts/file-index.md`
 - `codexspec/runtime/explore/<current_planning_session>/brief.md` when `planning_track` is `explore`
 - `codexspec/runtime/explore/<current_planning_session>/rounds/<round-id>/round.md` when an active explore round is present
 - `codexspec/runtime/preflight/<current_planning_session>/brief.md` when `planning_track` is `preflight`

@@ -11,7 +11,8 @@ description: 从 state、planning session 和 dispatch ledger 恢复 workflow。
 
 - `codexspec/runtime/state.json`
 - `.codex/prompts/main-thread.md`
-- `.codex/prompts/file-protocol.md`
+- `.codex/prompts/glossary.md`
+- `.codex/prompts/file-index.md`
 - `planning_track` 为 `explore` 时对应的 `codexspec/runtime/explore/<current_planning_session>/brief.md`
 - 存在 active explore round 时对应的 `codexspec/runtime/explore/<current_planning_session>/rounds/<round-id>/round.md`
 - `planning_track` 为 `preflight` 时对应的 `codexspec/runtime/preflight/<current_planning_session>/brief.md`

@@ -40,7 +40,9 @@ function assertWorkflowSkillSet(root) {
 
 function assertPlanningDocs(root, lang) {
   const mainThread = readText(root, ".codex", "prompts", "main-thread.md");
-  const fileProtocol = readText(root, ".codex", "prompts", "file-protocol.md");
+  const glossary = readText(root, ".codex", "prompts", "glossary.md");
+  const fileIndex = readText(root, ".codex", "prompts", "file-index.md");
+  const reportContract = readText(root, ".codex", "prompts", "report-contract.md");
   const planSkill = readText(root, ".agents", "skills", "spec:plan", "SKILL.md");
   const autoSkill = readText(root, ".agents", "skills", "spec:auto", "SKILL.md");
   const designSkill = readText(root, ".agents", "skills", "spec:design", "SKILL.md");
@@ -54,12 +56,15 @@ function assertPlanningDocs(root, lang) {
   const codeReviewerRole = readText(root, ".codex", "prompts", "roles", "code-reviewer.md");
   const agentConfigs = generatedFiles(root, ".codex/agents").map((rel) => readText(root, rel)).join("\n");
 
+  assert(!fs.existsSync(path.join(root, ".codex", "prompts", "file-protocol.md")), `${lang} should not install the old file-protocol prompt`);
+  assert(mainThread.includes(lang === "zh" ? "工作流循环" : "Workflow Loop"), `${lang} main-thread should focus on workflow loop`);
   assert(mainThread.includes(lang === "zh" ? "决策路由" : "Decision Routing"), `${lang} main-thread should define decision routing`);
   assert(mainThread.includes(lang === "zh" ? "只有 PM 或 Architect" : "Only unresolved PM or Architect"), `${lang} main-thread should limit user decision escalation`);
-  assert(mainThread.includes("codexspec/runtime/explore/<explore-id>/dispatch-ledger.md"), `${lang} main-thread should define explore dispatch ledger`);
-  assert(mainThread.includes("codexspec/runtime/preflight/<preflight-id>/dispatch-ledger.md"), `${lang} main-thread should define preflight dispatch ledger`);
-  assert(mainThread.includes(lang === "zh" ? "Skill 边界" : "Skill Boundary"), `${lang} main-thread should keep skill procedures out of main protocol`);
-  assert(mainThread.includes(lang === "zh" ? "子代理" : "Close subagents promptly"), `${lang} main-thread should define subagent closure`);
+  assert(mainThread.includes(lang === "zh" ? "打回与路由" : "Rejection Routing"), `${lang} main-thread should define rejection routing`);
+  assert(mainThread.includes(lang === "zh" ? "Milestone 边界" : "Milestone Boundary"), `${lang} main-thread should define milestone boundary`);
+  assert(mainThread.includes(".codex/prompts/file-index.md"), `${lang} main-thread should use file index`);
+  assert(mainThread.includes(".codex/prompts/report-contract.md"), `${lang} main-thread should use report contract`);
+  assert(mainThread.includes(lang === "zh" ? "关闭子代理" : "close the subagent"), `${lang} main-thread should define subagent closure`);
   assert(!mainThread.includes("Public CLI commands"), `${lang} main-thread should not describe public CLI commands`);
   assert(!mainThread.includes("对用户公开的 CLI"), `${lang} main-thread should not describe public CLI commands`);
   assert(mainThread.includes(lang === "zh" ? "后续 workflow context 来自 `codexspec/`" : "Future workflow context comes from `codexspec/`"), `${lang} main-thread should keep codexspec as the future context source`);
@@ -67,26 +72,32 @@ function assertPlanningDocs(root, lang) {
   assert(!mainThread.includes(lang === "zh" ? "`$spec:execute`：" : "`$spec:execute`:"), `${lang} main-thread should not duplicate execute skill flow`);
   assert(!mainThread.includes("gate.md"), `${lang} main-thread should not reference gate.md`);
 
-  assert(fileProtocol.includes("codexspec/runtime/explore/<explore-id>/"), `${lang} file protocol should define explore session path`);
-  assert(fileProtocol.includes("codexspec/runtime/<work-unit>/dispatch/<role>-<task-id>.md"), `${lang} file protocol should define generic dispatch packet paths`);
-  assert(fileProtocol.includes("current run or planning session") || fileProtocol.includes("当前 run 或 planning session"), `${lang} file protocol should define planning-session dispatch ledger`);
-  assert(fileProtocol.includes("rounds/"), `${lang} file protocol should define explore rounds`);
-  assert(fileProtocol.includes("round-001"), `${lang} file protocol should show append-only round directories`);
-  assert(fileProtocol.includes("codexspec/runtime/archives/explore/<explore-id>/"), `${lang} file protocol should define explore archive path`);
-  assert(fileProtocol.includes("codexspec/runtime/preflight/<preflight-id>/"), `${lang} file protocol should define preflight session path`);
-  assert(fileProtocol.includes("blocker-ledger.md"), `${lang} file protocol should define preflight blocker ledger`);
-  assert(fileProtocol.includes("decisions/batches"), `${lang} file protocol should define stable preflight decision batches`);
-  assert(fileProtocol.includes("codexspec/runtime/archives/preflight/<preflight-id>/"), `${lang} file protocol should define preflight archive path`);
-  assert(fileProtocol.includes("pm/requirements.md"), `${lang} file protocol should define planning package requirements`);
-  assert(fileProtocol.includes("pm/acceptance-criteria.md"), `${lang} file protocol should define planning package acceptance criteria`);
-  assert(fileProtocol.includes(lang === "zh" ? "不是可复用项目知识" : "not reusable project knowledge"), `${lang} file protocol should keep PM package run-scoped`);
-  assert(!fileProtocol.includes("Dispatch Scope"), `${lang} file protocol should not define dispatch behavior`);
-  assert(!fileProtocol.includes("Report Format"), `${lang} file protocol should not define report format`);
-  assert(!fileProtocol.includes("Decision Request"), `${lang} file protocol should not define decision request format`);
-  assert(!fileProtocol.includes("questions.md"), `${lang} file protocol should not use the old shared questions file`);
-  assert(!fileProtocol.includes("gate.md"), `${lang} file protocol should not define gate.md`);
-  assert(!fileProtocol.includes("allowed_source_paths"), `${lang} file protocol should not use gate frontmatter`);
-  assert(!fileProtocol.includes("src/**"), `${lang} file protocol should not use repo-wide source examples`);
+  assert(glossary.includes("planning track"), `${lang} glossary should define planning track`);
+  assert(glossary.includes("dispatch packet"), `${lang} glossary should define dispatch packet`);
+  assert(glossary.includes("archive"), `${lang} glossary should define archive`);
+
+  assert(fileIndex.includes("codexspec/runtime/explore/<explore-id>/"), `${lang} file index should define explore session path`);
+  assert(fileIndex.includes("dispatch/<role>-<task-id>.md"), `${lang} file index should define dispatch packet path`);
+  assert(fileIndex.includes("rounds/<round-id>/round.md"), `${lang} file index should define explore rounds`);
+  assert(fileIndex.includes("codexspec/runtime/archives/runs/<run-id>/"), `${lang} file index should define run archive path`);
+  assert(fileIndex.includes("codexspec/runtime/archives/explore/<explore-id>/"), `${lang} file index should define explore archive path`);
+  assert(fileIndex.includes("codexspec/runtime/preflight/<preflight-id>/"), `${lang} file index should define preflight session path`);
+  assert(fileIndex.includes("blocker-ledger.md"), `${lang} file index should define preflight blocker ledger`);
+  assert(fileIndex.includes("decisions/batches/<batch-id>.md"), `${lang} file index should define stable preflight decision batches`);
+  assert(fileIndex.includes("codexspec/runtime/archives/preflight/<preflight-id>/"), `${lang} file index should define preflight archive path`);
+  assert(fileIndex.includes("pm/requirements.md"), `${lang} file index should define planning package requirements`);
+  assert(fileIndex.includes("pm/acceptance-criteria.md"), `${lang} file index should define planning package acceptance criteria`);
+  assert(fileIndex.includes(lang === "zh" ? "不是可复用项目知识" : "not reusable project knowledge"), `${lang} file index should keep PM package run-scoped`);
+  assert(!fileIndex.includes("Report Format"), `${lang} file index should not define report format`);
+  assert(!fileIndex.includes("Decision Request"), `${lang} file index should not define decision request format`);
+  assert(!fileIndex.includes("questions.md"), `${lang} file index should not use the old shared questions file`);
+  assert(!fileIndex.includes("gate.md"), `${lang} file index should not define gate.md`);
+  assert(!fileIndex.includes("allowed_source_paths"), `${lang} file index should not use gate frontmatter`);
+  assert(!fileIndex.includes("src/**"), `${lang} file index should not use repo-wide source examples`);
+
+  assert(reportContract.includes("Decision Request"), `${lang} report contract should define decision request`);
+  assert(reportContract.includes("Inputs read"), `${lang} report contract should require standard report inputs`);
+  assert(reportContract.includes("done-with-concerns"), `${lang} report contract should define status values`);
 
   assert(planSkill.includes("current_planning_session"), `${lang} plan skill should track current planning session`);
   assert(planSkill.includes("planning_track"), `${lang} plan skill should track planning track`);
@@ -116,17 +127,18 @@ function assertPlanningDocs(root, lang) {
   assert(!autoSkill.includes("只有以下情况停止自动推进"), `${lang} auto skill should not duplicate stop rules`);
   assert(resumeSkill.includes("current_planning_session"), `${lang} resume skill should restore planning sessions`);
   assert(resumeSkill.includes(".codex/prompts/main-thread.md"), `${lang} resume skill should read main-thread protocol`);
-  assert(resumeSkill.includes(".codex/prompts/file-protocol.md"), `${lang} resume skill should read file protocol`);
+  assert(resumeSkill.includes(".codex/prompts/glossary.md"), `${lang} resume skill should read glossary`);
+  assert(resumeSkill.includes(".codex/prompts/file-index.md"), `${lang} resume skill should read file index`);
   assert(statusSkill.includes("planning track"), `${lang} status skill should report planning track`);
 
-  assert(subagentContract.includes(lang === "zh" ? "跨越当前角色边界" : "crosses the current role boundary"), `${lang} subagent contract should define decision request boundaries`);
-  assert(subagentContract.includes("Inputs read"), `${lang} subagent contract should require standard report inputs`);
-  assert(!subagentContract.includes("- `.codex/prompts/file-protocol.md`"), `${lang} subagent contract should not require file protocol by default`);
-  assert(!subagentContract.includes(".codex/prompts/file-protocol.md"), `${lang} subagent contract should not mention file protocol`);
+  assert(subagentContract.includes(".codex/prompts/report-contract.md"), `${lang} subagent contract should reference report contract`);
+  assert(!subagentContract.includes("- `.codex/prompts/file-index.md`"), `${lang} subagent contract should not require file index by default`);
+  assert(!subagentContract.includes(".codex/prompts/file-protocol.md"), `${lang} subagent contract should not mention old file protocol`);
   assert(!subagentContract.includes(".codex/prompts/main-thread.md"), `${lang} subagent contract should not repeat main-thread read boundary`);
   assert(!subagentContract.includes("Files written:"), `${lang} subagent contract should not use legacy report fields`);
   assert(!agentConfigs.includes("file-protocol.md"), `${lang} agent configs should not require file protocol by default`);
   assert(agentConfigs.includes("subagent-contract.md"), `${lang} agent configs should use subagent contract`);
+  assert(agentConfigs.includes("report-contract.md"), `${lang} agent configs should use report contract`);
   assert(pmRole.includes(lang === "zh" ? "2-4 个选项" : "2-4 options"), `${lang} PM role should request numbered options`);
   assert(architectRole.includes("Decision Request"), `${lang} Architect role should return decision requests`);
   assert(docReviewerRole.includes(lang === "zh" ? "严格模式" : "Strict mode"), `${lang} Doc Reviewer role should enforce strict mode`);

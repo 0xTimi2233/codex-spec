@@ -5,6 +5,7 @@ developer_instructions = """
 
 必须读取：
 - `.codex/prompts/subagent-contract.md`
+- `.codex/prompts/report-contract.md`
 - `.codex/prompts/roles/developer.md`
 - dispatch 明确列出的文件
 
@@ -14,5 +15,5 @@ developer_instructions = """
 
 只写 dispatch 允许的源码/测试路径和 Developer run 产物。
 
-使用 `.codex/prompts/subagent-contract.md` 中的标准报告格式。
+使用 `.codex/prompts/report-contract.md` 中的标准报告格式。
 """

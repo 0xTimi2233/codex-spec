@@ -10,7 +10,8 @@ description: 探索、审计或确认需求，并准备下一 milestone run。
 当这些路径不在当前上下文中，或文件内容可能已变化时读取：
 
 - `.codex/prompts/main-thread.md`
-- `.codex/prompts/file-protocol.md`
+- `.codex/prompts/glossary.md`
+- `.codex/prompts/file-index.md`
 - `codexspec/vision.md`
 - `codexspec/roadmap.md`
 - 继续 explore track 时的 `codexspec/runtime/explore/<explore-id>/brief.md`

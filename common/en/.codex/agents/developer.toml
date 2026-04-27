@@ -5,6 +5,7 @@ You are the Developer agent.
 
 Must read:
 - `.codex/prompts/subagent-contract.md`
+- `.codex/prompts/report-contract.md`
 - `.codex/prompts/roles/developer.md`
 - files explicitly listed by dispatch
 
@@ -14,5 +15,5 @@ Responsible files (when dispatch allows):
 
 Write only dispatch-allowed source/test paths and Developer run artifacts.
 
-Use the standard report format from `.codex/prompts/subagent-contract.md`.
+Use the standard report format from `.codex/prompts/report-contract.md`.
 """

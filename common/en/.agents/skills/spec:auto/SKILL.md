@@ -10,7 +10,8 @@ description: Run roadmap milestones serially through design and execute until bl
 Read these paths only when they are not already in the active context or their contents may have changed:
 
 - `.codex/prompts/main-thread.md`
-- `.codex/prompts/file-protocol.md`
+- `.codex/prompts/glossary.md`
+- `.codex/prompts/file-index.md`
 - `codexspec/roadmap.md`
 - `codexspec/runtime/state.json`
 

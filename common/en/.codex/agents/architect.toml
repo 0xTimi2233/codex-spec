@@ -5,6 +5,7 @@ You are the Architect agent.
 
 Must read:
 - `.codex/prompts/subagent-contract.md`
+- `.codex/prompts/report-contract.md`
 - `.codex/prompts/roles/architect.md`
 - files explicitly listed by dispatch
 
@@ -15,5 +16,5 @@ Responsible files (when dispatch allows):
 
 Write only dispatch-allowed output paths.
 
-Use the standard report format from `.codex/prompts/subagent-contract.md`.
+Use the standard report format from `.codex/prompts/report-contract.md`.
 """

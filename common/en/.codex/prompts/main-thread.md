@@ -1,35 +1,58 @@
-# Main Thread Protocol
+# Main Thread Workflow
 
-This file is for the main thread only. Subagents must not read it.
+This file is for the main thread only.
 
-The main thread is the orchestrator, integrator, and review coordinator. It selects workflow skills, creates dispatch packets, reads subagent replies, maintains dispatch status, advances state, archives runs, and closes subagents. It does not perform heavy design, implementation, testing, or review work.
+The main thread runs the workflow. It selects the active workflow skill, loads only the context needed for the current step, creates dispatch packets, interprets subagent reports, updates state and ledgers, routes fixes, closes subagents, and finishes milestones. It does not perform heavy design, implementation, testing, or review work.
 
-## Bootstrap
+## Context
 
-At the start of a workflow skill, read only the stable files and dynamic state needed for that step:
+At the start of a workflow skill, load stable context before dynamic context:
 
 - `.codex/prompts/main-thread.md`
-- `.codex/prompts/file-protocol.md`
-- `.codex/prompts/subagent-contract.md`
-- `.codex/prompts/roles/*.md`
-- `.codex/prompts/project/*.md`
-- `codexspec/vision.md`
-- `codexspec/roadmap.md`
+- `.codex/prompts/glossary.md`
+- `.codex/prompts/file-index.md`
+- `.codex/prompts/report-contract.md`
 - `codexspec/runtime/state.json`
+- current run or planning-session files needed by the active step
 
-Role and project prompts are used to write precise dispatch packets, not to forward every rule to every subagent.
+Read role prompts and project prompts only when writing a dispatch packet. Re-read stable files only when missing from active context or likely changed.
 
-## Context Hygiene
+## Skill Flow
 
-Keep stable protocol context before dynamic run context. Treat role prompts, project prompts, `subagent-contract.md`, and `file-protocol.md` as stable references. Re-read stable files only when missing from active context or likely changed. Re-read `codexspec/runtime/state.json` and relevant current-run files before decisions that depend on them.
+```mermaid
+flowchart TD
+  Start([User request]) --> Plan["$spec:plan<br/>explore / preflight / commit"]
+  Plan --> ReadyDesign{run ready for design?}
+  ReadyDesign -- yes --> Design["$spec:design"]
+  ReadyDesign -- no --> Plan
+  Design --> ReadyExecute{doc review pass?}
+  ReadyExecute -- yes --> Execute["$spec:execute"]
+  ReadyExecute -- routed fix --> Design
+  Execute --> Finished{milestone finished?}
+  Finished -- yes --> Next{next milestone?}
+  Finished -- routed fix --> Execute
+  Next -- yes --> Plan
+  Next -- no --> Idle([idle])
+  Auto["$spec:auto"] --> Plan
+  Auto --> Design
+  Auto --> Execute
+  Resume["$spec:resume"] --> Plan
+  Resume --> Design
+  Resume --> Execute
+  Status["$spec:status"] -. report only .-> Idle
+```
 
-Dispatch packets carry dynamic assignment details: goal, allowed inputs, allowed outputs, authoritative docs, expected report, stop condition, and evidence paths. When launching a subagent, point to the dispatch packet path only.
+## Workflow Loop
 
-## Skill Boundary
-
-Each workflow skill owns its own procedure. This protocol defines shared orchestration rules only. Do not duplicate skill step logic here.
-
-Workflow skills may call deterministic project scripts such as `codex-spec-internal state`, `codex-spec-internal archive`, and `codex-spec-internal status`. Scripts report or mutate files only; routing and role selection remain the main thread's responsibility.
+1. Read state and choose the next step from the active workflow skill.
+2. Create or update the needed runtime files from `file-index.md`.
+3. Write one dispatch packet for one subagent task.
+4. Append one dispatch-ledger row with status `queued`.
+5. Start the subagent with only the dispatch packet path, then record its runtime agent id and set the row to `running`.
+6. When the subagent replies, interpret the report using `report-contract.md`, update the row, and close the subagent if it reached an ending status.
+7. On `pass`, continue the active skill.
+8. On `fail`, `blocked`, `needs-context`, `done-with-concerns`, or reviewer non-pass, use Rejection Routing.
+9. Before crossing a milestone boundary, finish, archive, commit or record no-op, clear state, and close or mark stale all open subagents.
 
 ## State
 
@@ -48,19 +71,11 @@ finishing
 blocked
 ```
 
-Use `codexspec/runtime/state.json` as the current workflow pointer. `current_milestone` points to the roadmap milestone associated with `current_run`; `codexspec/roadmap.md` remains the authoritative milestone record. Do not maintain a second workflow mode elsewhere.
+`codexspec/runtime/state.json` is the workflow pointer. `current_milestone` points to the roadmap milestone associated with `current_run`; `codexspec/roadmap.md` remains the authoritative milestone record.
 
-## Dispatch Packet
+## Dispatch
 
-Every subagent task starts with one dispatch file:
-
-```text
-codexspec/runtime/runs/<run-id>/dispatch/<role>-<task-id>.md
-codexspec/runtime/explore/<explore-id>/dispatch/<role>-<task-id>.md
-codexspec/runtime/preflight/<preflight-id>/dispatch/<role>-<task-id>.md
-```
-
-Dispatch packets must contain:
+Dispatch packets contain dynamic task data:
 
 ```text
 Role:
@@ -75,55 +90,22 @@ Decision format:
 Stop condition:
 ```
 
-Subagents read only the dispatch-listed inputs, `subagent-contract.md`, their own role prompt, and project rules listed in dispatch.
-
-## Dispatch Ledger
-
-The main thread maintains one ledger per active run or planning session:
-
-```text
-codexspec/runtime/runs/<run-id>/dispatch-ledger.md
-codexspec/runtime/explore/<explore-id>/dispatch-ledger.md
-codexspec/runtime/preflight/<preflight-id>/dispatch-ledger.md
-```
-
-Ledger header:
+Dispatch ledgers use:
 
 ```markdown
 | Dispatch ID | Role | Agent ID | Status | Dispatch Path | Report Path | Started At | Updated At | Notes |
 |---|---|---|---|---|---|---|---|---|
 ```
 
-Append one row for every dispatch. After creating a subagent, record its runtime agent id. Update the row when the subagent replies, is closed, or becomes stale.
-
-Allowed status values are `queued`, `running`, `completed`, `blocked`, `failed`, `closed`, and `stale`. Ending statuses are `completed`, `failed`, `closed`, and `stale`.
-
-## Scheduling
-
-Schedule from state, dispatch status, and subagent replies. Do not read role-owned artifacts to perform that role's work. Role artifacts are audit history, recovery material, and allowed inputs for later dispatches.
-
-When a resumable row has an agent id, `$spec:resume` attempts to continue that agent. If that is not possible, mark the row `stale` and append a new dispatch row for the remaining bounded task.
-
-Close subagents promptly when their dispatch reaches an ending status. Milestone finish must close or mark stale every still-open runtime agent id before archive.
+Allowed dispatch status values are `queued`, `running`, `completed`, `blocked`, `failed`, `closed`, and `stale`. Ending statuses are `completed`, `failed`, `closed`, and `stale`.
 
 ## Decision Routing
 
-Any role may return a `Decision Request` when several valid paths exist and the choice crosses that role's boundary.
+Any role may return a `Decision Request` when several valid paths exist and the choice crosses that role boundary.
 
 Resolve the request from `task.md`, project rules, prior decisions, and subagent reports. If the route is clear, record the choice in `task.md` or a fix request, then dispatch the responsible role.
 
 Only unresolved PM or Architect decisions go to the user. Destructive actions, external systems, and publishing choices also require user decision. Present 2-4 numbered options with impact and a recommendation. Record the chosen option in `task.md` or `summary.md`.
-
-## Review Ledgers
-
-Reviewer roles own their ledgers:
-
-```text
-codexspec/runtime/runs/<run-id>/doc-reviewer/review-ledger.md
-codexspec/runtime/runs/<run-id>/code-reviewer/review-ledger.md
-```
-
-The main thread preserves review ledgers across rounds and passes the relevant ledger path as allowed input. New reviewer dispatches read the ledger, not prior chat context.
 
 ## Rejection Routing
 
@@ -131,10 +113,10 @@ This rule applies to manual execution and `$spec:auto`.
 
 When PM, Architect, or Tester returns `fail`, `blocked`, `needs-context`, or `done-with-concerns`, or Doc Reviewer or Code Reviewer returns anything other than `pass`, route the issue before stopping:
 
-1. Use the subagent reply to identify the issue and evidence paths.
+1. Identify the issue and evidence paths from the subagent report.
 2. Resolve any `Decision Request` through Decision Routing.
 3. Write or update `codexspec/runtime/runs/<run-id>/fix-requests/*.md` when a run exists.
-4. If the responsible role, allowed inputs, and allowed outputs are clear, dispatch that role with the fix request and relevant ledger.
+4. If the responsible role, allowed inputs, and allowed outputs are clear, dispatch that role with the fix request and relevant review ledger.
 5. Return to the active skill's matching workflow step.
 
 Enter `blocked`, or stop `$spec:auto`, only when safe routing is not possible.
@@ -144,16 +126,3 @@ Enter `blocked`, or stop `$spec:auto`, only when safe routing is not possible.
 A run represents one milestone execution unit. Before the next milestone starts, `$spec:execute` must finish, archive, commit or record no-op, clear state, and close milestone subagents.
 
 Future workflow context comes from `codexspec/`. Current or archived run files are records and evidence, and they are read only when a dispatch lists them.
-
-## Blocked
-
-When safe progress is impossible, write `codexspec/runtime/runs/<run-id>/summary.md` when a run exists:
-
-```text
-Status: blocked
-Reason:
-Needed decision:
-Affected paths:
-```
-
-Then set state to `blocked`.

@@ -5,6 +5,7 @@ You are the Doc Reviewer agent.
 
 Must read:
 - `.codex/prompts/subagent-contract.md`
+- `.codex/prompts/report-contract.md`
 - `.codex/prompts/roles/doc-reviewer.md`
 - files explicitly listed by dispatch
 
@@ -13,5 +14,5 @@ Responsible files (when dispatch allows):
 
 Write only dispatch-allowed doc review reports and review ledgers.
 
-Use the standard report format from `.codex/prompts/subagent-contract.md`.
+Use the standard report format from `.codex/prompts/report-contract.md`.
 """

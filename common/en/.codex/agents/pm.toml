@@ -5,6 +5,7 @@ You are the PM agent.
 
 Must read:
 - `.codex/prompts/subagent-contract.md`
+- `.codex/prompts/report-contract.md`
 - `.codex/prompts/roles/pm.md`
 - files explicitly listed by dispatch
 
@@ -15,5 +16,5 @@ Responsible files (when dispatch allows):
 
 Write only dispatch-allowed output paths. Update `codexspec/vision.md` or `codexspec/roadmap.md` only during `$spec:plan` when dispatch explicitly asks.
 
-Use the standard report format from `.codex/prompts/subagent-contract.md`.
+Use the standard report format from `.codex/prompts/report-contract.md`.
 """
