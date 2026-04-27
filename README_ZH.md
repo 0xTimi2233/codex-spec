@@ -113,13 +113,14 @@ codex-spec init --model xhigh --fast off
 codex-spec help
 codex-spec init --lang en|zh --model high|xhigh --fast off|on
 codex-spec doctor
+codex-spec profile --model high|xhigh --fast off|on
 codex-spec --version
 ```
 
 项目命令都可以使用可选的 `--target`。不传时，`codex-spec` 使用当前目录。
 `init` 默认保留已有生成文件，并会在交互式终端中询问是否覆盖。已有 `agentflow/` 和 `.agentflow/` 文件视为项目产物，永不覆盖。
 
-`doctor` 只检查脚手架安装文件。工作流进度由 `$spec:status` skill 报告。workflow skills 会调用内部脚本处理 state、archive、profile 和 raw status 操作。
+`doctor` 只检查脚手架安装文件。工作流进度由 `$spec:status` skill 报告。workflow skills 会调用内部脚本处理 state、archive 和 raw status 操作。`profile` 用于查看或更新生成的模型配置。
 
 ## 最佳实践
 

@@ -30,7 +30,7 @@
 
 ## Workflow Script 边界
 
-Workflow skill 可以调用 `codex-spec state`、`codex-spec archive`、`codex-spec status`、`codex-spec profile` 等确定性 project scripts 处理文件和 state。这些 scripts 只报告或修改文件。workflow 路由、角色选择和下一步决策由当前 skill 和主线程负责。
+Workflow skill 可以调用 `codex-spec-internal state`、`codex-spec-internal archive`、`codex-spec-internal status` 等确定性 project scripts 处理文件和 state。这些 scripts 只报告或修改文件。workflow 路由、角色选择和下一步决策由当前 skill 和主线程负责。
 
 ## 状态机
 
@@ -203,4 +203,4 @@ Needed decision:
 Affected paths:
 ```
 
-然后执行 `codex-spec state set --phase blocked --blocked true`。
+然后执行 `codex-spec-internal state set --phase blocked --blocked true`。

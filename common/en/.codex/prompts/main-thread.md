@@ -25,7 +25,7 @@ Keep stable protocol context before dynamic run context. Treat `file-protocol.md
 
 ## Workflow Script Boundary
 
-Workflow skills may call deterministic project scripts such as `codex-spec state`, `codex-spec archive`, `codex-spec status`, and `codex-spec profile` for file and state operations. These scripts report or mutate files only. Workflow routing, role selection, and next-step decisions remain the responsibility of the active skill and main thread.
+Workflow skills may call deterministic project scripts such as `codex-spec-internal state`, `codex-spec-internal archive`, and `codex-spec-internal status` for file and state operations. These scripts report or mutate files only. Workflow routing, role selection, and next-step decisions remain the responsibility of the active skill and main thread.
 
 ## State Machine
 
@@ -198,4 +198,4 @@ Needed decision:
 Affected paths:
 ```
 
-Then run `codex-spec state set --phase blocked --blocked true`.
+Then run `codex-spec-internal state set --phase blocked --blocked true`.

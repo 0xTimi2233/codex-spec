@@ -28,11 +28,11 @@ Read these paths only when they are not already in the active context or their c
    - `preflight`: audit existing requirement sources for planning blockers.
    - `commit`: confirm requirements, create a run, and dispatch PM.
 4. If the track is unclear, ask the user for a numbered choice with impacts and a recommendation.
-5. For `explore`, create or continue `.agentflow/explore/<explore-id>/`, set `codex-spec state set --planning-session <explore-id> --planning-track explore --blocked false`, write a PM dispatch for the next question round or closure, append the PM row, dispatch PM, and update the row when PM replies.
-6. For `preflight`, create or continue `.agentflow/preflight/<preflight-id>/`, set `codex-spec state set --planning-session <preflight-id> --planning-track preflight --blocked false`, write a PM dispatch for requirement audit or closure, append the PM row, dispatch PM, and update the row when PM replies.
-7. When an explore or preflight track is closed as `ready-for-plan` or `discarded`, run `codex-spec archive --explore <explore-id>` or `codex-spec archive --preflight <preflight-id>`, then clear planning state with `codex-spec state set --planning-session null --planning-track null`.
+5. For `explore`, create or continue `.agentflow/explore/<explore-id>/`, set `codex-spec-internal state set --planning-session <explore-id> --planning-track explore --blocked false`, write a PM dispatch for the next question round or closure, append the PM row, dispatch PM, and update the row when PM replies.
+6. For `preflight`, create or continue `.agentflow/preflight/<preflight-id>/`, set `codex-spec-internal state set --planning-session <preflight-id> --planning-track preflight --blocked false`, write a PM dispatch for requirement audit or closure, append the PM row, dispatch PM, and update the row when PM replies.
+7. When an explore or preflight track is closed as `ready-for-plan` or `discarded`, run `codex-spec-internal archive --explore <explore-id>` or `codex-spec-internal archive --preflight <preflight-id>`, then clear planning state with `codex-spec-internal state set --planning-session null --planning-track null`.
 8. For `commit`, create a run id and write `.agentflow/runs/<run-id>/dispatch-ledger.md` with the dispatch table header.
-9. Run `codex-spec state set --phase planning --run <run-id> --planning-session null --planning-track null --blocked false`.
+9. Run `codex-spec-internal state set --phase planning --run <run-id> --planning-session null --planning-track null --blocked false`.
 10. Write `.agentflow/runs/<run-id>/dispatch/pm-001.md` with the planning input and self-contained PM output paths.
 11. Append the PM row to `dispatch-ledger.md`, dispatch PM, record the runtime agent id, and update the row when the PM response arrives.
 12. PM confirms requirements, scope, non-goals, roadmap milestones, acceptance criteria, and `pm/planning-summary.md`.

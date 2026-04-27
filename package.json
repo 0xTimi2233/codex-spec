@@ -4,7 +4,8 @@
   "description": "Spec-driven Codex subagent workflow scaffold with isolated roles, review gates, and run archives.",
   "type": "module",
   "bin": {
-    "codex-spec": "./dist/cli.js"
+    "codex-spec": "./dist/cli.js",
+    "codex-spec-internal": "./dist/internal.js"
   },
   "files": [
     "dist/",

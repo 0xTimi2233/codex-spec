@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { assert, readText, root, runCli, runCliFail, tempDir } from "./test-utils.js";
+import { assert, readText, root, runCli, runCliFail, runInternal, runInternalFail, tempDir } from "./test-utils.js";
 
 function writeState(rootDir, state) {
   fs.writeFileSync(path.join(rootDir, ".agentflow", "state.json"), JSON.stringify(state, null, 2), "utf8");
@@ -43,7 +43,11 @@ for (const removedSkill of ["brainstorm", "preflight", "plan", "design", "execut
 
 runCli("dist", ["--version"]);
 runCli("dist", ["doctor", "--target", tmp]);
-runCli("dist", ["status", "--target", tmp]);
+assert(fs.existsSync(path.join(root, "dist", "internal.js")), "dist should include internal script entrypoint");
+assert(runCliFail("dist", ["status", "--target", tmp]).includes("Unknown command"), "public dist cli should reject status");
+assert(runCliFail("dist", ["state", "set", "--target", tmp]).includes("Unknown command"), "public dist cli should reject state");
+assert(runCliFail("dist", ["archive", "--target", tmp]).includes("Unknown command"), "public dist cli should reject archive");
+runInternal("dist", ["status", "--target", tmp]);
 
 const runDir = path.join(tmp, ".agentflow", "runs", "smoke-run");
 fs.mkdirSync(runDir, { recursive: true });
@@ -59,10 +63,10 @@ writeState(tmp, {
   updated_by: "smoke"
 });
 
-const invalidArchive = runCliFail("dist", ["archive", "--run", "../bad", "--target", tmp]);
+const invalidArchive = runInternalFail("dist", ["archive", "--run", "../bad", "--target", tmp]);
 assert(invalidArchive.includes("Invalid run id"), "archive should reject unsafe run ids");
 
-runCli("dist", ["archive", "--run", "smoke-run", "--target", tmp]);
+runInternal("dist", ["archive", "--run", "smoke-run", "--target", tmp]);
 assert(!fs.existsSync(runDir), "archive should move run out of runs/");
 assert(fs.existsSync(path.join(tmp, ".agentflow", "archives", "smoke-run")), "archive directory was not created");
 assert(JSON.parse(readText(tmp, ".agentflow", "state.json")).current_run === "smoke-run", "archive should not clear current run");
@@ -79,7 +83,7 @@ writeState(tmp, {
   blocked: false,
   updated_by: "smoke"
 });
-runCli("dist", ["archive", "--target", tmp]);
+runInternal("dist", ["archive", "--target", tmp]);
 assert(!fs.existsSync(stateRunDir), "archive should use current run when --run is omitted");
 assert(fs.existsSync(path.join(tmp, ".agentflow", "archives", "state-run")), "state run archive directory was not created");
 assert(JSON.parse(readText(tmp, ".agentflow", "state.json")).current_run === "state-run", "archive without --run should not clear current run");
@@ -98,7 +102,7 @@ writeState(tmp, {
   updated_by: "smoke"
 });
 
-runCli("dist", ["archive", "--explore", "smoke-explore", "--target", tmp]);
+runInternal("dist", ["archive", "--explore", "smoke-explore", "--target", tmp]);
 assert(!fs.existsSync(exploreDir), "archive should move explore out of explore/");
 assert(fs.existsSync(path.join(tmp, ".agentflow", "archives", "explore", "smoke-explore")), "explore archive directory was not created");
 assert(JSON.parse(readText(tmp, ".agentflow", "state.json")).current_planning_session === "smoke-explore", "archive should not clear current planning session");
@@ -117,7 +121,7 @@ writeState(tmp, {
   updated_by: "smoke"
 });
 
-runCli("dist", ["archive", "--preflight", "smoke-preflight", "--target", tmp]);
+runInternal("dist", ["archive", "--preflight", "smoke-preflight", "--target", tmp]);
 assert(!fs.existsSync(preflightDir), "archive should move preflight out of preflight/");
 assert(fs.existsSync(path.join(tmp, ".agentflow", "archives", "preflight", "smoke-preflight")), "preflight archive directory was not created");
 const stateAfterPreflight = JSON.parse(readText(tmp, ".agentflow", "state.json"));

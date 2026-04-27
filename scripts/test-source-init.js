@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { assert, readText, root, runCli, tempDir } from "./test-utils.js";
+import { assert, readText, root, runCli, runCliFail, tempDir } from "./test-utils.js";
 
 const LEGACY_WORKFLOW_SKILL = /\$(brainstorm|preflight|plan|design|execute|auto|resume|status)\b/;
 const WORKFLOW_SKILLS = ["spec:plan", "spec:design", "spec:execute", "spec:auto", "spec:status", "spec:resume"];
@@ -84,8 +84,8 @@ function assertPlanningDocs(root, lang) {
   assert(planSkill.includes("planning_track"), `${lang} plan skill should track planning track`);
   assert(!planSkill.includes(".agentflow/state.json.current_planning_session"), `${lang} plan skill should not describe state fields as file paths`);
   assert(!planSkill.includes(".agentflow/state.json.planning_track"), `${lang} plan skill should not describe state fields as file paths`);
-  assert(planSkill.includes("codex-spec archive --explore <explore-id>"), `${lang} plan skill should archive completed explore sessions`);
-  assert(planSkill.includes("codex-spec archive --preflight <preflight-id>"), `${lang} plan skill should archive completed preflights`);
+  assert(planSkill.includes("codex-spec-internal archive --explore <explore-id>"), `${lang} plan skill should archive completed explore sessions`);
+  assert(planSkill.includes("codex-spec-internal archive --preflight <preflight-id>"), `${lang} plan skill should archive completed preflights`);
   assert(planSkill.includes("Planning Package"), `${lang} plan skill should define the planning package`);
   assert(planSkill.includes("pm/planning-summary.md"), `${lang} plan skill should write planning summary`);
   assert(planSkill.includes(lang === "zh" ? "调度 PM" : "dispatch PM"), `${lang} plan skill should use PM dispatch`);
@@ -157,12 +157,14 @@ runCli("src", ["--version"]);
 const helpOutput = runCli("src", ["help"]);
 assert(helpOutput.includes("codex-spec init"), "help should show init");
 assert(helpOutput.includes("codex-spec doctor"), "help should show doctor");
-assert(!helpOutput.includes("codex-spec profile"), "help should not expose profile");
+assert(helpOutput.includes("codex-spec profile"), "help should show profile");
 assert(!helpOutput.includes("codex-spec status"), "help should not expose status");
 assert(!helpOutput.includes("codex-spec state"), "help should not expose state");
 assert(!helpOutput.includes("codex-spec archive"), "help should not expose archive");
+assert(runCliFail("src", ["state", "set", "--target", tmp]).includes("Unknown command"), "public cli should reject state");
+assert(runCliFail("src", ["archive", "--target", tmp]).includes("Unknown command"), "public cli should reject archive");
+assert(runCliFail("src", ["status", "--target", tmp]).includes("Unknown command"), "public cli should reject status");
 runCli("src", ["doctor", "--target", tmp]);
-runCli("src", ["status", "--target", tmp]);
 
 const customAgents = "# Custom agents\n";
 const customVision = "# Custom vision\n";

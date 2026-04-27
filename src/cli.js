@@ -6,10 +6,7 @@ import { findPackageRoot, resolveTarget } from "./lib/paths.js";
 import { printHelp } from "./commands/help.js";
 import { initCommand } from "./commands/init.js";
 import { doctorCommand } from "./commands/doctor.js";
-import { statusCommand } from "./commands/status.js";
 import { profileCommand } from "./commands/profile.js";
-import { stateCommand } from "./commands/state.js";
-import { archiveCommand } from "./commands/archive.js";
 import { exitWith, println } from "./lib/output.js";
 
 const args = parseArgs(process.argv.slice(2));
@@ -23,14 +20,8 @@ if (!command || command === "help" || args.help) {
   await initCommand(args, context);
 } else if (command === "doctor") {
   doctorCommand(args, context);
-} else if (command === "status") {
-  statusCommand(args, context);
 } else if (command === "profile") {
   profileCommand(args, context);
-} else if (command === "state") {
-  stateCommand(args, context);
-} else if (command === "archive") {
-  archiveCommand(args, context);
 } else if (command === "--version" || command === "version") {
   const pkg = JSON.parse(fs.readFileSync(path.join(packageRoot, "package.json"), "utf8"));
   println(pkg.version);

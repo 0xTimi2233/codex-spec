@@ -113,13 +113,14 @@ codex-spec init --model xhigh --fast off
 codex-spec help
 codex-spec init --lang en|zh --model high|xhigh --fast off|on
 codex-spec doctor
+codex-spec profile --model high|xhigh --fast off|on
 codex-spec --version
 ```
 
 `--target` is optional for project commands. Without it, `codex-spec` uses the current working directory.
 `init` preserves existing generated files by default and asks before overwriting them in interactive shells. Existing `agentflow/` and `.agentflow/` files are treated as project artifacts and are never overwritten.
 
-`doctor` checks the installed scaffold files. Workflow progress is reported by the `$spec:status` skill. Workflow skills call internal scripts for state, archive, profile, and raw status operations.
+`doctor` checks the installed scaffold files. Workflow progress is reported by the `$spec:status` skill. Workflow skills call internal scripts for state, archive, and raw status operations. `profile` shows or updates generated model settings.
 
 ## Best Practices
 

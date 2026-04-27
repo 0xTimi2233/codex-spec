@@ -175,7 +175,7 @@ The main thread writes this file after Doc Reviewer returns `pass`. Source and t
 .agentflow/archives/preflight/<preflight-id>/
 ```
 
-`archives/` is immutable history. `codex-spec archive --run <run-id>` moves the completed run from `.agentflow/runs/<run-id>/` into `.agentflow/archives/<run-id>/`. `codex-spec archive --explore <explore-id>` moves the completed explore session from `.agentflow/explore/<explore-id>/` into `.agentflow/archives/explore/<explore-id>/`. `codex-spec archive --preflight <preflight-id>` moves the completed preflight from `.agentflow/preflight/<preflight-id>/` into `.agentflow/archives/preflight/<preflight-id>/`. Archives must not overwrite existing archives. Reusable facts must be synced into `agentflow/` or written into the current run's planning package.
+`archives/` is immutable history. `codex-spec-internal archive --run <run-id>` moves the completed run from `.agentflow/runs/<run-id>/` into `.agentflow/archives/<run-id>/`. `codex-spec-internal archive --explore <explore-id>` moves the completed explore session from `.agentflow/explore/<explore-id>/` into `.agentflow/archives/explore/<explore-id>/`. `codex-spec-internal archive --preflight <preflight-id>` moves the completed preflight from `.agentflow/preflight/<preflight-id>/` into `.agentflow/archives/preflight/<preflight-id>/`. Archives must not overwrite existing archives. Reusable facts must be synced into `agentflow/` or written into the current run's planning package.
 
 ## Report Format
 

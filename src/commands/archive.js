@@ -63,7 +63,7 @@ export function archiveCommand(args, context) {
 
   const resolvedRunId = resolveRun(args, context.target);
   if (!resolvedRunId) {
-    exitWith("Usage: codex-spec archive --run <run-id> | --explore <explore-id> | --preflight <preflight-id>");
+    exitWith("Usage: codex-spec-internal archive --run <run-id> | --explore <explore-id> | --preflight <preflight-id>");
     return;
   }
   const runId = String(resolvedRunId);

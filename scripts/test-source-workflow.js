@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { assert, readText, runCli, runCliFail, tempDir } from "./test-utils.js";
+import { assert, readText, runCli, runCliFail, runInternal, runInternalFail, tempDir } from "./test-utils.js";
 
 function writeState(root, state) {
   fs.writeFileSync(path.join(root, ".agentflow", "state.json"), JSON.stringify(state, null, 2), "utf8");
@@ -13,21 +13,21 @@ const config = readText(tmp, ".codex", "config.toml");
 assert(!config.includes("[[hooks."), "generated config should not install hooks");
 assert(!config.includes("codex_hooks"), "generated config should not enable hook features");
 
-const missingPlanningTrack = runCliFail("src", ["state", "set", "--planning-session", "orphan", "--target", tmp]);
+const missingPlanningTrack = runInternalFail("src", ["state", "set", "--planning-session", "orphan", "--target", tmp]);
 assert(missingPlanningTrack.includes("--planning-session and --planning-track must be set or cleared together"), "state should reject planning session without track");
 
-const missingPlanningSession = runCliFail("src", ["state", "set", "--planning-track", "explore", "--target", tmp]);
+const missingPlanningSession = runInternalFail("src", ["state", "set", "--planning-track", "explore", "--target", tmp]);
 assert(missingPlanningSession.includes("--planning-session and --planning-track must be set or cleared together"), "state should reject planning track without session");
 
-runCli("src", ["state", "set", "--planning-session", "paired-explore", "--planning-track", "explore", "--target", tmp]);
+runInternal("src", ["state", "set", "--planning-session", "paired-explore", "--planning-track", "explore", "--target", tmp]);
 let pairedState = JSON.parse(readText(tmp, ".agentflow", "state.json"));
 assert(pairedState.current_planning_session === "paired-explore", "state should accept paired planning session");
 assert(pairedState.planning_track === "explore", "state should accept paired planning track");
 
-const clearingOnlySession = runCliFail("src", ["state", "set", "--planning-session", "null", "--target", tmp]);
+const clearingOnlySession = runInternalFail("src", ["state", "set", "--planning-session", "null", "--target", tmp]);
 assert(clearingOnlySession.includes("--planning-session and --planning-track must be set or cleared together"), "state should reject clearing only planning session");
 
-runCli("src", ["state", "set", "--planning-session", "null", "--planning-track", "null", "--target", tmp]);
+runInternal("src", ["state", "set", "--planning-session", "null", "--planning-track", "null", "--target", tmp]);
 pairedState = JSON.parse(readText(tmp, ".agentflow", "state.json"));
 assert(pairedState.current_planning_session === null, "state should clear paired planning session");
 assert(pairedState.planning_track === null, "state should clear paired planning track");
@@ -46,10 +46,10 @@ writeState(tmp, {
   updated_by: "smoke"
 });
 
-const invalidArchive = runCliFail("src", ["archive", "--run", "../bad", "--target", tmp]);
+const invalidArchive = runInternalFail("src", ["archive", "--run", "../bad", "--target", tmp]);
 assert(invalidArchive.includes("Invalid run id"), "archive should reject unsafe run ids");
 
-runCli("src", ["archive", "--run", "smoke-run", "--target", tmp]);
+runInternal("src", ["archive", "--run", "smoke-run", "--target", tmp]);
 assert(!fs.existsSync(runDir), "archive should move run out of runs/");
 assert(fs.existsSync(path.join(tmp, ".agentflow", "archives", "smoke-run")), "archive directory was not created");
 const stateAfterRunArchive = JSON.parse(readText(tmp, ".agentflow", "state.json"));
@@ -70,10 +70,10 @@ writeState(tmp, {
   updated_by: "smoke"
 });
 
-const invalidExploreArchive = runCliFail("src", ["archive", "--explore", "../bad", "--target", tmp]);
+const invalidExploreArchive = runInternalFail("src", ["archive", "--explore", "../bad", "--target", tmp]);
 assert(invalidExploreArchive.includes("Invalid explore id"), "archive should reject unsafe explore ids");
 
-runCli("src", ["archive", "--explore", "smoke-explore", "--target", tmp]);
+runInternal("src", ["archive", "--explore", "smoke-explore", "--target", tmp]);
 assert(!fs.existsSync(exploreDir), "archive should move explore out of explore/");
 assert(fs.existsSync(path.join(tmp, ".agentflow", "archives", "explore", "smoke-explore")), "explore archive directory was not created");
 const stateAfterExploreArchive = JSON.parse(readText(tmp, ".agentflow", "state.json"));
@@ -94,10 +94,10 @@ writeState(tmp, {
   updated_by: "smoke"
 });
 
-const invalidPreflightArchive = runCliFail("src", ["archive", "--preflight", "../bad", "--target", tmp]);
+const invalidPreflightArchive = runInternalFail("src", ["archive", "--preflight", "../bad", "--target", tmp]);
 assert(invalidPreflightArchive.includes("Invalid preflight id"), "archive should reject unsafe preflight ids");
 
-runCli("src", ["archive", "--preflight", "smoke-preflight", "--target", tmp]);
+runInternal("src", ["archive", "--preflight", "smoke-preflight", "--target", tmp]);
 assert(!fs.existsSync(preflightDir), "archive should move preflight out of preflight/");
 assert(fs.existsSync(path.join(tmp, ".agentflow", "archives", "preflight", "smoke-preflight")), "preflight archive directory was not created");
 const stateAfterPreflightArchive = JSON.parse(readText(tmp, ".agentflow", "state.json"));
@@ -127,7 +127,7 @@ writeState(tmp, {
   blocked: false,
   updated_by: "smoke"
 });
-runCli("src", ["archive", "--target", tmp]);
+runInternal("src", ["archive", "--target", tmp]);
 assert(!fs.existsSync(stateRunDir), "archive should use current run when --run is omitted");
 assert(fs.existsSync(path.join(tmp, ".agentflow", "archives", "state-run")), "state run archive directory was not created");
 assert(JSON.parse(readText(tmp, ".agentflow", "state.json")).current_run === "state-run", "archive without --run should not clear current run");

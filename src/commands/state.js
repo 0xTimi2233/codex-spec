@@ -17,7 +17,7 @@ function nullableArg(value) {
 export function stateCommand(args, context) {
   const action = args._[1];
   if (action !== "set") {
-    exitWith("Usage: codex-spec state set [--phase <phase>] [--planning-session <id>] [--planning-track explore|preflight|null] [--run <run-id>] [--milestone <id>] [--blocked true|false]");
+    exitWith("Usage: codex-spec-internal state set [--phase <phase>] [--planning-session <id>] [--planning-track explore|preflight|null] [--run <run-id>] [--milestone <id>] [--blocked true|false]");
     return;
   }
   const state = readState(context.target);
@@ -54,7 +54,7 @@ export function stateCommand(args, context) {
     }
     state.blocked = v;
   }
-  state.updated_by = "codex-spec state set";
+  state.updated_by = "codex-spec-internal state set";
   writeState(context.target, state);
   println(JSON.stringify(state, null, 2));
 }
