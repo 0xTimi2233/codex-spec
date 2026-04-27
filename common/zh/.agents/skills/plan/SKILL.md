@@ -22,7 +22,7 @@ description: 探索、审计或确认需求，并准备下一 milestone run。
 
 ## 操作
 
-1. 按需补充协议、agent TOML、project rules、roadmap 和 state 上下文。
+1. 按需补充协议、agent TOML、roadmap 和 state 上下文；写 dispatch 时再补充目标 project rules。
 2. 若存在 active run，停止并根据当前 phase 建议 `$resume`、`$status`、`$design` 或 `$execute`。
 3. 根据用户意图和可用输入选择 track：
    - `explore`：在正式 planning 前澄清模糊或早期需求。
