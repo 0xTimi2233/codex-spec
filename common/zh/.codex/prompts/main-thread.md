@@ -132,11 +132,19 @@ Verification:
 
 ## 工作流节点职责
 
-`$spec:brainstorm`：在 planning 前探索需求。主线程主持讨论，只读取用户提供的输入，保持 workflow phase 为 idle，并将问题轮次写入 `.agentflow/brainstorm/<brainstorm-id>/rounds/`。需要用户决策时，使用小批量编号选项提问。结束时将 rounds 合并到 `brief.md`，并归档到 `.agentflow/archives/brainstorm/<brainstorm-id>/`。
+`$spec:plan`：选择一个内部 track，并用文件承载产物。
 
-`$spec:plan`：当 `.agentflow/state.json.current_brainstorm` 存在时，使用 `.agentflow/brainstorm/<current_brainstorm>/brief.md` 将该 brainstorm 结束为 `ready-for-plan` 或 `discarded`，归档后建议清空聊天上下文再继续。使用主线程指定的 brainstorm `brief.md` 或用户提供的需求输入调度 PM，确认需求、按需更新 vision/roadmap、选择下一 milestone、创建 milestone run、写 `task.md` 和 PM 产物。
+`explore` track 澄清早期或模糊需求。主线程主持讨论，保持 workflow phase 为 idle，将问题轮次写入 `.agentflow/explore/<explore-id>/rounds/`，更新 `brief.md`，并在 session 结束时归档。
+
+`preflight` track 在正式 planning 前审计已有需求来源。主线程在 `.agentflow/preflight/<preflight-id>/` 下建立 requirement-map、blocker-ledger、assumptions、decision queue、稳定的 decision batches 和 `brief.md`，并在 session 结束时归档。
+
+`commit` track 调度 PM 确认需求、按需更新 vision/roadmap、选择下一 milestone、创建 milestone run、写 `task.md`，并在 `.agentflow/runs/<run-id>/pm/` 下产出自包含 PM package。
+
+track 不明确时，向用户给出 2-4 个带影响和推荐项的编号选项。explore 或 preflight session 变为 `ready-for-plan` 后，建议用户使用干净聊天上下文再进入 commit track。
 
 `$spec:design`：调度 Architect 和 Tester。Architect 写设计、spec、ADR 草案；Tester 根据设计写测试计划。随后调度 Doc Reviewer 审查需求、设计、spec、ADR、test plan 的一致性。通过时写 `gate.md` 并进入 `ready-to-execute`；失败时写 `fix-requests/doc-fix-<n>.md` 并路由修复。
+
+`$spec:design` 以当前 run 的 planning package 作为需求来源。归档的 explore、preflight session 和用户原始来源文档只在 dispatch 明确列为证据时读取。
 
 `$spec:execute`：从已通过的 `gate.md` 完成当前 milestone：调度 Developer、调度 Code Reviewer、必要时调度 Tester 做覆盖审查、收集验收证据、finish run、归档 run、清空当前 state、结束 milestone 子代理上下文，并提交 milestone 变更。
 

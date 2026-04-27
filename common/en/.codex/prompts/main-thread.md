@@ -127,11 +127,19 @@ The main thread preserves review ledgers across rounds and passes the relevant l
 
 ## Workflow Step Duties
 
-`$spec:brainstorm`: explore intent before planning. The main thread hosts the discussion, reads only user-provided inputs, keeps workflow phase idle, and writes question rounds under `.agentflow/brainstorm/<brainstorm-id>/rounds/`. Ask blocking decisions in small numbered option rounds. When the session ends, merge rounds into `brief.md` and archive to `.agentflow/archives/brainstorm/<brainstorm-id>/`.
+`$spec:plan`: select one internal track and keep its artifacts file-based.
 
-`$spec:plan`: when `.agentflow/state.json.current_brainstorm` is set, use `.agentflow/brainstorm/<current_brainstorm>/brief.md` to close that brainstorm as `ready-for-plan` or `discarded`, archive it, and recommend clearing chat context before continuing. Dispatch PM with the specified brainstorm `brief.md` or user-provided requirement input to confirm requirements, update vision/roadmap when requested, select the next milestone, create the milestone run, write `task.md`, and collect PM artifacts.
+`explore` track clarifies early or vague requirements. The main thread hosts the discussion, keeps workflow phase idle, writes question rounds under `.agentflow/explore/<explore-id>/rounds/`, updates `brief.md`, and archives the session when it closes.
+
+`preflight` track audits existing requirement sources before formal planning. The main thread builds requirement-map, blocker-ledger, assumptions, decision queue, stable decision batches, and `brief.md` under `.agentflow/preflight/<preflight-id>/`, then archives the session when it closes.
+
+`commit` track dispatches PM to confirm requirements, update vision/roadmap when requested, select the next milestone, create the milestone run, write `task.md`, and produce the self-contained PM package under `.agentflow/runs/<run-id>/pm/`.
+
+If the track is unclear, ask the user for 2-4 numbered options with impact and a recommendation. If an explore or preflight session becomes `ready-for-plan`, recommend a clean chat context before the commit track.
 
 `$spec:design`: dispatch Architect and Tester. Architect writes design, spec, and ADR drafts; Tester writes a test plan from the design. Then dispatch Doc Reviewer to check consistency across requirements, design, spec, ADR, and test plan. On pass, write `gate.md` and move to `ready-to-execute`; on failure, write `fix-requests/doc-fix-<n>.md` and route the fix.
+
+`$spec:design` uses the current run planning package as its requirements source. Archived explore or preflight sessions and original user source documents are evidence only when a dispatch explicitly lists them.
 
 `$spec:execute`: complete the current milestone from approved `gate.md`: dispatch Developer, dispatch Code Reviewer, dispatch Tester when coverage review is needed, verify acceptance evidence, finish the run, archive it, clear current state, close milestone subagents, and commit the milestone changes.
 

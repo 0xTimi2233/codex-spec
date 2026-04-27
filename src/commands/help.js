@@ -6,8 +6,8 @@ const COMMANDS = {
   doctor: `codex-spec doctor [--target <dir>]\n\nCheck required workflow scaffold files.`,
   status: `codex-spec status [--target <dir>]\n\nPrint .agentflow/state.json, current run dispatch ledger, and current run summary.`,
   profile: `codex-spec profile [--model high|xhigh] [--fast off|on] [--target <dir>]\n\nShow or update project-level and subagent model profile settings.`,
-  state: `codex-spec state set [--phase <phase>] [--mode <mode>] [--brainstorm <id>] [--run <run-id>] [--milestone <id>] [--blocked true|false]\n\nAllowed phases:\n  ${PHASES.join("\n  ")}`,
-  archive: `codex-spec archive --run <run-id> [--target <dir>]\ncodex-spec archive --brainstorm <brainstorm-id> [--target <dir>]\n\nMove run or brainstorm artifacts into immutable .agentflow/archives/.`
+  state: `codex-spec state set [--phase <phase>] [--mode <mode>] [--planning-session <id>] [--planning-track explore|preflight|null] [--run <run-id>] [--milestone <id>] [--blocked true|false]\n\nAllowed phases:\n  ${PHASES.join("\n  ")}`,
+  archive: `codex-spec archive --run <run-id> [--target <dir>]\ncodex-spec archive --explore <explore-id> [--target <dir>]\ncodex-spec archive --preflight <preflight-id> [--target <dir>]\n\nMove run, explore, or preflight artifacts into immutable .agentflow/archives/.`
 };
 
 export function printHelp(command = null) {

@@ -30,10 +30,11 @@ function moveImmutable({ root, kind, srcPath, archivePath }) {
   return true;
 }
 
-function clearArchivedBrainstorm(root, brainstormId) {
+function clearArchivedPlanningSession(root, track, sessionId) {
   const state = readState(root);
-  if (state.current_brainstorm !== brainstormId) return;
-  state.current_brainstorm = null;
+  if (state.planning_track !== track || state.current_planning_session !== sessionId) return;
+  state.current_planning_session = null;
+  state.planning_track = null;
   state.updated_by = "codex-spec archive";
   writeState(root, state);
 }
@@ -51,25 +52,41 @@ function clearArchivedRun(root, runId) {
 }
 
 export function archiveCommand(args, context) {
-  if (args.brainstorm) {
-    const brainstormId = String(args.brainstorm);
-    if (!isSafeId(brainstormId)) {
-      exitWith(`Invalid brainstorm id: ${brainstormId}`);
+  if (args.explore) {
+    const exploreId = String(args.explore);
+    if (!isSafeId(exploreId)) {
+      exitWith(`Invalid explore id: ${exploreId}`);
       return;
     }
     const archived = moveImmutable({
       root: context.target,
-      kind: "Brainstorm",
-      srcPath: path.join(context.target, ".agentflow", "brainstorm", brainstormId),
-      archivePath: path.join(context.target, ".agentflow", "archives", "brainstorm", brainstormId)
+      kind: "Explore",
+      srcPath: path.join(context.target, ".agentflow", "explore", exploreId),
+      archivePath: path.join(context.target, ".agentflow", "archives", "explore", exploreId)
     });
-    if (archived) clearArchivedBrainstorm(context.target, brainstormId);
+    if (archived) clearArchivedPlanningSession(context.target, "explore", exploreId);
+    return;
+  }
+
+  if (args.preflight) {
+    const preflightId = String(args.preflight);
+    if (!isSafeId(preflightId)) {
+      exitWith(`Invalid preflight id: ${preflightId}`);
+      return;
+    }
+    const archived = moveImmutable({
+      root: context.target,
+      kind: "Preflight",
+      srcPath: path.join(context.target, ".agentflow", "preflight", preflightId),
+      archivePath: path.join(context.target, ".agentflow", "archives", "preflight", preflightId)
+    });
+    if (archived) clearArchivedPlanningSession(context.target, "preflight", preflightId);
     return;
   }
 
   const resolvedRunId = resolveRun(args, context.target);
   if (!resolvedRunId) {
-    exitWith("Usage: codex-spec archive --run <run-id> | --brainstorm <brainstorm-id>");
+    exitWith("Usage: codex-spec archive --run <run-id> | --explore <explore-id> | --preflight <preflight-id>");
     return;
   }
   const runId = String(resolvedRunId);

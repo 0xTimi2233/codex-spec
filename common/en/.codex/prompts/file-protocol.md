@@ -6,11 +6,16 @@ Files are the workflow source of truth. Chat history is not a source of truth. U
 
 | Term | Meaning |
 |---|---|
-| `workflow skill` | A main-thread command such as `$spec:brainstorm`, `$spec:plan`, `$spec:design`, `$spec:execute`, or `$spec:auto`. Skills orchestrate workflow steps and may create dispatch packets. |
+| `workflow skill` | A main-thread command such as `$spec:plan`, `$spec:design`, `$spec:execute`, `$spec:auto`, `$spec:status`, or `$spec:resume`. Skills orchestrate workflow steps and may create dispatch packets. |
+| `planning track` | The active `$spec:plan` track: `explore`, `preflight`, or `commit`. |
+| `planning session` | One active pre-run planning session recorded in `.agentflow/state.json.current_planning_session`. |
 | `run-id` | One milestone execution unit stored under `.agentflow/runs/<run-id>/`. |
-| `brainstorm-id` | One pre-plan discovery session stored under `.agentflow/brainstorm/<brainstorm-id>/`. |
-| `brainstorm round` | `.agentflow/brainstorm/<brainstorm-id>/rounds/round-<nnn>/round.md`; one append-only question batch in a brainstorm session. |
-| `brainstorm brief` | `.agentflow/brainstorm/<brainstorm-id>/brief.md`; the planning-ready result merged from brainstorm rounds. |
+| `explore-id` | One pre-run discovery session stored under `.agentflow/explore/<explore-id>/`. |
+| `explore round` | `.agentflow/explore/<explore-id>/rounds/round-<nnn>/round.md`; one append-only question batch in an explore session. |
+| `explore brief` | `.agentflow/explore/<explore-id>/brief.md`; the planning-ready result merged from explore rounds. |
+| `preflight-id` | One pre-plan requirement audit stored under `.agentflow/preflight/<preflight-id>/`. |
+| `preflight brief` | `.agentflow/preflight/<preflight-id>/brief.md`; the planning-ready result of a requirement preflight. |
+| `planning package` | Self-contained current-run PM package under `.agentflow/runs/<run-id>/task.md` and `.agentflow/runs/<run-id>/pm/`. |
 | `dispatch packet` | `.agentflow/runs/<run-id>/dispatch/<role>-<task-id>.md`; the task packet a subagent reads for one assignment. |
 | `task.md` | Current run goal, scope, constraints, done criteria, and user decisions. |
 | `gate.md` | Approved execution contract produced after document review. Developer and Code Reviewer use it as the implementation boundary. |
@@ -33,12 +38,12 @@ Files are the workflow source of truth. Chat history is not a source of truth. U
 
 Long-lived files are synced only during milestone finish by the owning role.
 
-## Brainstorm Files
+## Explore Files
 
-Brainstorm files capture one pre-plan discovery session:
+Explore files capture one pre-run discovery session:
 
 ```text
-.agentflow/brainstorm/<brainstorm-id>/
+.agentflow/explore/<explore-id>/
   brief.md
   rounds/
     round-001/
@@ -66,7 +71,45 @@ Recommended planning focus:
 
 Each `round.md` records one 1-3 question batch, user answers, decisions, inspected inputs, and round summary. Earlier rounds are stable history. `brief.md` is merged from rounds when the session is closed. `summary.md` records the session outcome and archive status.
 
-PM planning uses the brainstorm `brief.md` path specified by the main thread.
+PM planning uses the explore `brief.md` path specified by the main thread.
+
+## Preflight Files
+
+Preflight files audit existing requirements before planning:
+
+```text
+.agentflow/preflight/<preflight-id>/
+  sources.md
+  requirement-map.md
+  blocker-ledger.md
+  assumptions.md
+  decisions/
+    queue.md
+    batches/
+      batch-001.md
+      batch-002.md
+  brief.md
+  summary.md
+```
+
+`brief.md` is a PM planning input:
+
+```text
+Status: ready-for-plan | blocked | needs-more-source | discarded
+Source coverage:
+Requirement map summary:
+Critical blockers:
+User decisions:
+Accepted assumptions:
+Planning constraints:
+Open questions:
+Recommended roadmap shape:
+Recommended planning focus:
+```
+
+`requirement-map.md` lists requirement ids, source paths, domains, dependencies, and impact. `blocker-ledger.md` tracks P0/P1/P2 risks. `decisions/queue.md` is mutable current state; `decisions/batches/*.md` are stable user question history. `brief.md` is merged from the audit when preflight closes.
+
+PM planning uses the preflight `brief.md` path specified by the main thread.
 
 ## Current Run Files
 
@@ -78,6 +121,10 @@ PM planning uses the brainstorm `brief.md` path specified by the main thread.
   summary.md
   dispatch/
   pm/
+    requirements.md
+    scope.md
+    acceptance-criteria.md
+    planning-summary.md
   architect/
   tester/
   doc-reviewer/
@@ -88,6 +135,8 @@ PM planning uses the brainstorm `brief.md` path specified by the main thread.
   fix-requests/
   fix-responses/
 ```
+
+The PM package must be self-contained before `$spec:design`. It copies the relevant requirements, decisions, constraints, assumptions, open risks, acceptance criteria, and source references needed for design into `.agentflow/runs/<run-id>/pm/requirements.md`, `.agentflow/runs/<run-id>/pm/scope.md`, `.agentflow/runs/<run-id>/pm/acceptance-criteria.md`, and `.agentflow/runs/<run-id>/pm/planning-summary.md`.
 
 ## Gate Contract
 
@@ -112,10 +161,11 @@ The main thread writes this file after Doc Reviewer returns `pass`. Source and t
 
 ```text
 .agentflow/archives/<run-id>/
-.agentflow/archives/brainstorm/<brainstorm-id>/
+.agentflow/archives/explore/<explore-id>/
+.agentflow/archives/preflight/<preflight-id>/
 ```
 
-`archives/` is immutable history. `codex-spec archive --run <run-id>` moves the completed run from `.agentflow/runs/<run-id>/` into `.agentflow/archives/<run-id>/`. `codex-spec archive --brainstorm <brainstorm-id>` moves the completed brainstorm session from `.agentflow/brainstorm/<brainstorm-id>/` into `.agentflow/archives/brainstorm/<brainstorm-id>/`. Archives must not overwrite existing archives. Reusable facts must be synced into `agentflow/` or written into the current run's `task.md`.
+`archives/` is immutable history. `codex-spec archive --run <run-id>` moves the completed run from `.agentflow/runs/<run-id>/` into `.agentflow/archives/<run-id>/`. `codex-spec archive --explore <explore-id>` moves the completed explore session from `.agentflow/explore/<explore-id>/` into `.agentflow/archives/explore/<explore-id>/`. `codex-spec archive --preflight <preflight-id>` moves the completed preflight from `.agentflow/preflight/<preflight-id>/` into `.agentflow/archives/preflight/<preflight-id>/`. Archives must not overwrite existing archives. Reusable facts must be synced into `agentflow/` or written into the current run's planning package.
 
 ## Report Format
 

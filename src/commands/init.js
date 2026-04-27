@@ -47,7 +47,14 @@ export async function initCommand(args, context) {
     writeText(cfgOut, rendered, { force: overwriteGenerated });
   }
 
-  for (const rel of [".agentflow/brainstorm/.gitkeep", ".agentflow/runs/.gitkeep", ".agentflow/archives/.gitkeep", ".agentflow/archives/brainstorm/.gitkeep"]) {
+  for (const rel of [
+    ".agentflow/explore/.gitkeep",
+    ".agentflow/preflight/.gitkeep",
+    ".agentflow/runs/.gitkeep",
+    ".agentflow/archives/.gitkeep",
+    ".agentflow/archives/explore/.gitkeep",
+    ".agentflow/archives/preflight/.gitkeep"
+  ]) {
     const p = path.join(target, rel);
     if (!exists(p)) writeText(p, "", { force: false });
   }

@@ -2,6 +2,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { assert, readText, runCli, runCliFail, tempDir } from "./test-utils.js";
 
+function writeState(root, state) {
+  fs.writeFileSync(path.join(root, ".agentflow", "state.json"), JSON.stringify(state, null, 2), "utf8");
+}
+
 const tmp = tempDir("codex-spec-source-workflow-");
 runCli("src", ["init", "--lang", "zh", "--target", tmp]);
 
@@ -9,26 +13,39 @@ const config = readText(tmp, ".codex", "config.toml");
 assert(!config.includes("[[hooks."), "generated config should not install hooks");
 assert(!config.includes("codex_hooks"), "generated config should not enable hook features");
 
+const missingPlanningTrack = runCliFail("src", ["state", "set", "--planning-session", "orphan", "--target", tmp]);
+assert(missingPlanningTrack.includes("--planning-session and --planning-track must be set or cleared together"), "state should reject planning session without track");
+
+const missingPlanningSession = runCliFail("src", ["state", "set", "--planning-track", "explore", "--target", tmp]);
+assert(missingPlanningSession.includes("--planning-session and --planning-track must be set or cleared together"), "state should reject planning track without session");
+
+runCli("src", ["state", "set", "--planning-session", "paired-explore", "--planning-track", "explore", "--target", tmp]);
+let pairedState = JSON.parse(readText(tmp, ".agentflow", "state.json"));
+assert(pairedState.current_planning_session === "paired-explore", "state should accept paired planning session");
+assert(pairedState.planning_track === "explore", "state should accept paired planning track");
+
+const clearingOnlySession = runCliFail("src", ["state", "set", "--planning-session", "null", "--target", tmp]);
+assert(clearingOnlySession.includes("--planning-session and --planning-track must be set or cleared together"), "state should reject clearing only planning session");
+
+runCli("src", ["state", "set", "--planning-session", "null", "--planning-track", "null", "--target", tmp]);
+pairedState = JSON.parse(readText(tmp, ".agentflow", "state.json"));
+assert(pairedState.current_planning_session === null, "state should clear paired planning session");
+assert(pairedState.planning_track === null, "state should clear paired planning track");
+
 const runDir = path.join(tmp, ".agentflow", "runs", "smoke-run");
 fs.mkdirSync(runDir, { recursive: true });
 fs.writeFileSync(path.join(runDir, "summary.md"), "Status: pass\n", "utf8");
-fs.writeFileSync(
-  path.join(tmp, ".agentflow", "state.json"),
-  JSON.stringify(
-    {
-      version: 1,
-      mode: "active",
-      current_brainstorm: null,
-      current_run: "smoke-run",
-      current_phase: "finishing",
-      current_milestone: "smoke",
-      blocked: false,
-      updated_by: "smoke"
-    },
-    null,
-    2
-  )
-);
+writeState(tmp, {
+  version: 1,
+  mode: "active",
+  current_planning_session: null,
+  planning_track: null,
+  current_run: "smoke-run",
+  current_phase: "finishing",
+  current_milestone: "smoke",
+  blocked: false,
+  updated_by: "smoke"
+});
 
 const invalidArchive = runCliFail("src", ["archive", "--run", "../bad", "--target", tmp]);
 assert(invalidArchive.includes("Invalid run id"), "archive should reject unsafe run ids");
@@ -40,54 +57,68 @@ const stateAfterRunArchive = JSON.parse(readText(tmp, ".agentflow", "state.json"
 assert(stateAfterRunArchive.current_run === null, "archive should clear current run when archiving it");
 assert(stateAfterRunArchive.current_phase === "idle", "archive should reset phase when archiving the current run");
 
-const brainstormDir = path.join(tmp, ".agentflow", "brainstorm", "smoke-brainstorm");
-fs.mkdirSync(brainstormDir, { recursive: true });
-fs.writeFileSync(path.join(brainstormDir, "brief.md"), "Status: ready-for-plan\n", "utf8");
-fs.writeFileSync(
-  path.join(tmp, ".agentflow", "state.json"),
-  JSON.stringify(
-    {
-      version: 1,
-      mode: "idle",
-      current_brainstorm: "smoke-brainstorm",
-      current_run: null,
-      current_phase: "idle",
-      current_milestone: null,
-      blocked: false,
-      updated_by: "smoke"
-    },
-    null,
-    2
-  )
-);
+const exploreDir = path.join(tmp, ".agentflow", "explore", "smoke-explore");
+fs.mkdirSync(exploreDir, { recursive: true });
+fs.writeFileSync(path.join(exploreDir, "brief.md"), "Status: ready-for-plan\n", "utf8");
+writeState(tmp, {
+  version: 1,
+  mode: "idle",
+  current_planning_session: "smoke-explore",
+  planning_track: "explore",
+  current_run: null,
+  current_phase: "idle",
+  current_milestone: null,
+  blocked: false,
+  updated_by: "smoke"
+});
 
-const invalidBrainstormArchive = runCliFail("src", ["archive", "--brainstorm", "../bad", "--target", tmp]);
-assert(invalidBrainstormArchive.includes("Invalid brainstorm id"), "archive should reject unsafe brainstorm ids");
+const invalidExploreArchive = runCliFail("src", ["archive", "--explore", "../bad", "--target", tmp]);
+assert(invalidExploreArchive.includes("Invalid explore id"), "archive should reject unsafe explore ids");
 
-runCli("src", ["archive", "--brainstorm", "smoke-brainstorm", "--target", tmp]);
-assert(!fs.existsSync(brainstormDir), "archive should move brainstorm out of brainstorm/");
-assert(fs.existsSync(path.join(tmp, ".agentflow", "archives", "brainstorm", "smoke-brainstorm")), "brainstorm archive directory was not created");
-const stateAfterBrainstormArchive = JSON.parse(readText(tmp, ".agentflow", "state.json"));
-assert(stateAfterBrainstormArchive.current_brainstorm === null, "archive should clear current brainstorm when archiving it");
+runCli("src", ["archive", "--explore", "smoke-explore", "--target", tmp]);
+assert(!fs.existsSync(exploreDir), "archive should move explore out of explore/");
+assert(fs.existsSync(path.join(tmp, ".agentflow", "archives", "explore", "smoke-explore")), "explore archive directory was not created");
+const stateAfterExploreArchive = JSON.parse(readText(tmp, ".agentflow", "state.json"));
+assert(stateAfterExploreArchive.current_planning_session === null, "archive should clear current planning session when archiving it");
+assert(stateAfterExploreArchive.planning_track === null, "archive should clear planning track when archiving it");
+
+const preflightDir = path.join(tmp, ".agentflow", "preflight", "smoke-preflight");
+fs.mkdirSync(preflightDir, { recursive: true });
+fs.writeFileSync(path.join(preflightDir, "brief.md"), "Status: ready-for-plan\n", "utf8");
+writeState(tmp, {
+  version: 1,
+  mode: "idle",
+  current_planning_session: "smoke-preflight",
+  planning_track: "preflight",
+  current_run: null,
+  current_phase: "idle",
+  current_milestone: null,
+  blocked: false,
+  updated_by: "smoke"
+});
+
+const invalidPreflightArchive = runCliFail("src", ["archive", "--preflight", "../bad", "--target", tmp]);
+assert(invalidPreflightArchive.includes("Invalid preflight id"), "archive should reject unsafe preflight ids");
+
+runCli("src", ["archive", "--preflight", "smoke-preflight", "--target", tmp]);
+assert(!fs.existsSync(preflightDir), "archive should move preflight out of preflight/");
+assert(fs.existsSync(path.join(tmp, ".agentflow", "archives", "preflight", "smoke-preflight")), "preflight archive directory was not created");
+const stateAfterPreflightArchive = JSON.parse(readText(tmp, ".agentflow", "state.json"));
+assert(stateAfterPreflightArchive.current_planning_session === null, "archive should clear current planning session when archiving preflight");
+assert(stateAfterPreflightArchive.planning_track === null, "archive should clear planning track when archiving preflight");
 
 fs.mkdirSync(runDir, { recursive: true });
-fs.writeFileSync(
-  path.join(tmp, ".agentflow", "state.json"),
-  JSON.stringify(
-    {
-      version: 1,
-      mode: "active",
-      current_brainstorm: null,
-      current_run: "smoke-run",
-      current_phase: "executing",
-      current_milestone: "smoke",
-      blocked: false,
-      updated_by: "smoke"
-    },
-    null,
-    2
-  )
-);
+writeState(tmp, {
+  version: 1,
+  mode: "active",
+  current_planning_session: null,
+  planning_track: null,
+  current_run: "smoke-run",
+  current_phase: "executing",
+  current_milestone: "smoke",
+  blocked: false,
+  updated_by: "smoke"
+});
 runCli("src", ["doctor", "--target", tmp]);
 
 console.log(`source workflow OK: ${tmp}`);

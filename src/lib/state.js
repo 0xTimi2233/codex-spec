@@ -18,7 +18,8 @@ export function defaultState() {
   return {
     version: 1,
     mode: "idle",
-    current_brainstorm: null,
+    current_planning_session: null,
+    planning_track: null,
     current_run: null,
     current_phase: "idle",
     current_milestone: null,
@@ -30,10 +31,13 @@ export function defaultState() {
 export function normalizeState(state) {
   const fallback = defaultState();
   const next = { ...fallback, ...(state || {}) };
+  delete next.current_brainstorm;
+  delete next.current_preflight;
   if (!PHASES.includes(next.current_phase)) next.current_phase = "idle";
   if (typeof next.blocked !== "boolean") next.blocked = Boolean(next.blocked);
   if (next.current_run === "") next.current_run = null;
-  if (next.current_brainstorm === "") next.current_brainstorm = null;
+  if (next.current_planning_session === "") next.current_planning_session = null;
+  if (!["explore", "preflight"].includes(next.planning_track)) next.planning_track = null;
   if (next.current_milestone === "") next.current_milestone = null;
   return next;
 }

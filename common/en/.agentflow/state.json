@@ -1,7 +1,8 @@
 {
   "version": 1,
   "mode": "idle",
-  "current_brainstorm": null,
+  "current_planning_session": null,
+  "planning_track": null,
   "current_run": null,
   "current_phase": "idle",
   "current_milestone": null,

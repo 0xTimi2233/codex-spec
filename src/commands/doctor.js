@@ -27,7 +27,6 @@ const REQUIRED = [
   ".codex/prompts/project/testing-standards.md",
   ".codex/prompts/project/doc-review-policy.md",
   ".codex/prompts/project/code-review-policy.md",
-  ".agents/skills/spec:brainstorm/SKILL.md",
   ".agents/skills/spec:plan/SKILL.md",
   ".agents/skills/spec:design/SKILL.md",
   ".agents/skills/spec:execute/SKILL.md",
@@ -40,10 +39,12 @@ const REQUIRED = [
   "agentflow/spec/00-spec-guide.md",
   "agentflow/spec/test-plan/00-test-plan-guide.md",
   ".agentflow/state.json",
-  ".agentflow/brainstorm/.gitkeep",
+  ".agentflow/explore/.gitkeep",
+  ".agentflow/preflight/.gitkeep",
   ".agentflow/runs/.gitkeep",
   ".agentflow/archives/.gitkeep",
-  ".agentflow/archives/brainstorm/.gitkeep"
+  ".agentflow/archives/explore/.gitkeep",
+  ".agentflow/archives/preflight/.gitkeep"
 ];
 
 export function doctorCommand(_args, context) {

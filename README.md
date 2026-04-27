@@ -40,7 +40,6 @@ codex-spec status
 Then start Codex in the project and drive the workflow with skills:
 
 ```text
-$spec:brainstorm
 $spec:plan
 $spec:design
 $spec:execute
@@ -64,7 +63,7 @@ agentflow/
 .agentflow/
 ```
 
-Long-lived project knowledge lives in `agentflow/`: vision, roadmap, ADRs, specs, and test plans. Brainstorm sessions live in `.agentflow/brainstorm/<brainstorm-id>/`: question rounds are appended under `rounds/`, then merged into `brief.md` when the session closes. Completed brainstorms are archived to `.agentflow/archives/brainstorm/<brainstorm-id>/`. PM planning uses the specified `brief.md`. Current work lives in `.agentflow/runs/<run-id>/`: task files, dispatch ledger, dispatch packets, role reports, review ledgers, fix requests, and summaries. Completed runs are moved to immutable `.agentflow/archives/`.
+Long-lived project knowledge lives in `agentflow/`: vision, roadmap, ADRs, specs, and test plans. `$spec:plan` can run an explore track under `.agentflow/explore/<explore-id>/`, a preflight track under `.agentflow/preflight/<preflight-id>/`, or a formal commit track that creates `.agentflow/runs/<run-id>/`. Explore and preflight sessions are archived under `.agentflow/archives/`. Formal planning produces a self-contained PM package in the current run, so `$spec:design` can rely on the run package instead of archived sessions or original source notes.
 
 ### Roles
 
@@ -83,14 +82,13 @@ The main thread orchestrates and integrates. PM defines scope and roadmap milest
 ### Workflow
 
 ```text
-$spec:brainstorm  explore requirements before formal planning
-$spec:plan        confirm requirements, update roadmap, prepare the next milestone run
+$spec:plan        explore, audit, or confirm requirements, then prepare the next milestone run
 $spec:design      produce design/spec/ADR drafts, test plan, doc review, and approved gate
 $spec:execute     implement, code-review, verify, finish, archive, and commit the current milestone
 $spec:auto        run roadmap milestones serially through design and execute
 ```
 
-Doc review, code review, verification, finish, archive, and milestone commit are internal stages. When a rejection has a clear owner and fix scope, the main thread routes it to the responsible subagent. `$spec:auto` stops only when safe routing is not possible or an external decision is required.
+Inside `$spec:plan`, the main thread chooses an explore, preflight, or commit track. Doc review, code review, verification, finish, archive, and milestone commit are internal stages. When a rejection has a clear owner and fix scope, the main thread routes it to the responsible subagent. `$spec:auto` stops only when safe routing is not possible or an external decision is required.
 
 ### Model Profiles
 
@@ -136,9 +134,8 @@ codex-spec status
 ## Best Practices
 
 - Keep each milestone small enough to design, implement, review, and finish cleanly.
-- Use `$spec:brainstorm` for early exploration. It appends question rounds, archives the session when finished, and keeps `brief.md` as the planning input.
-- Start formal work with `$spec:plan`; let PM turn confirmed requirements into explicit scope, roadmap milestones, and done criteria.
-- If `$spec:plan` finds an unfinished brainstorm brief, close or discard it first. After a brief becomes ready for planning, use a clean chat context when practical.
+- Start with `$spec:plan`. Use the explore track for unclear requirements, the preflight track for existing requirement sources, and the commit track for formal roadmap planning.
+- Keep the planning package self-contained: copy relevant requirements, decisions, constraints, assumptions, risks, and acceptance criteria into the current run before `$spec:design`.
 - Keep context in files, not chat memory. Subagents should read only dispatch-listed paths and their own role prompt.
 - Keep prompt prefixes stable: put protocol and role context first, and keep per-task dispatch as the dynamic suffix.
 - Subagents return short reports; the main thread uses those reports and dispatch status to route the next step.

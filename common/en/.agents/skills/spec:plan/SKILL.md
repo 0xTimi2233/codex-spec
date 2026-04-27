@@ -1,6 +1,6 @@
 ---
 name: spec:plan
-description: Confirm requirements, update the roadmap, and prepare the next milestone run.
+description: Explore, audit, or confirm requirements, then prepare the next milestone run.
 ---
 
 # Skill: spec:plan
@@ -13,24 +13,41 @@ Read these paths only when they are not already in the active context or their c
 - `.codex/prompts/file-protocol.md`
 - `agentflow/vision.md`
 - `agentflow/roadmap.md`
-- `.agentflow/brainstorm/<current_brainstorm>/brief.md` when `.agentflow/state.json.current_brainstorm` is set
-- `.agentflow/archives/brainstorm/<brainstorm-id>/brief.md` after brainstorm archive
-- the brainstorm `brief.md` path specified by the main thread
+- `.agentflow/explore/<explore-id>/brief.md` when continuing an explore track
+- `.agentflow/preflight/<preflight-id>/brief.md` when continuing a preflight track
+- source requirement paths specified by the user
 - `.agentflow/state.json`
+- `.agentflow/state.json.current_planning_session` and `.agentflow/state.json.planning_track` when a planning session is active
 
 ## Procedure
 
-1. If `.agentflow/state.json.current_brainstorm` is set, use `.agentflow/brainstorm/<current_brainstorm>/brief.md` to close the brainstorm as `ready-for-plan` or `discarded`, archive it, and clear `current_brainstorm`.
-2. Recommend clearing chat context after a brainstorm brief becomes `ready-for-plan`.
-3. Use the specified `ready-for-plan` brainstorm brief from `.agentflow/archives/brainstorm/<brainstorm-id>/brief.md` or user-provided requirement input for PM planning.
-4. Select the next milestone and choose or create a run id.
-5. Write `.agentflow/runs/<run-id>/dispatch-ledger.md` with the dispatch table header.
-6. Run `codex-spec state set --phase planning --run <run-id> --blocked false`.
-7. Write `.agentflow/runs/<run-id>/dispatch/pm-001.md` with the planning input and PM output paths.
-8. Append the PM row to `dispatch-ledger.md`, dispatch PM, record the runtime agent id, and update the row when the PM response arrives.
-9. PM confirms requirements, scope, non-goals, roadmap milestones, and acceptance criteria.
-10. When requested by dispatch, PM may update `agentflow/vision.md` and `agentflow/roadmap.md`.
-11. Write or update `.agentflow/runs/<run-id>/task.md` and `.agentflow/runs/<run-id>/summary.md`.
+1. Choose the track from user intent and available inputs:
+   - `explore`: clarify vague or early requirements before formal planning.
+   - `preflight`: audit existing requirement sources for planning blockers.
+   - `commit`: confirm requirements, create a run, and dispatch PM.
+2. If the track is unclear, ask the user for a numbered choice with impacts and a recommendation.
+3. For `explore`, create or continue `.agentflow/explore/<explore-id>/`, set `codex-spec state set --planning-session <explore-id> --planning-track explore --blocked false`, append a round under `rounds/round-<nnn>/round.md`, and update `brief.md`.
+4. For `preflight`, create or continue `.agentflow/preflight/<preflight-id>/`, set `codex-spec state set --planning-session <preflight-id> --planning-track preflight --blocked false`, update requirement audit files, and update `brief.md`.
+5. When an explore or preflight track is closed as `ready-for-plan` or `discarded`, run `codex-spec archive --explore <explore-id>` or `codex-spec archive --preflight <preflight-id>`, then clear planning state with `codex-spec state set --planning-session null --planning-track null`.
+6. For `commit`, create a run id and write `.agentflow/runs/<run-id>/dispatch-ledger.md` with the dispatch table header.
+7. Run `codex-spec state set --phase planning --run <run-id> --planning-session null --planning-track null --blocked false`.
+8. Write `.agentflow/runs/<run-id>/dispatch/pm-001.md` with the planning input and self-contained PM output paths.
+9. Append the PM row to `dispatch-ledger.md`, dispatch PM, record the runtime agent id, and update the row when the PM response arrives.
+10. PM confirms requirements, scope, non-goals, roadmap milestones, and acceptance criteria.
+11. When requested by dispatch, PM may update `agentflow/vision.md` and `agentflow/roadmap.md`.
+12. Write the self-contained planning package.
+
+## Planning Package
+
+The `commit` track must copy every relevant requirement, decision, constraint, assumption, open risk, and acceptance criterion into the current run:
+
+- `.agentflow/runs/<run-id>/task.md`
+- `.agentflow/runs/<run-id>/pm/requirements.md`
+- `.agentflow/runs/<run-id>/pm/scope.md`
+- `.agentflow/runs/<run-id>/pm/acceptance-criteria.md`
+- `.agentflow/runs/<run-id>/pm/planning-summary.md`
+
+Downstream design uses this package as the planning source.
 
 ## PM Decision Handling
 
@@ -42,8 +59,11 @@ If PM returns `User decision required`, present the numbered options to the user
 - `.agentflow/runs/<run-id>/dispatch-ledger.md`
 - `.agentflow/runs/<run-id>/dispatch/pm-001.md`
 - `.agentflow/runs/<run-id>/pm/requirements.md`
+- `.agentflow/runs/<run-id>/pm/scope.md`
+- `.agentflow/runs/<run-id>/pm/acceptance-criteria.md`
+- `.agentflow/runs/<run-id>/pm/planning-summary.md`
 - updated `agentflow/vision.md` or `agentflow/roadmap.md` when PM dispatch requests it
 
 ## Next
 
-Return run id, created files, next step `$spec:design`, or blocker.
+Return active track, run id, created files, next step `$spec:design`, or blocker.
