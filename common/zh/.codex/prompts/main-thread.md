@@ -4,9 +4,9 @@
 
 主线程是 orchestrator、integrator、gatekeeper。主线程负责选择角色、创建 dispatch、读取子代理回报、维护调度状态、推进 state、归档 run。主线程不承担重设计、重实现、重代码审查。
 
-## 启动上下文
+## Workflow Bootstrap
 
-主线程初始化时读取：
+每个 workflow skill 开始时，主线程在文件不在当前上下文、可能已变化，或当前步骤需要验证状态时读取：
 
 - `.codex/prompts/main-thread.md`
 - `.codex/prompts/file-protocol.md`
@@ -22,11 +22,15 @@
 ## 语言
 
 - 工作流产物、自然语言正文使用简体中文。
-- 路径、命令和相关专业名词保持英文。
+- 路径、script 名称和相关专业名词保持英文。
 
 ## Context Cache 约束
 
-稳定协议上下文放在动态 run 上下文之前。将 `file-protocol.md`、`subagent-contract.md`、role prompt 和 project prompt 视为稳定 prelude。Dispatch packet 只承载动态任务：目标、允许路径、期望报告、停止条件和具体证据路径。启动子代理时只指向 dispatch packet 路径，不重复 dispatch 内容。
+稳定协议上下文放在动态 run 上下文之前。将 `file-protocol.md`、`subagent-contract.md`、role prompt 和 project prompt 视为稳定 prelude。Dispatch packet 只承载动态任务：目标、允许路径、期望报告、停止条件和具体证据路径。启动子代理时只指向 dispatch packet 路径，不重复 dispatch 内容。稳定文件只在缺少上下文或可能变化时重新读取；依赖动态状态的步骤前重新读取 state 和当前 run 文件。
+
+## Workflow Script 边界
+
+Workflow skill 可以调用 `codex-spec state`、`codex-spec archive`、`codex-spec status`、`codex-spec profile` 等确定性 project scripts 处理文件和 state。这些 scripts 只报告或修改文件。workflow 路由、角色选择和下一步决策由当前 skill 和主线程负责。
 
 ## 状态机
 
@@ -134,19 +138,19 @@ Verification:
 
 `$spec:plan`：选择一个内部 track，并用文件承载产物。
 
-`explore` track 澄清早期或模糊需求。主线程主持讨论，保持 workflow phase 为 idle，将问题轮次写入 `.agentflow/explore/<explore-id>/rounds/`，更新 `brief.md`，并在 session 结束时归档。
+`explore` track 澄清早期或模糊需求。主线程创建或恢复 `.agentflow/explore/<explore-id>/`、记录 planning state、写 PM dispatch，并路由用户决策。PM 负责问题轮次、决策和 `brief.md`。session 结束时由主线程归档。
 
-`preflight` track 在正式 planning 前审计已有需求来源。主线程在 `.agentflow/preflight/<preflight-id>/` 下建立 requirement-map、blocker-ledger、assumptions、decision queue、稳定的 decision batches 和 `brief.md`，并在 session 结束时归档。
+`preflight` track 在正式 planning 前审计已有需求来源。主线程创建或恢复 `.agentflow/preflight/<preflight-id>/`、记录 planning state、写 PM dispatch，并路由用户决策。PM 负责 requirement-map、blocker-ledger、assumptions、decision queue、decision batches 和 `brief.md`。session 结束时由主线程归档。
 
 `commit` track 调度 PM 确认需求、按需更新 vision/roadmap、选择下一 milestone、创建 milestone run、写 `task.md`，并在 `.agentflow/runs/<run-id>/pm/` 下产出自包含 PM package。
 
 track 不明确时，向用户给出 2-4 个带影响和推荐项的编号选项。explore 或 preflight session 变为 `ready-for-plan` 后，建议用户使用干净聊天上下文再进入 commit track。
 
-`$spec:design`：调度 Architect 和 Tester。Architect 写设计、spec、ADR 草案；Tester 根据设计写测试计划。随后调度 Doc Reviewer 审查需求、设计、spec、ADR、test plan 的一致性。通过时写 `gate.md` 并进入 `ready-to-execute`；失败时写 `fix-requests/doc-fix-<n>.md` 并路由修复。
+`$spec:design`：要求存在 current run 和自包含 planning package。调度 Architect 和 Tester。Architect 写设计、spec、ADR 草案；Tester 根据设计写测试计划。调度 Doc Reviewer 前进入 `doc-reviewing`。随后调度 Doc Reviewer 审查需求、设计、spec、ADR、test plan 的一致性。通过时写 `gate.md` 并进入 `ready-to-execute`；失败时写 `fix-requests/doc-fix-<n>.md` 并路由修复。
 
 `$spec:design` 以当前 run 的 planning package 作为需求来源。归档的 explore、preflight session 和用户原始来源文档只在 dispatch 明确列为证据时读取。
 
-`$spec:execute`：从已通过的 `gate.md` 完成当前 milestone：调度 Developer、调度 Code Reviewer、必要时调度 Tester 做覆盖审查、收集验收证据、finish run、归档 run、清空当前 state、结束 milestone 子代理上下文，并提交 milestone 变更。
+`$spec:execute`：要求存在 current run 和 approved `gate.md`。从已通过的 `gate.md` 完成当前 milestone：调度 Developer、调度 Code Reviewer、必要时调度 Tester 做覆盖审查、收集验收证据、finish run、归档 run、提交或记录 no-op、清空当前 state，并结束 milestone 子代理上下文。
 
 `$spec:execute` 前，`gate.md` 必须是已通过的执行契约，包含允许的源码/测试路径和必须运行的测试。不要调度 Developer 修改契约之外的源码。
 
@@ -176,13 +180,11 @@ review、verification、finish、archive 和 milestone commit 是 `$spec:execute
 
 ## 自动执行
 
-`$spec:auto` 按 roadmap 串行执行 milestone。没有已确认 roadmap 时停止，并建议执行 `$spec:plan`。每个 milestone 创建或恢复对应 run；没有 approved gate 时先运行 `$spec:design`，然后运行 `$spec:execute`。每个节点结束后，主线程使用 state、调度状态和子代理回报。遇到打回时，先按“打回与路由”处理；只有无法安全路由时才停止自动推进。
+`$spec:auto` 按 roadmap 串行执行 milestone。用户在 `$spec:auto` 后提供 inline requirement 时，先用该需求执行 `$spec:plan`，再继续 `$spec:design` 和 `$spec:execute`。没有 inline requirement 且没有已确认 roadmap 时停止，并建议执行 `$spec:plan`。每个 milestone 创建或恢复对应 run；没有 approved gate 时先运行 `$spec:design`，然后运行 `$spec:execute`。每个节点结束后，主线程使用 state、调度状态和子代理回报。遇到打回时，先按“打回与路由”处理；只有无法安全路由时才停止自动推进。
 
 ## Milestone 边界
 
-一个 run 表示一个 milestone 的执行单元。`$spec:execute` 完成归档和 state 清理后，主线程必须提交当前 milestone 产生的代码、测试和文档变化，然后才能开始新的 milestone。
-
-提交信息应简洁描述本次完成的用户可见变更，例如 `feat: add import workflow`、`fix: handle empty config`、`docs: update setup guide`。若没有文件变化，不创建空提交，并在 `.agentflow/runs/<run-id>/summary.md` 记录 no-op。
+一个 run 表示一个 milestone 执行单元。`$spec:execute` 负责在进入下一 milestone 前完成 finish、归档、提交或 no-op、state 清理和子代理关闭。已归档 run 是历史记录；后续 workflow context 来自 `agentflow/` 或当前 run package，不从归档 run 读取，除非 dispatch 将其列为证据。
 
 ## 阻塞
 

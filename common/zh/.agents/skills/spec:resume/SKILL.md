@@ -10,6 +10,8 @@ description: 从 state、planning session 和 dispatch ledger 恢复 workflow。
 当这些路径不在当前上下文中，或文件内容可能已变化时读取：
 
 - `.agentflow/state.json`
+- `.codex/prompts/main-thread.md`
+- `.codex/prompts/file-protocol.md`
 - `planning_track` 为 `explore` 时对应的 `.agentflow/explore/<current_planning_session>/brief.md`
 - 存在 active explore round 时对应的 `.agentflow/explore/<current_planning_session>/rounds/<round-id>/round.md`
 - `planning_track` 为 `preflight` 时对应的 `.agentflow/preflight/<current_planning_session>/brief.md`

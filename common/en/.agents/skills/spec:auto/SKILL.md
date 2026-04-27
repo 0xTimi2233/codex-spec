@@ -16,7 +16,9 @@ Read these paths only when they are not already in the active context or their c
 
 ## Procedure
 
-If no confirmed roadmap exists, stop and recommend `$spec:plan`.
+If the user provides an inline requirement after `$spec:auto`, use it as `$spec:plan` input, then continue through `$spec:design` and `$spec:execute` for the resulting milestone.
+
+If there is no inline requirement and no confirmed roadmap exists, stop and recommend `$spec:plan`.
 
 For each roadmap milestone, create or resume its run and execute:
 
@@ -28,21 +30,11 @@ If a milestone run does not exist, use `$spec:plan` behavior to create the run t
 
 ## Rejection And Stop Rules
 
-On rejection or a non-pass decision, the main thread uses the subagent reply to write or update `.agentflow/runs/<run-id>/fix-requests/*.md`. If the responsible role, allowed input paths, and allowed output paths are clear, dispatch that subagent to handle the fix, then return to the corresponding workflow step or review gate.
-
-Stop automatic progress only when any of these occur:
-
-- the main thread cannot choose the responsible role, fix scope, or next gate safely;
-- a user, external system, or destructive operation decision is needed;
-- required artifacts are missing and cannot be recreated through a clear dispatch;
-- the same open issue still has no executable next step after a fix attempt;
-- `.agentflow/state.json.blocked = true`.
-
-When stopping, the main thread writes `.agentflow/runs/<run-id>/summary.md` with state, reason, latest evidence paths, and recommended next action.
+Use the main-thread "Rejection Routing" rule. `$spec:auto` resumes automatic progress after a routed fix reaches the matching workflow step or review gate. Stop only when that rule says safe routing is not possible.
 
 ## Milestone Commit
 
-When `$spec:execute` archives the run and clears state, the main thread commits the code, test, and documentation changes for the completed milestone before starting the next milestone. If there are no file changes, do not create an empty commit; record the no-op in summary.
+Use the main-thread "Milestone Boundary" rule before starting the next milestone.
 
 ## Final Reply
 

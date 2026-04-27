@@ -31,12 +31,13 @@ Read these paths only when they are not already in the active context or their c
 12. Run `codex-spec state set --phase finishing --run <run-id>`.
 13. Dispatch Auditor to summarize the run.
 14. Dispatch owners to sync long-lived docs when needed.
-15. Write `.agentflow/runs/<run-id>/summary.md`.
-16. Confirm `dispatch-ledger.md` has no `queued`, `running`, or `blocked` rows.
-17. Run `codex-spec archive --run <run-id>`.
-18. Run `codex-spec state set --phase idle --run null --milestone null --blocked false`.
-19. Commit the completed milestone changes with a short user-facing commit message. If there are no file changes, record the no-op in summary and do not create an empty commit.
-20. Close the milestone subagent context.
+15. Determine whether the milestone has user-facing code, test, or long-lived documentation changes to commit.
+16. Write `.agentflow/runs/<run-id>/summary.md` with result, evidence, archive plan, and commit or no-op plan.
+17. Confirm `dispatch-ledger.md` has no `queued`, `running`, or `blocked` rows.
+18. Run `codex-spec archive --run <run-id>`.
+19. Commit the completed milestone changes with a short user-facing commit message, or record no-op in the summary before archive and do not create an empty commit.
+20. After commit or no-op succeeds, run `codex-spec state set --phase idle --run null --milestone null --blocked false`.
+21. Close any still-open runtime agent ids recorded in `dispatch-ledger.md`, record their final status in the ledger, and use new dispatch rows and new agents for later milestones.
 
 ## Required Outputs
 

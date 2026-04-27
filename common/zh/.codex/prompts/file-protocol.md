@@ -45,7 +45,7 @@
 
 ## Explore 文件
 
-Explore 文件记录一次 pre-run 需求探索：
+Explore 文件记录一次 pre-run 需求探索。PM 负责 session 分析产物；主线程负责 state、dispatch、决策路由和归档。
 
 ```text
 .agentflow/explore/<explore-id>/
@@ -80,7 +80,7 @@ PM planning 使用主线程指定的 explore `brief.md` 路径。
 
 ## Preflight 文件
 
-Preflight 文件在 planning 前审计已有需求：
+Preflight 文件在 planning 前审计已有需求。PM 负责需求分析产物；主线程负责 state、dispatch、决策路由和归档。
 
 ```text
 .agentflow/preflight/<preflight-id>/
@@ -142,6 +142,16 @@ PM planning 使用主线程指定的 preflight `brief.md` 路径。
 ```
 
 `$spec:design` 前，PM package 必须自包含。它将设计所需的相关需求、决策、约束、假设、未关闭风险、验收标准和来源引用写入 `.agentflow/runs/<run-id>/pm/requirements.md`、`.agentflow/runs/<run-id>/pm/scope.md`、`.agentflow/runs/<run-id>/pm/acceptance-criteria.md` 和 `.agentflow/runs/<run-id>/pm/planning-summary.md`。
+
+`pm/planning-summary.md` 必须包含：
+
+```text
+Source coverage:
+Copied requirements:
+Decisions:
+Open risks:
+Ready for design: yes | no
+```
 
 ## Gate 契约
 

@@ -17,7 +17,7 @@ function nullableArg(value) {
 export function stateCommand(args, context) {
   const action = args._[1];
   if (action !== "set") {
-    exitWith("Usage: codex-spec state set [--phase <phase>] [--mode <mode>] [--planning-session <id>] [--planning-track explore|preflight|null] [--run <run-id>] [--milestone <id>] [--blocked true|false]");
+    exitWith("Usage: codex-spec state set [--phase <phase>] [--planning-session <id>] [--planning-track explore|preflight|null] [--run <run-id>] [--milestone <id>] [--blocked true|false]");
     return;
   }
   const state = readState(context.target);
@@ -31,7 +31,6 @@ export function stateCommand(args, context) {
     }
     state.current_phase = phase;
   }
-  if (args.mode) state.mode = String(args.mode);
   if (hasPlanningSessionArg) state.current_planning_session = nullableArg(args["planning-session"]);
   if (hasPlanningTrackArg) {
     const track = nullableArg(args["planning-track"]);

@@ -42,7 +42,9 @@ function assertPlanningDocs(root, lang) {
   const mainThread = readText(root, ".codex", "prompts", "main-thread.md");
   const fileProtocol = readText(root, ".codex", "prompts", "file-protocol.md");
   const planSkill = readText(root, ".agents", "skills", "spec:plan", "SKILL.md");
+  const autoSkill = readText(root, ".agents", "skills", "spec:auto", "SKILL.md");
   const designSkill = readText(root, ".agents", "skills", "spec:design", "SKILL.md");
+  const executeSkill = readText(root, ".agents", "skills", "spec:execute", "SKILL.md");
   const resumeSkill = readText(root, ".agents", "skills", "spec:resume", "SKILL.md");
   const statusSkill = readText(root, ".agents", "skills", "spec:status", "SKILL.md");
   const subagentContract = readText(root, ".codex", "prompts", "subagent-contract.md");
@@ -56,6 +58,11 @@ function assertPlanningDocs(root, lang) {
   assert(mainThread.includes("explore` track") || mainThread.includes("`explore` track"), `${lang} main-thread should define explore track`);
   assert(mainThread.includes("`preflight` track"), `${lang} main-thread should define preflight track`);
   assert(mainThread.includes("`commit` track"), `${lang} main-thread should define commit track`);
+  assert(mainThread.includes(lang === "zh" ? "PM 负责 requirement-map" : "PM owns requirement-map"), `${lang} main-thread should keep preflight PM-owned`);
+  assert(mainThread.includes(lang === "zh" ? "调度 Doc Reviewer 前进入 `doc-reviewing`" : "Before Doc Reviewer dispatch, move to `doc-reviewing`"), `${lang} main-thread should enter doc-reviewing`);
+  assert(mainThread.includes(lang === "zh" ? "Workflow Script 边界" : "Workflow Script Boundary"), `${lang} main-thread should define workflow script boundary`);
+  assert(!mainThread.includes("Public CLI commands"), `${lang} main-thread should not describe public CLI commands`);
+  assert(!mainThread.includes("对用户公开的 CLI"), `${lang} main-thread should not describe public CLI commands`);
   assert(mainThread.includes(lang === "zh" ? "planning package 作为需求来源" : "planning package as its requirements source"), `${lang} design contract should depend on planning package`);
 
   assert(fileProtocol.includes(".agentflow/explore/<explore-id>/"), `${lang} file protocol should define explore session path`);
@@ -68,19 +75,33 @@ function assertPlanningDocs(root, lang) {
   assert(fileProtocol.includes(".agentflow/archives/preflight/<preflight-id>/"), `${lang} file protocol should define preflight archive path`);
   assert(fileProtocol.includes("pm/requirements.md"), `${lang} file protocol should define planning package requirements`);
   assert(fileProtocol.includes("pm/acceptance-criteria.md"), `${lang} file protocol should define planning package acceptance criteria`);
+  assert(fileProtocol.includes("Ready for design: yes | no"), `${lang} file protocol should define planning summary readiness`);
   assert(fileProtocol.includes("src/example-feature/**"), `${lang} gate example should be feature-scoped`);
   assert(!fileProtocol.includes("questions.md"), `${lang} file protocol should not use the old shared questions file`);
   assert(!fileProtocol.includes("src/**"), `${lang} gate example should not use repo-wide source scope`);
 
   assert(planSkill.includes("current_planning_session"), `${lang} plan skill should track current planning session`);
   assert(planSkill.includes("planning_track"), `${lang} plan skill should track planning track`);
+  assert(!planSkill.includes(".agentflow/state.json.current_planning_session"), `${lang} plan skill should not describe state fields as file paths`);
+  assert(!planSkill.includes(".agentflow/state.json.planning_track"), `${lang} plan skill should not describe state fields as file paths`);
   assert(planSkill.includes("codex-spec archive --explore <explore-id>"), `${lang} plan skill should archive completed explore sessions`);
   assert(planSkill.includes("codex-spec archive --preflight <preflight-id>"), `${lang} plan skill should archive completed preflights`);
   assert(planSkill.includes("Planning Package"), `${lang} plan skill should define the planning package`);
   assert(planSkill.includes("pm/planning-summary.md"), `${lang} plan skill should write planning summary`);
+  assert(planSkill.includes(lang === "zh" ? "调度 PM" : "dispatch PM"), `${lang} plan skill should use PM dispatch`);
   assert(designSkill.includes("pm/requirements.md"), `${lang} design skill should read planning requirements`);
   assert(designSkill.includes("pm/scope.md"), `${lang} design skill should read planning scope`);
+  assert(designSkill.includes("doc-reviewing"), `${lang} design skill should set doc-reviewing phase`);
+  assert(executeSkill.includes(lang === "zh" ? "commit 或 no-op 成功后" : "After commit or no-op succeeds"), `${lang} execute skill should clear state after commit or no-op`);
+  assert(executeSkill.includes(lang === "zh" ? "新的 dispatch 行和新的子代理" : "new dispatch rows and new agents"), `${lang} execute skill should make subagent closure actionable`);
+  assert(autoSkill.includes(lang === "zh" ? "inline requirement" : "inline requirement"), `${lang} auto skill should support inline requirements`);
+  assert(autoSkill.includes(lang === "zh" ? "打回与路由" : "Rejection Routing"), `${lang} auto skill should reuse main-thread rejection routing`);
+  assert(autoSkill.includes(lang === "zh" ? "Milestone 边界" : "Milestone Boundary"), `${lang} auto skill should reuse main-thread milestone boundary`);
+  assert(!autoSkill.includes("Stop automatic progress only"), `${lang} auto skill should not duplicate stop rules`);
+  assert(!autoSkill.includes("只有以下情况停止自动推进"), `${lang} auto skill should not duplicate stop rules`);
   assert(resumeSkill.includes("current_planning_session"), `${lang} resume skill should restore planning sessions`);
+  assert(resumeSkill.includes(".codex/prompts/main-thread.md"), `${lang} resume skill should read main-thread protocol`);
+  assert(resumeSkill.includes(".codex/prompts/file-protocol.md"), `${lang} resume skill should read file protocol`);
   assert(statusSkill.includes("planning track"), `${lang} status skill should report planning track`);
 
   assert(subagentContract.includes(lang === "zh" ? "跨越当前角色边界" : "crosses the current role boundary"), `${lang} subagent contract should define decision request boundaries`);
@@ -126,12 +147,20 @@ assert(!defaultConfig.includes("service_tier"), "fast mode should be off by defa
 assert(!zhPmAgent.includes("service_tier"), "fast mode off should not render agent service_tier");
 assert(defaultState.includes('"current_planning_session": null'), "state should track current planning session");
 assert(defaultState.includes('"planning_track": null'), "state should track planning track");
+assert(!defaultState.includes('"mode"'), "state should not include duplicate mode field");
 assert(zhPmAgent.includes("标准报告格式"), "zh pm agent should use standard report format");
 assert(!zhPmAgent.includes("$finish"), "zh pm agent should not reference removed finish skill");
 assert(!zhArchitectAgent.includes("$finish"), "zh architect agent should not reference removed finish skill");
 assert(!zhTesterAgent.includes("$finish"), "zh tester agent should not reference removed finish skill");
 
 runCli("src", ["--version"]);
+const helpOutput = runCli("src", ["help"]);
+assert(helpOutput.includes("codex-spec init"), "help should show init");
+assert(helpOutput.includes("codex-spec doctor"), "help should show doctor");
+assert(!helpOutput.includes("codex-spec profile"), "help should not expose profile");
+assert(!helpOutput.includes("codex-spec status"), "help should not expose status");
+assert(!helpOutput.includes("codex-spec state"), "help should not expose state");
+assert(!helpOutput.includes("codex-spec archive"), "help should not expose archive");
 runCli("src", ["doctor", "--target", tmp]);
 runCli("src", ["status", "--target", tmp]);
 

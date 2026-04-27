@@ -10,6 +10,8 @@ description: Resume workflow from state, planning session, and dispatch ledger.
 Read these paths only when they are not already in the active context or their contents may have changed:
 
 - `.agentflow/state.json`
+- `.codex/prompts/main-thread.md`
+- `.codex/prompts/file-protocol.md`
 - `.agentflow/explore/<current_planning_session>/brief.md` when `planning_track` is `explore`
 - `.agentflow/explore/<current_planning_session>/rounds/<round-id>/round.md` when an active explore round is present
 - `.agentflow/preflight/<current_planning_session>/brief.md` when `planning_track` is `preflight`

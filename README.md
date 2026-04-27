@@ -34,7 +34,6 @@ Check the scaffold:
 
 ```bash
 codex-spec doctor
-codex-spec status
 ```
 
 Then start Codex in the project and drive the workflow with skills:
@@ -101,18 +100,10 @@ codex-spec init --model xhigh --fast off
 
 | Profile | Generated behavior |
 | --- | --- |
-| `high` | Default high-end workflow. The project-level main thread uses `gpt-5.5` + `xhigh`; every subagent has explicit model settings. PM, Architect, Doc Reviewer, and Code Reviewer use `xhigh`; Developer, Tester, and Auditor use `high`. |
-| `xhigh` | Maximum reasoning profile. The project-level main thread and every subagent use `gpt-5.5` + `xhigh`. |
+| `high` | Default high-end workflow. In the current version, the project-level main thread uses `gpt-5.5` + `xhigh`; every subagent has explicit model settings. PM, Architect, Doc Reviewer, and Code Reviewer use `xhigh`; Developer, Tester, and Auditor use `high`. |
+| `xhigh` | Maximum reasoning profile. In the current version, the project-level main thread and every subagent use `gpt-5.5` + `xhigh`. |
 
 `--fast on` writes `service_tier = "fast"` into the generated project and subagent Codex configs. It can reduce latency but may consume fast quota more aggressively. `--fast off` omits the fast service tier.
-
-Use `profile` after initialization to inspect or update the current model profile:
-
-```bash
-codex-spec profile
-codex-spec profile --model xhigh
-codex-spec profile --fast on
-```
 
 `--lang zh` generates Simplified Chinese workflow prompts. Natural-language task files, dispatch text, reports, and long-lived docs should be written in Chinese.
 
@@ -121,15 +112,14 @@ codex-spec profile --fast on
 ```bash
 codex-spec help
 codex-spec init --lang en|zh --model high|xhigh --fast off|on
-codex-spec profile --model high|xhigh --fast off|on
 codex-spec doctor
-codex-spec status
+codex-spec --version
 ```
 
 `--target` is optional for project commands. Without it, `codex-spec` uses the current working directory.
 `init` preserves existing generated files by default and asks before overwriting them in interactive shells. Existing `agentflow/` and `.agentflow/` files are treated as project artifacts and are never overwritten.
 
-`doctor` checks the installed scaffold files. Workflow progress is reported by `status` and the `$spec:status` skill.
+`doctor` checks the installed scaffold files. Workflow progress is reported by the `$spec:status` skill. Workflow skills call internal scripts for state, archive, profile, and raw status operations.
 
 ## Best Practices
 
@@ -152,7 +142,7 @@ Use the full workflow for multi-step changes, cross-file refactors, or work wher
 ```bash
 bun run test
 npm pack --dry-run
-./publish.sh patch
+sh scripts/publish.sh patch
 ```
 
 The build output is written to `dist/`, and the npm package includes `dist/`, `common/`, `README.md`, `README_ZH.md`, and `LICENSE`.

@@ -17,7 +17,6 @@ export const PHASES = [
 export function defaultState() {
   return {
     version: 1,
-    mode: "idle",
     current_planning_session: null,
     planning_track: null,
     current_run: null,
@@ -33,6 +32,7 @@ export function normalizeState(state) {
   const next = { ...fallback, ...(state || {}) };
   delete next.current_brainstorm;
   delete next.current_preflight;
+  delete next.mode;
   if (!PHASES.includes(next.current_phase)) next.current_phase = "idle";
   if (typeof next.blocked !== "boolean") next.blocked = Boolean(next.blocked);
   if (next.current_run === "") next.current_run = null;

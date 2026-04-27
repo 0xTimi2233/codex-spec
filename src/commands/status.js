@@ -7,7 +7,6 @@ export function statusCommand(_args, context) {
   const root = context.target;
   const state = readState(root);
   println(`Project: ${root}`);
-  println(`Mode: ${state.mode}`);
   println(`Phase: ${state.current_phase}`);
   println(`Planning track: ${state.planning_track || "-"}`);
   println(`Planning session: ${state.current_planning_session || "-"}`);

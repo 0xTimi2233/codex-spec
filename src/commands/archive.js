@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { ensureDir, exists } from "../lib/fs.js";
-import { readState, writeState } from "../lib/state.js";
 import { println, exitWith } from "../lib/output.js";
+import { readState } from "../lib/state.js";
 
 function resolveRun(args, root) {
   if (args.run && args.run !== "null") return String(args.run);
@@ -30,27 +30,6 @@ function moveImmutable({ root, kind, srcPath, archivePath }) {
   return true;
 }
 
-function clearArchivedPlanningSession(root, track, sessionId) {
-  const state = readState(root);
-  if (state.planning_track !== track || state.current_planning_session !== sessionId) return;
-  state.current_planning_session = null;
-  state.planning_track = null;
-  state.updated_by = "codex-spec archive";
-  writeState(root, state);
-}
-
-function clearArchivedRun(root, runId) {
-  const state = readState(root);
-  if (state.current_run !== runId) return;
-  state.mode = "idle";
-  state.current_run = null;
-  state.current_phase = "idle";
-  state.current_milestone = null;
-  state.blocked = false;
-  state.updated_by = "codex-spec archive";
-  writeState(root, state);
-}
-
 export function archiveCommand(args, context) {
   if (args.explore) {
     const exploreId = String(args.explore);
@@ -58,13 +37,12 @@ export function archiveCommand(args, context) {
       exitWith(`Invalid explore id: ${exploreId}`);
       return;
     }
-    const archived = moveImmutable({
+    moveImmutable({
       root: context.target,
       kind: "Explore",
       srcPath: path.join(context.target, ".agentflow", "explore", exploreId),
       archivePath: path.join(context.target, ".agentflow", "archives", "explore", exploreId)
     });
-    if (archived) clearArchivedPlanningSession(context.target, "explore", exploreId);
     return;
   }
 
@@ -74,13 +52,12 @@ export function archiveCommand(args, context) {
       exitWith(`Invalid preflight id: ${preflightId}`);
       return;
     }
-    const archived = moveImmutable({
+    moveImmutable({
       root: context.target,
       kind: "Preflight",
       srcPath: path.join(context.target, ".agentflow", "preflight", preflightId),
       archivePath: path.join(context.target, ".agentflow", "archives", "preflight", preflightId)
     });
-    if (archived) clearArchivedPlanningSession(context.target, "preflight", preflightId);
     return;
   }
 
@@ -95,11 +72,10 @@ export function archiveCommand(args, context) {
     return;
   }
 
-  const archived = moveImmutable({
+  moveImmutable({
     root: context.target,
     kind: "Run",
     srcPath: path.join(context.target, ".agentflow", "runs", runId),
     archivePath: path.join(context.target, ".agentflow", "archives", runId)
   });
-  if (archived) clearArchivedRun(context.target, runId);
 }

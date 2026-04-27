@@ -40,7 +40,7 @@ Long-lived files are synced only during milestone finish by the owning role.
 
 ## Explore Files
 
-Explore files capture one pre-run discovery session:
+Explore files capture one pre-run discovery session. PM owns the session analysis artifacts; the main thread owns state, dispatch, decision routing, and archive.
 
 ```text
 .agentflow/explore/<explore-id>/
@@ -75,7 +75,7 @@ PM planning uses the explore `brief.md` path specified by the main thread.
 
 ## Preflight Files
 
-Preflight files audit existing requirements before planning:
+Preflight files audit existing requirements before planning. PM owns requirement analysis artifacts; the main thread owns state, dispatch, decision routing, and archive.
 
 ```text
 .agentflow/preflight/<preflight-id>/
@@ -137,6 +137,16 @@ PM planning uses the preflight `brief.md` path specified by the main thread.
 ```
 
 The PM package must be self-contained before `$spec:design`. It copies the relevant requirements, decisions, constraints, assumptions, open risks, acceptance criteria, and source references needed for design into `.agentflow/runs/<run-id>/pm/requirements.md`, `.agentflow/runs/<run-id>/pm/scope.md`, `.agentflow/runs/<run-id>/pm/acceptance-criteria.md`, and `.agentflow/runs/<run-id>/pm/planning-summary.md`.
+
+`pm/planning-summary.md` must include:
+
+```text
+Source coverage:
+Copied requirements:
+Decisions:
+Open risks:
+Ready for design: yes | no
+```
 
 ## Gate Contract
 
