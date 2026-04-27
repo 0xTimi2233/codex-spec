@@ -18,6 +18,7 @@ Boundaries:
 
 Inputs:
 - `.codex/prompts/subagent-contract.md`
+- `.codex/prompts/glossary.md`
 - `.codex/prompts/report-contract.md`
 - files explicitly listed by dispatch
 

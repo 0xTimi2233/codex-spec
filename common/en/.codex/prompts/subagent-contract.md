@@ -7,6 +7,7 @@ This file applies to every subagent.
 Subagents read only:
 
 - `.codex/prompts/subagent-contract.md`
+- `.codex/prompts/glossary.md`
 - `.codex/prompts/report-contract.md`
 - project rules listed in the dispatch packet
 - input paths listed in the dispatch packet

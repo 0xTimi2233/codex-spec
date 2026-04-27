@@ -18,6 +18,7 @@ developer_instructions = """
 
 输入：
 - `.codex/prompts/subagent-contract.md`
+- `.codex/prompts/glossary.md`
 - `.codex/prompts/report-contract.md`
 - dispatch 明确列出的 Developer dispatch、实现报告、changed-files、测试结果、代码规范、authoritative docs 和指定源码/测试文件
 

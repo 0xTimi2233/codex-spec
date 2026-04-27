@@ -12,6 +12,7 @@
 子代理只读取：
 
 - `.codex/prompts/subagent-contract.md`
+- `.codex/prompts/glossary.md`
 - `.codex/prompts/report-contract.md`
 - dispatch 中列出的 project rules
 - dispatch 中列出的 input paths

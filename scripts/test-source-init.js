@@ -83,6 +83,7 @@ function assertPlanningDocs(root, lang) {
   assert(!mainThread.includes("execution-contract.md"), `${lang} main-thread should not introduce a shared execution contract file`);
 
   assert(glossary.includes("planning track"), `${lang} glossary should define planning track`);
+  assert(glossary.includes("`dispatch`"), `${lang} glossary should define dispatch`);
   assert(glossary.includes("dispatch packet"), `${lang} glossary should define dispatch packet`);
   assert(glossary.includes("archive"), `${lang} glossary should define archive`);
 
@@ -148,6 +149,7 @@ function assertPlanningDocs(root, lang) {
   assert(resumeSkill.includes(".codex/prompts/file-index.md"), `${lang} resume skill should read file index`);
   assert(statusSkill.includes("planning track"), `${lang} status skill should report planning track`);
 
+  assert(subagentContract.includes(".codex/prompts/glossary.md"), `${lang} subagent contract should require glossary`);
   assert(subagentContract.includes(".codex/prompts/report-contract.md"), `${lang} subagent contract should reference report contract`);
   assert(!subagentContract.includes("- `.codex/prompts/file-index.md`"), `${lang} subagent contract should not require file index by default`);
   assert(!subagentContract.includes(".codex/prompts/file-protocol.md"), `${lang} subagent contract should not mention old file protocol`);
@@ -156,6 +158,7 @@ function assertPlanningDocs(root, lang) {
   assert(!subagentContract.includes("Files written:"), `${lang} subagent contract should not use legacy report fields`);
   assert(!agentConfigs.includes("file-protocol.md"), `${lang} agent configs should not require file protocol by default`);
   assert(agentConfigs.includes("subagent-contract.md"), `${lang} agent configs should use subagent contract`);
+  assert(agentConfigs.includes("glossary.md"), `${lang} agent configs should use glossary`);
   assert(agentConfigs.includes("report-contract.md"), `${lang} agent configs should use report contract`);
   assert(agentConfigs.includes(lang === "zh" ? "2-4 个选项" : "2-4 options"), `${lang} PM agent should request numbered options`);
   assert(architectAgent.includes(lang === "zh" ? "2-4 个选项" : "2-4 options"), `${lang} Architect agent should request numbered options`);

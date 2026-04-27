@@ -17,6 +17,7 @@ developer_instructions = """
 
 输入：
 - `.codex/prompts/subagent-contract.md`
+- `.codex/prompts/glossary.md`
 - `.codex/prompts/report-contract.md`
 - dispatch 明确列出的文件
 

@@ -11,6 +11,7 @@ This file defines shared workflow terms.
 | `explore-id` | One pre-run discovery session stored under `codexspec/runtime/explore/<explore-id>/`. |
 | `preflight-id` | One pre-plan requirement audit stored under `codexspec/runtime/preflight/<preflight-id>/`. |
 | `planning package` | Self-contained, run-scoped PM input record under `codexspec/runtime/runs/<run-id>/task.md` and `codexspec/runtime/runs/<run-id>/pm/`. |
+| `dispatch` | Main-thread action that assigns one explicit task to one subagent; each dispatch has one dispatch packet and one dispatch-ledger row. |
 | `dispatch packet` | Task packet a subagent reads for one assignment. |
 | `authoritative docs` | Dispatch-listed `codexspec/` documents a role must follow for the current assignment. |
 | `dispatch ledger` | Main-thread dispatch status table for the current run or planning session. |
