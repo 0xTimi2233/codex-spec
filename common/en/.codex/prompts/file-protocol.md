@@ -6,10 +6,11 @@ Files are the workflow source of truth. Chat history is not a source of truth. U
 
 | Term | Meaning |
 |---|---|
-| `workflow skill` | A main-thread command such as `$brainstorm`, `$plan`, `$design`, `$execute`, or `$auto`. Skills orchestrate workflow steps and may create dispatch packets. |
+| `workflow skill` | A main-thread command such as `$spec:brainstorm`, `$spec:plan`, `$spec:design`, `$spec:execute`, or `$spec:auto`. Skills orchestrate workflow steps and may create dispatch packets. |
 | `run-id` | One milestone execution unit stored under `.agentflow/runs/<run-id>/`. |
 | `brainstorm-id` | One pre-plan discovery session stored under `.agentflow/brainstorm/<brainstorm-id>/`. |
-| `brainstorm brief` | `.agentflow/brainstorm/<brainstorm-id>/brief.md`; the planning-ready result of a brainstorm session. |
+| `brainstorm round` | `.agentflow/brainstorm/<brainstorm-id>/rounds/round-<nnn>/round.md`; one append-only question batch in a brainstorm session. |
+| `brainstorm brief` | `.agentflow/brainstorm/<brainstorm-id>/brief.md`; the planning-ready result merged from brainstorm rounds. |
 | `dispatch packet` | `.agentflow/runs/<run-id>/dispatch/<role>-<task-id>.md`; the task packet a subagent reads for one assignment. |
 | `task.md` | Current run goal, scope, constraints, done criteria, and user decisions. |
 | `gate.md` | Approved execution contract produced after document review. Developer and Code Reviewer use it as the implementation boundary. |
@@ -39,9 +40,11 @@ Brainstorm files capture one pre-plan discovery session:
 ```text
 .agentflow/brainstorm/<brainstorm-id>/
   brief.md
-  notes.md
-  questions.md
-  source-map.md
+  rounds/
+    round-001/
+      round.md
+    round-002/
+      round.md
   summary.md
 ```
 
@@ -61,7 +64,7 @@ Risks:
 Recommended planning focus:
 ```
 
-`notes.md` records useful exploration notes. `questions.md` records open and answered questions. `source-map.md` records user-provided inputs and inspected paths. `summary.md` records the session outcome and archive status.
+Each `round.md` records one 1-3 question batch, user answers, decisions, inspected inputs, and round summary. Earlier rounds are stable history. `brief.md` is merged from rounds when the session is closed. `summary.md` records the session outcome and archive status.
 
 PM planning uses the brainstorm `brief.md` path specified by the main thread.
 

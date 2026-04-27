@@ -1,9 +1,9 @@
 ---
-name: plan
+name: spec:plan
 description: Confirm requirements, update the roadmap, and prepare the next milestone run.
 ---
 
-# Skill: plan
+# Skill: spec:plan
 
 ## Context Inputs
 
@@ -46,4 +46,4 @@ If PM returns `User decision required`, present the numbered options to the user
 
 ## Next
 
-Return run id, created files, next step `$design`, or blocker.
+Return run id, created files, next step `$spec:design`, or blocker.

@@ -1,9 +1,9 @@
 ---
-name: execute
+name: spec:execute
 description: Complete the current milestone from an approved gate through implementation, review, verification, archive, and commit.
 ---
 
-# Skill: execute
+# Skill: spec:execute
 
 ## Context Inputs
 

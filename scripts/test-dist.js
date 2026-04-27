@@ -25,8 +25,8 @@ assert(profiledPmAgent.includes('service_tier = "fast"'), "profile should enable
 assert(profiledDeveloperAgent.includes('model_reasoning_effort = "high"'), "profile high should set developer high");
 assert(profiledDeveloperAgent.includes('service_tier = "fast"'), "profile should enable developer fast mode");
 assert(!fs.existsSync(path.join(root, "dist", "hooks")), "dist should not include hooks");
-assert(fs.existsSync(path.join(tmp, ".agents", "skills", "brainstorm", "SKILL.md")), "dist init should include brainstorm skill");
-for (const removedSkill of ["doc-review", "code-review", "verify", "finish"]) {
+assert(fs.existsSync(path.join(tmp, ".agents", "skills", "spec:brainstorm", "SKILL.md")), "dist init should include spec:brainstorm skill");
+for (const removedSkill of ["brainstorm", "plan", "design", "execute", "auto", "status", "resume", "doc-review", "code-review", "verify", "finish"]) {
   assert(!fs.existsSync(path.join(tmp, ".agents", "skills", removedSkill, "SKILL.md")), `${removedSkill} should not be installed as a user-facing skill`);
 }
 

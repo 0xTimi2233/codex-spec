@@ -1,9 +1,9 @@
 ---
-name: brainstorm
+name: spec:brainstorm
 description: 在 plan 前探索需求，并写出供 PM 规划使用的简短 brief。
 ---
 
-# Skill: brainstorm
+# Skill: spec:brainstorm
 
 ## 上下文输入
 
@@ -20,14 +20,13 @@ description: 在 plan 前探索需求，并写出供 PM 规划使用的简短 br
 2. 讨论 goal、scope、non-goals、constraints、risks、用户偏好和候选 milestones。
 3. 只读取用户提供的文件。需要更多上下文时，请用户给出具体路径或决策。
 4. 每轮最多提出 1-3 个阻塞问题。每个问题给出 2-4 个编号选项、影响说明和推荐项。允许用户用自由文本回答。
-5. 每轮回答后，更新 `questions.md`，把确认结论收敛到 `brief.md`，并判断是否需要下一轮提问。
-6. 没有阻塞问题后，请用户选择将本次 brainstorm 结束为 `ready-for-plan`、继续 brainstorm，或废弃本次 session。
-7. 写 `.agentflow/brainstorm/<brainstorm-id>/brief.md`。
-8. 当内容具备审计价值时，更新 `.agentflow/brainstorm/<brainstorm-id>/notes.md`、`questions.md` 和 `source-map.md`。
-9. 用户确认可进入 planning 前，`brief.md` 保持 `Status: draft`。
-10. 用户确认后，将 `brief.md` 更新为 `Status: ready-for-plan` 或 `Status: discarded`，写 `summary.md`，执行 `codex-spec archive --brainstorm <brainstorm-id>`，再执行 `codex-spec state set --brainstorm null`。
-11. 归档后使用 `.agentflow/archives/brainstorm/<brainstorm-id>/brief.md` 作为 planning brief 路径。
-12. 建议在干净聊天上下文中开始 `$plan`。
+5. 每轮写入 `.agentflow/brainstorm/<brainstorm-id>/rounds/round-<nnn>/round.md`。不要重写旧 round，除非是在补全同一个 open round。
+6. 每轮回答后，更新该 round 的状态、用户回答、决策和 round summary。只有需要下一批问题时，才创建 `round-<nnn+1>`。
+7. 有 open round 时，`.agentflow/brainstorm/<brainstorm-id>/brief.md` 保持 `Status: draft`。
+8. 没有阻塞问题后，请用户选择将本次 brainstorm 结束为 `ready-for-plan`、继续 brainstorm，或废弃本次 session。
+9. 用户确认后，将所有 round 决策合并到 `brief.md`，设置为 `Status: ready-for-plan` 或 `Status: discarded`，写 `summary.md`，执行 `codex-spec archive --brainstorm <brainstorm-id>`，再执行 `codex-spec state set --brainstorm null`。
+10. 归档后使用 `.agentflow/archives/brainstorm/<brainstorm-id>/brief.md` 作为 planning brief 路径。
+11. 建议在干净聊天上下文中开始 `$spec:plan`。
 
 ## Brief 格式
 
@@ -45,17 +44,31 @@ Risks:
 Recommended planning focus:
 ```
 
-## 提问格式
+## Round 格式
 
 ```text
-Q1:
+Round: 001
+Status: open | answered | superseded
+Question range: Q001-Q003
+Inputs read:
+- <repo-relative path>
+
+Questions:
+Q001:
 Context:
 Options:
 1. <option> — Impact:
 2. <option> — Impact:
 Recommended:
 User answer:
+Decision:
 Status: open | answered
+
+Round summary:
+Confirmed decisions:
+Open questions:
+Supersedes:
+Next:
 ```
 
 ## 范围

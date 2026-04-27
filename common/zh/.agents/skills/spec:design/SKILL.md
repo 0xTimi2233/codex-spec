@@ -1,9 +1,9 @@
 ---
-name: design
+name: spec:design
 description: 产出并审查当前 milestone 方案，然后创建 approved gate。
 ---
 
-# Skill: design
+# Skill: spec:design
 
 ## 上下文输入
 
@@ -41,4 +41,4 @@ description: 产出并审查当前 milestone 方案，然后创建 approved gate
 
 ## 下一步
 
-返回设计产物路径、测试计划路径、gate 状态、下一步 `$execute`，或 blocker。
+返回设计产物路径、测试计划路径、gate 状态、下一步 `$spec:execute`，或 blocker。

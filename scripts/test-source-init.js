@@ -2,8 +2,32 @@ import fs from "node:fs";
 import path from "node:path";
 import { assert, readText, runCli, tempDir } from "./test-utils.js";
 
+const LEGACY_WORKFLOW_SKILL = /\$(brainstorm|plan|design|execute|auto|resume|status)\b/;
+
+function generatedFiles(root, relDir) {
+  const dir = path.join(root, relDir);
+  const out = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const rel = path.join(relDir, entry.name);
+    if (entry.isDirectory()) {
+      out.push(...generatedFiles(root, rel));
+    } else {
+      out.push(rel);
+    }
+  }
+  return out;
+}
+
+function assertNoLegacyWorkflowSkills(root, label) {
+  for (const rel of [...generatedFiles(root, ".agents"), ...generatedFiles(root, ".codex")]) {
+    const content = readText(root, rel);
+    assert(!LEGACY_WORKFLOW_SKILL.test(content), `${label} should not reference legacy workflow skill in ${rel}`);
+  }
+}
+
 const tmp = tempDir("codex-spec-source-init-");
 runCli("src", ["init", "--lang", "zh", "--target", tmp]);
+assertNoLegacyWorkflowSkills(tmp, "zh init");
 
 const defaultConfig = readText(tmp, ".codex", "config.toml");
 const defaultState = readText(tmp, ".agentflow", "state.json");
@@ -13,10 +37,10 @@ const zhTesterAgent = readText(tmp, ".codex", "agents", "tester.toml");
 const zhMainThread = readText(tmp, ".codex", "prompts", "main-thread.md");
 const zhFileProtocol = readText(tmp, ".codex", "prompts", "file-protocol.md");
 const zhSubagentContract = readText(tmp, ".codex", "prompts", "subagent-contract.md");
-const zhBrainstormSkill = readText(tmp, ".agents", "skills", "brainstorm", "SKILL.md");
-const zhPlanSkill = readText(tmp, ".agents", "skills", "plan", "SKILL.md");
-const zhResumeSkill = readText(tmp, ".agents", "skills", "resume", "SKILL.md");
-const zhStatusSkill = readText(tmp, ".agents", "skills", "status", "SKILL.md");
+const zhBrainstormSkill = readText(tmp, ".agents", "skills", "spec:brainstorm", "SKILL.md");
+const zhPlanSkill = readText(tmp, ".agents", "skills", "spec:plan", "SKILL.md");
+const zhResumeSkill = readText(tmp, ".agents", "skills", "spec:resume", "SKILL.md");
+const zhStatusSkill = readText(tmp, ".agents", "skills", "spec:status", "SKILL.md");
 const zhPmRole = readText(tmp, ".codex", "prompts", "roles", "pm.md");
 const zhArchitectRole = readText(tmp, ".codex", "prompts", "roles", "architect.md");
 const zhDocReviewerRole = readText(tmp, ".codex", "prompts", "roles", "doc-reviewer.md");
@@ -28,9 +52,12 @@ assert(!zhPmAgent.includes("service_tier"), "fast mode off should not render age
 assert(defaultState.includes('"current_brainstorm": null'), "state should track current brainstorm");
 assert(zhMainThread.includes("决策路由"), "zh main-thread should define decision routing");
 assert(zhMainThread.includes("只有 PM 或 Architect"), "zh main-thread should limit user decision escalation");
-assert(zhMainThread.includes("$brainstorm"), "zh main-thread should define brainstorm workflow");
+assert(zhMainThread.includes("$spec:brainstorm"), "zh main-thread should define brainstorm workflow");
 assert(zhFileProtocol.includes("User decision required"), "zh file protocol should define decision request format");
 assert(zhFileProtocol.includes(".agentflow/brainstorm/<brainstorm-id>/"), "zh file protocol should define brainstorm session path");
+assert(zhFileProtocol.includes("rounds/"), "zh file protocol should define brainstorm rounds");
+assert(zhFileProtocol.includes("round-001"), "zh file protocol should show append-only round directories");
+assert(!zhFileProtocol.includes("questions.md"), "zh file protocol should not use the old shared questions file");
 assert(zhFileProtocol.includes(".agentflow/archives/brainstorm/<brainstorm-id>/"), "zh file protocol should define brainstorm archive path");
 assert(zhFileProtocol.includes("src/example-feature/**"), "zh gate example should be feature-scoped");
 assert(!zhFileProtocol.includes("src/**"), "zh gate example should not use repo-wide source scope");
@@ -44,6 +71,7 @@ assert(!zhTesterAgent.includes("$finish"), "zh tester agent should not reference
 assert(zhBrainstormSkill.includes(".agentflow/state.json.current_brainstorm"), "zh brainstorm skill should track current brainstorm");
 assert(zhBrainstormSkill.includes("上下文输入"), "zh brainstorm skill should use context input wording");
 assert(zhBrainstormSkill.includes(".agentflow/brainstorm/<brainstorm-id>/brief.md"), "zh brainstorm skill should write brainstorm brief under its id");
+assert(zhBrainstormSkill.includes("rounds/round-<nnn>/round.md"), "zh brainstorm skill should write round files");
 assert(zhBrainstormSkill.includes("codex-spec archive --brainstorm <brainstorm-id>"), "zh brainstorm skill should archive completed brainstorms");
 assert(zhBrainstormSkill.includes(".agentflow/archives/brainstorm/<brainstorm-id>/brief.md"), "zh brainstorm skill should point to archived planning brief");
 assert(zhBrainstormSkill.includes("每轮最多提出 1-3 个阻塞问题"), "zh brainstorm skill should limit question rounds");
@@ -61,7 +89,7 @@ assert(zhDocReviewerRole.includes("严格模式"), "zh Doc Reviewer role should 
 assert(zhCodeReviewerRole.includes("Developer 解释不能免除"), "zh Code Reviewer role should not accept developer rationale alone");
 assert(fs.existsSync(path.join(tmp, ".agentflow", "brainstorm", ".gitkeep")), "brainstorm directory should be initialized");
 assert(fs.existsSync(path.join(tmp, ".agentflow", "archives", "brainstorm", ".gitkeep")), "brainstorm archive directory should be initialized");
-for (const removedSkill of ["doc-review", "code-review", "verify", "finish"]) {
+for (const removedSkill of ["brainstorm", "plan", "design", "execute", "auto", "status", "resume", "doc-review", "code-review", "verify", "finish"]) {
   assert(!fs.existsSync(path.join(tmp, ".agents", "skills", removedSkill, "SKILL.md")), `${removedSkill} should not be a user-facing skill`);
 }
 
@@ -84,6 +112,7 @@ assert(readText(tmp, "agentflow", "vision.md") === customVision, "--force should
 
 const highTmp = tempDir("codex-spec-source-high-");
 runCli("src", ["init", "--lang", "en", "--model", "high", "--fast", "on", "--target", highTmp]);
+assertNoLegacyWorkflowSkills(highTmp, "en init");
 
 const highConfig = readText(highTmp, ".codex", "config.toml");
 const pmAgent = readText(highTmp, ".codex", "agents", "pm.toml");
@@ -93,10 +122,10 @@ const developerAgent = readText(highTmp, ".codex", "agents", "developer.toml");
 const enMainThread = readText(highTmp, ".codex", "prompts", "main-thread.md");
 const enFileProtocol = readText(highTmp, ".codex", "prompts", "file-protocol.md");
 const enSubagentContract = readText(highTmp, ".codex", "prompts", "subagent-contract.md");
-const enBrainstormSkill = readText(highTmp, ".agents", "skills", "brainstorm", "SKILL.md");
-const enPlanSkill = readText(highTmp, ".agents", "skills", "plan", "SKILL.md");
-const enResumeSkill = readText(highTmp, ".agents", "skills", "resume", "SKILL.md");
-const enStatusSkill = readText(highTmp, ".agents", "skills", "status", "SKILL.md");
+const enBrainstormSkill = readText(highTmp, ".agents", "skills", "spec:brainstorm", "SKILL.md");
+const enPlanSkill = readText(highTmp, ".agents", "skills", "spec:plan", "SKILL.md");
+const enResumeSkill = readText(highTmp, ".agents", "skills", "spec:resume", "SKILL.md");
+const enStatusSkill = readText(highTmp, ".agents", "skills", "spec:status", "SKILL.md");
 const enPmRole = readText(highTmp, ".codex", "prompts", "roles", "pm.md");
 const enArchitectRole = readText(highTmp, ".codex", "prompts", "roles", "architect.md");
 const enDocReviewerRole = readText(highTmp, ".codex", "prompts", "roles", "doc-reviewer.md");
@@ -127,9 +156,12 @@ assert(fastAgainDeveloperAgent.includes('model_reasoning_effort = "xhigh"'), "pr
 assert(fastAgainDeveloperAgent.includes('service_tier = "fast"'), "profile should enable agent fast mode");
 assert(enMainThread.includes("Decision Routing"), "en main-thread should define decision routing");
 assert(enMainThread.includes("Only unresolved PM or Architect"), "en main-thread should limit user decision escalation");
-assert(enMainThread.includes("$brainstorm"), "en main-thread should define brainstorm workflow");
+assert(enMainThread.includes("$spec:brainstorm"), "en main-thread should define brainstorm workflow");
 assert(enFileProtocol.includes("User decision required"), "en file protocol should define decision request format");
 assert(enFileProtocol.includes(".agentflow/brainstorm/<brainstorm-id>/"), "en file protocol should define brainstorm session path");
+assert(enFileProtocol.includes("rounds/"), "en file protocol should define brainstorm rounds");
+assert(enFileProtocol.includes("round-001"), "en file protocol should show append-only round directories");
+assert(!enFileProtocol.includes("questions.md"), "en file protocol should not use the old shared questions file");
 assert(enFileProtocol.includes(".agentflow/archives/brainstorm/<brainstorm-id>/"), "en file protocol should define brainstorm archive path");
 assert(enFileProtocol.includes("src/example-feature/**"), "en gate example should be feature-scoped");
 assert(!enFileProtocol.includes("src/**"), "en gate example should not use repo-wide source scope");
@@ -143,6 +175,7 @@ assert(!testerAgent.includes("$finish"), "en tester agent should not reference r
 assert(enBrainstormSkill.includes(".agentflow/state.json.current_brainstorm"), "en brainstorm skill should track current brainstorm");
 assert(enBrainstormSkill.includes("Context Inputs"), "en brainstorm skill should use context input wording");
 assert(enBrainstormSkill.includes(".agentflow/brainstorm/<brainstorm-id>/brief.md"), "en brainstorm skill should write brainstorm brief under its id");
+assert(enBrainstormSkill.includes("rounds/round-<nnn>/round.md"), "en brainstorm skill should write round files");
 assert(enBrainstormSkill.includes("codex-spec archive --brainstorm <brainstorm-id>"), "en brainstorm skill should archive completed brainstorms");
 assert(enBrainstormSkill.includes(".agentflow/archives/brainstorm/<brainstorm-id>/brief.md"), "en brainstorm skill should point to archived planning brief");
 assert(enBrainstormSkill.includes("at most 1-3 blocking questions"), "en brainstorm skill should limit question rounds");
@@ -158,7 +191,7 @@ assert(enPmRole.includes("2-4 options"), "en PM role should request numbered opt
 assert(enArchitectRole.includes("Decision Request"), "en Architect role should return decision requests");
 assert(enDocReviewerRole.includes("Strict mode"), "en Doc Reviewer role should enforce strict mode");
 assert(enCodeReviewerRole.includes("Developer rationale does not waive"), "en Code Reviewer role should not accept developer rationale alone");
-for (const removedSkill of ["doc-review", "code-review", "verify", "finish"]) {
+for (const removedSkill of ["brainstorm", "plan", "design", "execute", "auto", "status", "resume", "doc-review", "code-review", "verify", "finish"]) {
   assert(!fs.existsSync(path.join(highTmp, ".agents", "skills", removedSkill, "SKILL.md")), `${removedSkill} should not be a user-facing skill`);
 }
 

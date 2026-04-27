@@ -1,9 +1,9 @@
 ---
-name: execute
+name: spec:execute
 description: 从 approved gate 开始完成当前 milestone 的实现、审查、验证、归档和提交。
 ---
 
-# Skill: execute
+# Skill: spec:execute
 
 ## 上下文输入
 

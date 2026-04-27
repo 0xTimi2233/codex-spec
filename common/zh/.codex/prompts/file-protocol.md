@@ -11,10 +11,11 @@
 
 | 术语 | 含义 |
 |---|---|
-| `workflow skill` | 主线程命令，例如 `$brainstorm`、`$plan`、`$design`、`$execute` 或 `$auto`。skill 编排工作流节点，并可创建 dispatch。 |
+| `workflow skill` | 主线程命令，例如 `$spec:brainstorm`、`$spec:plan`、`$spec:design`、`$spec:execute` 或 `$spec:auto`。skill 编排工作流节点，并可创建 dispatch。 |
 | `run-id` | 一个 milestone 执行单元，存放在 `.agentflow/runs/<run-id>/`。 |
 | `brainstorm-id` | 一个 plan 前需求探索单元，存放在 `.agentflow/brainstorm/<brainstorm-id>/`。 |
-| `brainstorm brief` | `.agentflow/brainstorm/<brainstorm-id>/brief.md`；brainstorm 产出的 planning 输入。 |
+| `brainstorm round` | `.agentflow/brainstorm/<brainstorm-id>/rounds/round-<nnn>/round.md`；brainstorm session 中一组追加式问题记录。 |
+| `brainstorm brief` | `.agentflow/brainstorm/<brainstorm-id>/brief.md`；由 brainstorm rounds 合并得到的 planning 输入。 |
 | `dispatch packet` | `.agentflow/runs/<run-id>/dispatch/<role>-<task-id>.md`；子代理一次任务读取的任务包。 |
 | `task.md` | 当前 run 的目标、范围、约束、完成标准和用户决策。 |
 | `gate.md` | 文档审查通过后生成的执行契约。Developer 和 Code Reviewer 以它作为实现边界。 |
@@ -44,9 +45,11 @@ Brainstorm 文件记录一次 plan 前需求探索：
 ```text
 .agentflow/brainstorm/<brainstorm-id>/
   brief.md
-  notes.md
-  questions.md
-  source-map.md
+  rounds/
+    round-001/
+      round.md
+    round-002/
+      round.md
   summary.md
 ```
 
@@ -66,7 +69,7 @@ Risks:
 Recommended planning focus:
 ```
 
-`notes.md` 记录有效探索笔记。`questions.md` 记录已回答和未回答问题。`source-map.md` 记录用户提供的输入和已查看路径。`summary.md` 记录本次结果和归档状态。
+每个 `round.md` 记录一轮 1-3 个问题、用户回答、决策、读取输入和 round summary。旧 round 是稳定历史。session 结束时，将 rounds 合并为 `brief.md`。`summary.md` 记录本次结果和归档状态。
 
 PM planning 使用主线程指定的 brainstorm `brief.md` 路径。
 

@@ -1,9 +1,9 @@
 ---
-name: design
+name: spec:design
 description: Produce and review the current milestone design, then create an approved gate.
 ---
 
-# Skill: design
+# Skill: spec:design
 
 ## Context Inputs
 
@@ -41,4 +41,4 @@ Read these paths only when they are not already in the active context or their c
 
 ## Next
 
-Return design artifact paths, test plan path, gate status, next step `$execute`, or blocker.
+Return design artifact paths, test plan path, gate status, next step `$spec:execute`, or blocker.

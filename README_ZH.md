@@ -40,16 +40,16 @@ codex-spec status
 然后在项目中启动 Codex，并使用技能推进流程：
 
 ```text
-$brainstorm
-$plan
-$design
-$execute
+$spec:brainstorm
+$spec:plan
+$spec:design
+$spec:execute
 ```
 
 需要受控自动推进时，使用：
 
 ```text
-$auto
+$spec:auto
 ```
 
 ## 详细介绍
@@ -64,7 +64,7 @@ agentflow/
 .agentflow/
 ```
 
-长期项目知识保存在 `agentflow/`：vision、roadmap、ADR、spec 和测试计划。Brainstorm session 保存在 `.agentflow/brainstorm/<brainstorm-id>/`，结束后归档到 `.agentflow/archives/brainstorm/<brainstorm-id>/`。PM planning 使用主线程指定的 `brief.md`。当前工作保存在 `.agentflow/runs/<run-id>/`：任务文件、调度 ledger、dispatch、角色报告、review ledger、修复请求和总结。完成的 run 会移动归档到不可变的 `.agentflow/archives/`。
+长期项目知识保存在 `agentflow/`：vision、roadmap、ADR、spec 和测试计划。Brainstorm session 保存在 `.agentflow/brainstorm/<brainstorm-id>/`：问题轮次追加到 `rounds/`，session 结束时合并到 `brief.md`。完成的 brainstorm 归档到 `.agentflow/archives/brainstorm/<brainstorm-id>/`。PM planning 使用主线程指定的 `brief.md`。当前工作保存在 `.agentflow/runs/<run-id>/`：任务文件、调度 ledger、dispatch、角色报告、review ledger、修复请求和总结。完成的 run 会移动归档到不可变的 `.agentflow/archives/`。
 
 ### 角色
 
@@ -83,14 +83,14 @@ Auditor
 ### 工作流
 
 ```text
-$brainstorm  在正式 planning 前探索需求
-$plan        确认需求、更新 roadmap、准备下一 milestone run
-$design      产出设计、spec、ADR 草案、测试计划、doc review 和 approved gate
-$execute     实现、code review、验证、finish、归档并提交当前 milestone
-$auto        按 roadmap 串行执行 milestone
+$spec:brainstorm  在正式 planning 前探索需求
+$spec:plan        确认需求、更新 roadmap、准备下一 milestone run
+$spec:design      产出设计、spec、ADR 草案、测试计划、doc review 和 approved gate
+$spec:execute     实现、code review、验证、finish、归档并提交当前 milestone
+$spec:auto        按 roadmap 串行执行 milestone
 ```
 
-doc review、code review、verification、finish、archive 和 milestone commit 是内部阶段。遇到打回时，如果责任角色和修复范围明确，主线程会把问题路由给对应子代理；`$auto` 只有无法安全判断下一步或需要外部决策时才停止。
+doc review、code review、verification、finish、archive 和 milestone commit 是内部阶段。遇到打回时，如果责任角色和修复范围明确，主线程会把问题路由给对应子代理；`$spec:auto` 只有无法安全判断下一步或需要外部决策时才停止。
 
 ### 模型档位
 
@@ -131,21 +131,21 @@ codex-spec status
 项目命令都可以使用可选的 `--target`。不传时，`codex-spec` 使用当前目录。
 `init` 默认保留已有生成文件，并会在交互式终端中询问是否覆盖。已有 `agentflow/` 和 `.agentflow/` 文件视为项目产物，永不覆盖。
 
-`doctor` 只检查脚手架安装文件。工作流进度由 `status` 和 `$status` skill 报告。
+`doctor` 只检查脚手架安装文件。工作流进度由 `status` 和 `$spec:status` skill 报告。
 
 ## 最佳实践
 
 - 每个 milestone 保持足够小，确保可以完整完成设计、实现、审查和 finish。
-- 使用 `$brainstorm` 做早期探索。它写入 brainstorm session，结束时归档，并将 `brief.md` 作为 planning 输入。
-- 正式工作从 `$plan` 开始，让 PM 把已确认需求整理成范围、roadmap milestone 和完成标准。
-- `$plan` 发现未结束 brainstorm brief 时，先结束或废弃。brief 进入 planning 前，建议在可行时使用干净聊天上下文。
+- 使用 `$spec:brainstorm` 做早期探索。它追加问题轮次，结束时归档，并将 `brief.md` 作为 planning 输入。
+- 正式工作从 `$spec:plan` 开始，让 PM 把已确认需求整理成范围、roadmap milestone 和完成标准。
+- `$spec:plan` 发现未结束 brainstorm brief 时，先结束或废弃。brief 进入 planning 前，建议在可行时使用干净聊天上下文。
 - 把上下文放在文件里，不依赖聊天记忆。子代理只读取 dispatch 指定路径和自己的角色 prompt。
 - 保持 prompt 前缀稳定：协议和角色上下文放前面，单次任务 dispatch 作为动态后缀。
 - 子代理返回简短报告；主线程根据报告和调度状态安排下一步。
 - PM 需要产品决策时，主线程给出带影响和推荐项的编号选项。
 - 区分 Doc Reviewer 和 Code Reviewer：先验证文档正确性，再验证实现正确性。
-- 常规 roadmap 推进可以使用 `$auto`，但当下一步无法安全判断时应停止。
-- `$execute` 提交完成的 milestone，提交信息使用简洁的用户可见描述，例如 `feat: add import workflow`、`fix: handle empty config`、`docs: update setup guide`。
+- 常规 roadmap 推进可以使用 `$spec:auto`，但当下一步无法安全判断时应停止。
+- `$spec:execute` 提交完成的 milestone，提交信息使用简洁的用户可见描述，例如 `feat: add import workflow`、`fix: handle empty config`、`docs: update setup guide`。
 - 归档 run 是历史记录，不作为后续上下文来源。可复用信息应在 milestone finish 阶段同步到 `agentflow/`。
 
 完整流程适合多步骤改动、跨文件重构或需要审查证据的工作。小改动、探索性原型或缺少测试基础的项目，可以在没有 active run 时使用较短的手动 Codex 流程。存在 active run 时，Developer 和 Code Reviewer 将已通过的 run contract 作为 prompt 层面的实现边界。

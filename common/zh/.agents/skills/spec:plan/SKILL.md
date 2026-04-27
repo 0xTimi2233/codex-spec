@@ -1,9 +1,9 @@
 ---
-name: plan
+name: spec:plan
 description: 确认需求、更新 roadmap，并准备下一 milestone run。
 ---
 
-# Skill: plan
+# Skill: spec:plan
 
 ## 上下文输入
 
@@ -46,4 +46,4 @@ description: 确认需求、更新 roadmap，并准备下一 milestone run。
 
 ## 下一步
 
-返回 run id、创建文件、下一步 `$design`，或 blocker。
+返回 run id、创建文件、下一步 `$spec:design`，或 blocker。

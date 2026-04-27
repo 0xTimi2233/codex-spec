@@ -94,7 +94,7 @@ run 开始时创建 ledger：
 
 收到子代理回复、关闭子代理、milestone finish 清理 milestone 上下文前，主线程更新对应行。resume 时，主线程只处理非结束状态的调度记录。结束状态为 `completed`、`failed`、`closed`、`stale`。
 
-可恢复记录存在 agent id 时，`$resume` 尝试继续该子代理。无法继续时，主线程将该行标记为 `stale`，并为剩余有界任务追加新的调度记录。
+可恢复记录存在 agent id 时，`$spec:resume` 尝试继续该子代理。无法继续时，主线程将该行标记为 `stale`，并为剩余有界任务追加新的调度记录。
 
 ## 调度规则
 
@@ -132,21 +132,21 @@ Verification:
 
 ## 工作流节点职责
 
-`$brainstorm`：在 planning 前探索需求。主线程主持讨论，只读取用户提供的输入，保持 workflow phase 为 idle，并写 `.agentflow/brainstorm/<brainstorm-id>/`。需要用户决策时，使用小批量编号选项提问。结束时归档到 `.agentflow/archives/brainstorm/<brainstorm-id>/`。
+`$spec:brainstorm`：在 planning 前探索需求。主线程主持讨论，只读取用户提供的输入，保持 workflow phase 为 idle，并将问题轮次写入 `.agentflow/brainstorm/<brainstorm-id>/rounds/`。需要用户决策时，使用小批量编号选项提问。结束时将 rounds 合并到 `brief.md`，并归档到 `.agentflow/archives/brainstorm/<brainstorm-id>/`。
 
-`$plan`：当 `.agentflow/state.json.current_brainstorm` 存在时，使用 `.agentflow/brainstorm/<current_brainstorm>/brief.md` 将该 brainstorm 结束为 `ready-for-plan` 或 `discarded`，归档后建议清空聊天上下文再继续。使用主线程指定的 brainstorm `brief.md` 或用户提供的需求输入调度 PM，确认需求、按需更新 vision/roadmap、选择下一 milestone、创建 milestone run、写 `task.md` 和 PM 产物。
+`$spec:plan`：当 `.agentflow/state.json.current_brainstorm` 存在时，使用 `.agentflow/brainstorm/<current_brainstorm>/brief.md` 将该 brainstorm 结束为 `ready-for-plan` 或 `discarded`，归档后建议清空聊天上下文再继续。使用主线程指定的 brainstorm `brief.md` 或用户提供的需求输入调度 PM，确认需求、按需更新 vision/roadmap、选择下一 milestone、创建 milestone run、写 `task.md` 和 PM 产物。
 
-`$design`：调度 Architect 和 Tester。Architect 写设计、spec、ADR 草案；Tester 根据设计写测试计划。随后调度 Doc Reviewer 审查需求、设计、spec、ADR、test plan 的一致性。通过时写 `gate.md` 并进入 `ready-to-execute`；失败时写 `fix-requests/doc-fix-<n>.md` 并路由修复。
+`$spec:design`：调度 Architect 和 Tester。Architect 写设计、spec、ADR 草案；Tester 根据设计写测试计划。随后调度 Doc Reviewer 审查需求、设计、spec、ADR、test plan 的一致性。通过时写 `gate.md` 并进入 `ready-to-execute`；失败时写 `fix-requests/doc-fix-<n>.md` 并路由修复。
 
-`$execute`：从已通过的 `gate.md` 完成当前 milestone：调度 Developer、调度 Code Reviewer、必要时调度 Tester 做覆盖审查、收集验收证据、finish run、归档 run、清空当前 state、结束 milestone 子代理上下文，并提交 milestone 变更。
+`$spec:execute`：从已通过的 `gate.md` 完成当前 milestone：调度 Developer、调度 Code Reviewer、必要时调度 Tester 做覆盖审查、收集验收证据、finish run、归档 run、清空当前 state、结束 milestone 子代理上下文，并提交 milestone 变更。
 
-`$execute` 前，`gate.md` 必须是已通过的执行契约，包含允许的源码/测试路径和必须运行的测试。不要调度 Developer 修改契约之外的源码。
+`$spec:execute` 前，`gate.md` 必须是已通过的执行契约，包含允许的源码/测试路径和必须运行的测试。不要调度 Developer 修改契约之外的源码。
 
-review、verification、finish、archive 和 milestone commit 是 `$execute` 内部阶段，不作为用户侧 workflow skill 暴露。
+review、verification、finish、archive 和 milestone commit 是 `$spec:execute` 内部阶段，不作为用户侧 workflow skill 暴露。
 
 ## 打回与路由
 
-该规则适用于手动执行和 `$auto`。
+该规则适用于手动执行和 `$spec:auto`。
 
 当 PM、Architect、Tester 返回 `fail`、`blocked`、`needs-context` 或 `done-with-concerns`，或 Doc Reviewer、Code Reviewer 返回非 `pass` 时，主线程先处理路由：
 
@@ -156,7 +156,7 @@ review、verification、finish、archive 和 milestone commit 是 `$execute` 内
 4. 若责任角色、允许输入路径和允许输出路径明确，调度对应子代理处理，并把 fix request 和相关 ledger 作为 allowed input。
 5. 修复后回到对应的工作流节点或 review gate。
 
-只有无法安全路由时，主线程才进入 blocked，或让 `$auto` 停止。典型情况包括：
+只有无法安全路由时，主线程才进入 blocked，或让 `$spec:auto` 停止。典型情况包括：
 
 - 主线程无法判断责任角色、修复范围或下一步 gate。
 - 需要用户、外部系统或破坏性操作决策。
@@ -168,11 +168,11 @@ review、verification、finish、archive 和 milestone commit 是 `$execute` 内
 
 ## 自动执行
 
-`$auto` 按 roadmap 串行执行 milestone。没有已确认 roadmap 时停止，并建议执行 `$plan`。每个 milestone 创建或恢复对应 run；没有 approved gate 时先运行 `$design`，然后运行 `$execute`。每个节点结束后，主线程使用 state、调度状态和子代理回报。遇到打回时，先按“打回与路由”处理；只有无法安全路由时才停止自动推进。
+`$spec:auto` 按 roadmap 串行执行 milestone。没有已确认 roadmap 时停止，并建议执行 `$spec:plan`。每个 milestone 创建或恢复对应 run；没有 approved gate 时先运行 `$spec:design`，然后运行 `$spec:execute`。每个节点结束后，主线程使用 state、调度状态和子代理回报。遇到打回时，先按“打回与路由”处理；只有无法安全路由时才停止自动推进。
 
 ## Milestone 边界
 
-一个 run 表示一个 milestone 的执行单元。`$execute` 完成归档和 state 清理后，主线程必须提交当前 milestone 产生的代码、测试和文档变化，然后才能开始新的 milestone。
+一个 run 表示一个 milestone 的执行单元。`$spec:execute` 完成归档和 state 清理后，主线程必须提交当前 milestone 产生的代码、测试和文档变化，然后才能开始新的 milestone。
 
 提交信息应简洁描述本次完成的用户可见变更，例如 `feat: add import workflow`、`fix: handle empty config`、`docs: update setup guide`。若没有文件变化，不创建空提交，并在 `.agentflow/runs/<run-id>/summary.md` 记录 no-op。
 

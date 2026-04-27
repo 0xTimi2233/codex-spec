@@ -1,9 +1,9 @@
 ---
-name: auto
+name: spec:auto
 description: 按 roadmap 串行执行 milestone，直到阻塞或完成。
 ---
 
-# Skill: auto
+# Skill: spec:auto
 
 ## 上下文输入
 
@@ -16,15 +16,15 @@ description: 按 roadmap 串行执行 milestone，直到阻塞或完成。
 
 ## 操作
 
-没有已确认 roadmap 时停止，并建议执行 `$plan`。
+没有已确认 roadmap 时停止，并建议执行 `$spec:plan`。
 
 对每个 roadmap milestone，创建或恢复对应 run，并执行：
 
 ```text
-$design -> $execute
+$spec:design -> $spec:execute
 ```
 
-若 milestone run 不存在，使用 `$plan` 行为从 roadmap 条目创建 run task。每个节点结束后使用 `.agentflow/state.json`、调度状态和子代理回报。
+若 milestone run 不存在，使用 `$spec:plan` 行为从 roadmap 条目创建 run task。每个节点结束后使用 `.agentflow/state.json`、调度状态和子代理回报。
 
 ## 打回与停止
 
@@ -42,7 +42,7 @@ $design -> $execute
 
 ## Milestone 提交
 
-当 `$execute` 完成归档和 state 清理后，主线程提交当前 milestone 的代码、测试和文档变化；提交完成后才能开始下一 milestone。若没有文件变化，不创建空提交，并在 summary 中记录 no-op。
+当 `$spec:execute` 完成归档和 state 清理后，主线程提交当前 milestone 的代码、测试和文档变化；提交完成后才能开始下一 milestone。若没有文件变化，不创建空提交，并在 summary 中记录 no-op。
 
 ## 最终回复
 
