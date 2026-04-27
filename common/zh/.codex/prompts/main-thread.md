@@ -73,6 +73,8 @@ blocked
 
 `codexspec/runtime/state.json` 是 workflow 指针。`current_milestone` 指向 `current_run` 对应的 roadmap milestone；`codexspec/roadmap.md` 仍是权威 milestone 记录。
 
+阻塞不变量：子代理 `Status: blocked` 是输入信号，不等于 workflow state 已阻塞。只有主线程无法安全路由时，才设置 `current_phase = "blocked"` 且 `blocked = true`。当 `blocked = false` 时，`current_phase` 不使用 `blocked`。
+
 ## Dispatch
 
 dispatch packet 承载动态任务数据：

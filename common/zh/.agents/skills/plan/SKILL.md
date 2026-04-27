@@ -29,8 +29,8 @@ description: 探索、审计或确认需求，并准备下一 milestone run。
    - `preflight`：审计已有需求来源中的 planning 阻塞点。
    - `commit`：确认需求、创建 run 并调度 PM。
 4. track 不明确时，向用户给出带影响和推荐项的编号选项。
-5. `explore`：创建或继续 `codexspec/runtime/explore/<explore-id>/`，执行 `codex-spec-internal state set --planning-session <explore-id> --planning-track explore --blocked false`，缺失时写 `codexspec/runtime/explore/<explore-id>/dispatch-ledger.md`，写 `codexspec/runtime/explore/<explore-id>/dispatch/pm-<n>.md` 处理下一轮问题或 closure，追加 PM 调度行，调度 PM，并在 PM 回复后更新该行。
-6. `preflight`：创建或继续 `codexspec/runtime/preflight/<preflight-id>/`，执行 `codex-spec-internal state set --planning-session <preflight-id> --planning-track preflight --blocked false`，缺失时写 `codexspec/runtime/preflight/<preflight-id>/dispatch-ledger.md`，写 `codexspec/runtime/preflight/<preflight-id>/dispatch/pm-<n>.md` 处理需求审计或 closure，追加 PM 调度行，调度 PM，并在 PM 回复后更新该行。
+5. `explore`：创建或继续 `codexspec/runtime/explore/<explore-id>/`，执行 `codex-spec-internal state set --planning-session <explore-id> --planning-track explore --blocked false`，缺失时写 `codexspec/runtime/explore/<explore-id>/dispatch-ledger.md`，写 `codexspec/runtime/explore/<explore-id>/dispatch/pm-<n>.md` 处理下一轮问题或 closure，追加 PM 调度行，调度 PM，并在 PM 回复后更新该行、`rounds/<round-id>/round.md` 和 `brief.md`。
+6. `preflight`：创建或继续 `codexspec/runtime/preflight/<preflight-id>/`，执行 `codex-spec-internal state set --planning-session <preflight-id> --planning-track preflight --blocked false`，缺失时写 `codexspec/runtime/preflight/<preflight-id>/dispatch-ledger.md`，写 `codexspec/runtime/preflight/<preflight-id>/dispatch/pm-<n>.md` 处理需求审计或 closure，追加 PM 调度行，调度 PM，并在 PM 回复后更新该行、审计产物和 `brief.md`。
 7. explore 或 preflight track 以 `ready-for-plan` 或 `discarded` 结束时，执行 `codex-spec-internal archive --explore <explore-id>` 或 `codex-spec-internal archive --preflight <preflight-id>`，再用 `codex-spec-internal state set --planning-session null --planning-track null` 清理 planning state。
 8. `commit`：为当前 run 选择 roadmap milestone id，创建 run id，写 `codexspec/runtime/runs/<run-id>/dispatch-ledger.md`，包含调度表格表头。
 9. 执行 `codex-spec-internal state set --phase planning --run <run-id> --milestone <milestone-id> --planning-session null --planning-track null --blocked false`。
@@ -62,6 +62,7 @@ description: 探索、审计或确认需求，并准备下一 milestone run。
 
 - `codexspec/runtime/explore/<explore-id>/dispatch-ledger.md`
 - `codexspec/runtime/explore/<explore-id>/dispatch/pm-<n>.md`
+- `codexspec/runtime/explore/<explore-id>/rounds/<round-id>/round.md`
 - `codexspec/runtime/explore/<explore-id>/brief.md`
 - session 关闭时的 `codexspec/runtime/explore/<explore-id>/summary.md`
 
@@ -69,6 +70,12 @@ description: 探索、审计或确认需求，并准备下一 milestone run。
 
 - `codexspec/runtime/preflight/<preflight-id>/dispatch-ledger.md`
 - `codexspec/runtime/preflight/<preflight-id>/dispatch/pm-<n>.md`
+- `codexspec/runtime/preflight/<preflight-id>/sources.md`
+- `codexspec/runtime/preflight/<preflight-id>/requirement-map.md`
+- `codexspec/runtime/preflight/<preflight-id>/blocker-ledger.md`
+- `codexspec/runtime/preflight/<preflight-id>/assumptions.md`
+- `codexspec/runtime/preflight/<preflight-id>/decisions/queue.md`
+- `codexspec/runtime/preflight/<preflight-id>/decisions/batches/<batch-id>.md`
 - `codexspec/runtime/preflight/<preflight-id>/brief.md`
 - session 关闭时的 `codexspec/runtime/preflight/<preflight-id>/summary.md`
 

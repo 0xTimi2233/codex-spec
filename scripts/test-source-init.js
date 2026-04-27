@@ -74,6 +74,7 @@ function assertPlanningDocs(root, lang) {
   assert(mainThread.includes(".codex/prompts/report-contract.md"), `${lang} main-thread should use report contract`);
   assert(mainThread.includes(lang === "zh" ? "agent TOML" : "agent TOML"), `${lang} main-thread should use agent TOML as the role index`);
   assert(mainThread.includes(lang === "zh" ? "关闭子代理" : "close the subagent"), `${lang} main-thread should define subagent closure`);
+  assert(mainThread.includes(lang === "zh" ? "阻塞不变量" : "Blocked invariant"), `${lang} main-thread should define blocked state invariants`);
   assert(!mainThread.includes("Public CLI commands"), `${lang} main-thread should not describe public CLI commands`);
   assert(!mainThread.includes("对用户公开的 CLI"), `${lang} main-thread should not describe public CLI commands`);
   assert(mainThread.includes(lang === "zh" ? "后续 workflow context 来自 `codexspec/`" : "Future workflow context comes from `codexspec/`"), `${lang} main-thread should keep codexspec as the future context source`);
@@ -119,12 +120,16 @@ function assertPlanningDocs(root, lang) {
   assert(planSkill.includes("codex-spec-internal archive --explore <explore-id>"), `${lang} plan skill should archive completed explore sessions`);
   assert(planSkill.includes("codex-spec-internal archive --preflight <preflight-id>"), `${lang} plan skill should archive completed preflights`);
   assert(planSkill.includes("codexspec/runtime/explore/<explore-id>/dispatch/pm-<n>.md"), `${lang} plan skill should write explore PM dispatches`);
+  assert(planSkill.includes("codexspec/runtime/explore/<explore-id>/rounds/<round-id>/round.md"), `${lang} plan skill should write explore rounds`);
   assert(planSkill.includes("codexspec/runtime/preflight/<preflight-id>/dispatch/pm-<n>.md"), `${lang} plan skill should write preflight PM dispatches`);
+  assert(planSkill.includes("codexspec/runtime/preflight/<preflight-id>/decisions/queue.md"), `${lang} plan skill should write preflight decision queue`);
+  assert(planSkill.includes("codexspec/runtime/preflight/<preflight-id>/blocker-ledger.md"), `${lang} plan skill should write preflight blocker ledger`);
   assert(planSkill.includes("Planning Package"), `${lang} plan skill should define the planning package`);
   assert(planSkill.includes("pm/planning-summary.md"), `${lang} plan skill should write planning summary`);
   assert(planSkill.includes(lang === "zh" ? "调度 PM" : "dispatch PM"), `${lang} plan skill should use PM dispatch`);
   assert(designSkill.includes("pm/requirements.md"), `${lang} design skill should read planning requirements`);
   assert(designSkill.includes("pm/scope.md"), `${lang} design skill should read planning scope`);
+  assert(designSkill.includes(lang === "zh" ? "planning package、Architect" : "planning package, Architect"), `${lang} design skill should pass planning package to Tester`);
   assert(designSkill.includes("doc-reviewing"), `${lang} design skill should set doc-reviewing phase`);
   assert(designSkill.includes("codexspec/spec/*.md"), `${lang} design skill should update authoritative specs`);
   const designValidationIndex = designSkill.indexOf(lang === "zh" ? "调度 Architect 前，确认" : "Before dispatching Architect, confirm");
@@ -132,6 +137,9 @@ function assertPlanningDocs(root, lang) {
   assert(designValidationIndex >= 0 && designMutationIndex > designValidationIndex, `${lang} design skill should validate run prerequisites before mutating state`);
   assert(!designSkill.includes("gate.md"), `${lang} design skill should not create gate.md`);
   assert(executeSkill.includes(lang === "zh" ? "Doc Reviewer 报告只用于确认" : "use the Doc Reviewer report only"), `${lang} execute skill should keep doc reviewer read-only for scope`);
+  assert(executeSkill.includes("architect/report.md"), `${lang} execute skill should read Architect report`);
+  assert(executeSkill.includes("tester/report.md"), `${lang} execute skill should read Tester report`);
+  assert(executeSkill.includes("codexspec/spec/test-plan/*.md"), `${lang} execute skill should include test-plan paths from reports`);
   assert(executeSkill.includes(lang === "zh" ? "更新后的 `codexspec/roadmap.md`" : "updated `codexspec/roadmap.md`"), `${lang} execute skill should require roadmap updates`);
   assert(executeSkill.includes(lang === "zh" ? "archive 成功后" : "After archive succeeds"), `${lang} execute skill should clear state after archive succeeds`);
   assert(executeSkill.includes("Doc Reviewer"), `${lang} execute skill should require doc reviewer pass`);
@@ -147,6 +155,7 @@ function assertPlanningDocs(root, lang) {
   assert(resumeSkill.includes(".codex/prompts/main-thread.md"), `${lang} resume skill should read main-thread protocol`);
   assert(resumeSkill.includes(".codex/prompts/glossary.md"), `${lang} resume skill should read glossary`);
   assert(resumeSkill.includes(".codex/prompts/file-index.md"), `${lang} resume skill should read file index`);
+  assert(resumeSkill.includes("dispatch-ledger.md"), `${lang} resume skill should use dispatch ledger for planning sessions`);
   assert(statusSkill.includes("planning track"), `${lang} status skill should report planning track`);
 
   assert(subagentContract.includes(".codex/prompts/glossary.md"), `${lang} subagent contract should require glossary`);

@@ -13,8 +13,10 @@ Read these paths only when they are not already in the active context or their c
 - `.codex/prompts/main-thread.md`
 - `.codex/prompts/glossary.md`
 - `.codex/prompts/file-index.md`
+- `codexspec/runtime/explore/<current_planning_session>/dispatch-ledger.md` when `planning_track` is `explore`
 - `codexspec/runtime/explore/<current_planning_session>/brief.md` when `planning_track` is `explore`
 - `codexspec/runtime/explore/<current_planning_session>/rounds/<round-id>/round.md` when an active explore round is present
+- `codexspec/runtime/preflight/<current_planning_session>/dispatch-ledger.md` when `planning_track` is `preflight`
 - `codexspec/runtime/preflight/<current_planning_session>/brief.md` when `planning_track` is `preflight`
 - `codexspec/runtime/preflight/<current_planning_session>/decisions/queue.md` when `planning_track` is `preflight`
 - `codexspec/runtime/runs/<run-id>/dispatch-ledger.md`
@@ -22,8 +24,8 @@ Read these paths only when they are not already in the active context or their c
 
 ## Procedure
 
-1. If `planning_track` is `explore`, resume the active explore brief and latest round, then continue or close the `$plan` explore track.
-2. If `planning_track` is `preflight`, resume the active preflight brief and decision queue, then continue or close the `$plan` preflight track.
+1. If `planning_track` is `explore`, use the explore dispatch ledger to locate any non-ending PM dispatch; if none exists, read the latest round and brief, then continue or close the `$plan` explore track.
+2. If `planning_track` is `preflight`, use the preflight dispatch ledger to locate any non-ending PM dispatch; if none exists, read the decision queue and brief, then continue or close the `$plan` preflight track.
 3. If `current_run` is set, read the run dispatch ledger.
 4. For rows whose status is not an ending status, continue the recorded agent id when possible.
 5. If continuing the agent is not possible, mark the row `stale` and create a new bounded dispatch from current file artifacts.

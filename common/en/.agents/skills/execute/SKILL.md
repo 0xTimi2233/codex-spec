@@ -15,6 +15,9 @@ Read these paths only when they are not already in the active context or their c
 - `codexspec/runtime/state.json`
 - `codexspec/runtime/runs/<run-id>/dispatch-ledger.md`
 - `codexspec/runtime/runs/<run-id>/doc-reviewer/review-report.md`
+- `codexspec/runtime/runs/<run-id>/architect/report.md`
+- `codexspec/runtime/runs/<run-id>/tester/report.md`
+- `codexspec/adr/*.md`, `codexspec/spec/*.md`, and `codexspec/spec/test-plan/*.md` paths listed by Architect, Tester, or Doc Reviewer reports
 
 ## Procedure
 

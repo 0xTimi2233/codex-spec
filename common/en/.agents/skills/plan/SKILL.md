@@ -29,8 +29,8 @@ Read these paths only when they are not already in the active context or their c
    - `preflight`: audit existing requirement sources for planning blockers.
    - `commit`: confirm requirements, create a run, and dispatch PM.
 4. If the track is unclear, ask the user for a numbered choice with impacts and a recommendation.
-5. For `explore`, create or continue `codexspec/runtime/explore/<explore-id>/`, set `codex-spec-internal state set --planning-session <explore-id> --planning-track explore --blocked false`, write `codexspec/runtime/explore/<explore-id>/dispatch-ledger.md` when missing, write `codexspec/runtime/explore/<explore-id>/dispatch/pm-<n>.md` for the next question round or closure, append the PM row, dispatch PM, and update the row when PM replies.
-6. For `preflight`, create or continue `codexspec/runtime/preflight/<preflight-id>/`, set `codex-spec-internal state set --planning-session <preflight-id> --planning-track preflight --blocked false`, write `codexspec/runtime/preflight/<preflight-id>/dispatch-ledger.md` when missing, write `codexspec/runtime/preflight/<preflight-id>/dispatch/pm-<n>.md` for requirement audit or closure, append the PM row, dispatch PM, and update the row when PM replies.
+5. For `explore`, create or continue `codexspec/runtime/explore/<explore-id>/`, set `codex-spec-internal state set --planning-session <explore-id> --planning-track explore --blocked false`, write `codexspec/runtime/explore/<explore-id>/dispatch-ledger.md` when missing, write `codexspec/runtime/explore/<explore-id>/dispatch/pm-<n>.md` for the next question round or closure, append the PM row, dispatch PM, and update the row, `rounds/<round-id>/round.md`, and `brief.md` when PM replies.
+6. For `preflight`, create or continue `codexspec/runtime/preflight/<preflight-id>/`, set `codex-spec-internal state set --planning-session <preflight-id> --planning-track preflight --blocked false`, write `codexspec/runtime/preflight/<preflight-id>/dispatch-ledger.md` when missing, write `codexspec/runtime/preflight/<preflight-id>/dispatch/pm-<n>.md` for requirement audit or closure, append the PM row, dispatch PM, and update the row, audit artifacts, and `brief.md` when PM replies.
 7. When an explore or preflight track is closed as `ready-for-plan` or `discarded`, run `codex-spec-internal archive --explore <explore-id>` or `codex-spec-internal archive --preflight <preflight-id>`, then clear planning state with `codex-spec-internal state set --planning-session null --planning-track null`.
 8. For `commit`, choose the roadmap milestone id for this run, create a run id, and write `codexspec/runtime/runs/<run-id>/dispatch-ledger.md` with the dispatch table header.
 9. Run `codex-spec-internal state set --phase planning --run <run-id> --milestone <milestone-id> --planning-session null --planning-track null --blocked false`.
@@ -62,6 +62,7 @@ For `explore`:
 
 - `codexspec/runtime/explore/<explore-id>/dispatch-ledger.md`
 - `codexspec/runtime/explore/<explore-id>/dispatch/pm-<n>.md`
+- `codexspec/runtime/explore/<explore-id>/rounds/<round-id>/round.md`
 - `codexspec/runtime/explore/<explore-id>/brief.md`
 - `codexspec/runtime/explore/<explore-id>/summary.md` when the session closes
 
@@ -69,6 +70,12 @@ For `preflight`:
 
 - `codexspec/runtime/preflight/<preflight-id>/dispatch-ledger.md`
 - `codexspec/runtime/preflight/<preflight-id>/dispatch/pm-<n>.md`
+- `codexspec/runtime/preflight/<preflight-id>/sources.md`
+- `codexspec/runtime/preflight/<preflight-id>/requirement-map.md`
+- `codexspec/runtime/preflight/<preflight-id>/blocker-ledger.md`
+- `codexspec/runtime/preflight/<preflight-id>/assumptions.md`
+- `codexspec/runtime/preflight/<preflight-id>/decisions/queue.md`
+- `codexspec/runtime/preflight/<preflight-id>/decisions/batches/<batch-id>.md`
 - `codexspec/runtime/preflight/<preflight-id>/brief.md`
 - `codexspec/runtime/preflight/<preflight-id>/summary.md` when the session closes
 

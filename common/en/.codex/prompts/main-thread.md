@@ -73,6 +73,8 @@ blocked
 
 `codexspec/runtime/state.json` is the workflow pointer. `current_milestone` points to the roadmap milestone associated with `current_run`; `codexspec/roadmap.md` remains the authoritative milestone record.
 
+Blocked invariant: subagent `Status: blocked` is an input signal, not a blocked workflow state by itself. Set `current_phase = "blocked"` and `blocked = true` only when the main thread cannot route safely. When `blocked = false`, do not use `blocked` as the current phase.
+
 ## Dispatch
 
 Dispatch packets contain dynamic task data:

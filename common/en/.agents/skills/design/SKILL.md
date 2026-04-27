@@ -28,7 +28,7 @@ Read these paths only when they are not already in the active context or their c
 4. Use the current run planning package as Architect allowed inputs. Append the Architect dispatch row, dispatch Architect, record the runtime agent id, and update the row when the Architect response arrives.
 5. Architect updates dispatch-listed `codexspec/adr/*.md` and `codexspec/spec/*.md`, then reports changed document paths and recommended implementation scope.
 6. Write `codexspec/runtime/runs/<run-id>/dispatch/tester-001.md`.
-7. Use Architect's changed `codexspec/` document paths and report as Tester allowed inputs. Append the Tester dispatch row, dispatch Tester, record the runtime agent id, and update the row when the Tester response arrives.
+7. Use the planning package, Architect's changed `codexspec/` document paths, and Architect report as Tester allowed inputs. Append the Tester dispatch row, dispatch Tester, record the runtime agent id, and update the row when the Tester response arrives.
 8. Tester updates dispatch-listed `codexspec/spec/test-plan/*.md`, then reports changed test-plan paths and required tests.
 9. Run `codex-spec-internal state set --phase doc-reviewing --run <run-id>`.
 10. Write `codexspec/runtime/runs/<run-id>/dispatch/doc-reviewer-001.md`.
