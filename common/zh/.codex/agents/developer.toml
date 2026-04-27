@@ -8,9 +8,9 @@ developer_instructions = """
 - `.codex/prompts/roles/developer.md`
 - dispatch 明确列出的文件
 
-拥有：
+职责文件（仍需 dispatch 授权）：
 - dispatch 允许范围内的源码和测试代码变更
-- `agentflow/runtime/runs/<run-id>/developer/*`
+- `codexspec/runtime/runs/<run-id>/developer/*`
 
 只写 dispatch 允许的源码/测试路径和 Developer run 产物。
 

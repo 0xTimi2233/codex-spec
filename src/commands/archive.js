@@ -40,8 +40,8 @@ export function archiveCommand(args, context) {
     moveImmutable({
       root: context.target,
       kind: "Explore",
-      srcPath: path.join(context.target, "agentflow", "runtime", "explore", exploreId),
-      archivePath: path.join(context.target, "agentflow", "runtime", "archives", "explore", exploreId)
+      srcPath: path.join(context.target, "codexspec", "runtime", "explore", exploreId),
+      archivePath: path.join(context.target, "codexspec", "runtime", "archives", "explore", exploreId)
     });
     return;
   }
@@ -55,8 +55,8 @@ export function archiveCommand(args, context) {
     moveImmutable({
       root: context.target,
       kind: "Preflight",
-      srcPath: path.join(context.target, "agentflow", "runtime", "preflight", preflightId),
-      archivePath: path.join(context.target, "agentflow", "runtime", "archives", "preflight", preflightId)
+      srcPath: path.join(context.target, "codexspec", "runtime", "preflight", preflightId),
+      archivePath: path.join(context.target, "codexspec", "runtime", "archives", "preflight", preflightId)
     });
     return;
   }
@@ -75,7 +75,7 @@ export function archiveCommand(args, context) {
   moveImmutable({
     root: context.target,
     kind: "Run",
-    srcPath: path.join(context.target, "agentflow", "runtime", "runs", runId),
-    archivePath: path.join(context.target, "agentflow", "runtime", "archives", runId)
+    srcPath: path.join(context.target, "codexspec", "runtime", "runs", runId),
+    archivePath: path.join(context.target, "codexspec", "runtime", "archives", "runs", runId)
   });
 }

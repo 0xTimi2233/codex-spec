@@ -2,7 +2,7 @@
 
 [English](README.md) | [中文](README_ZH.md)
 
-`codex-spec` 是一个面向 Codex 的项目本地工作流脚手架。它为 Codex 提供一套轻量的、基于文件的 spec-driven 工作方式：主线程负责编排，角色子代理接收窄范围 dispatch，reviewer 验证边界，`agentflow/` 文档替代聊天历史成为持久事实来源。
+`codex-spec` 是一个面向 Codex 的项目本地工作流脚手架。它为 Codex 提供一套轻量的、基于文件的 spec-driven 工作方式：主线程负责编排，角色子代理接收窄范围 dispatch，reviewer 验证边界，`codexspec/` 文档替代聊天历史成为持久事实来源。
 
 ## 安装
 
@@ -57,10 +57,10 @@ $spec:auto
 ```text
 .codex/
 .agents/
-agentflow/
+codexspec/
 ```
 
-长期项目知识保存在顶层 `agentflow/` 文件和目录中：vision、roadmap、ADR、spec 和测试计划。运行时状态和审计记录保存在 `agentflow/runtime/` 下。`$spec:plan` 可以执行 `agentflow/runtime/explore/<explore-id>/` 下的 explore track、`agentflow/runtime/preflight/<preflight-id>/` 下的 preflight track，或创建 `agentflow/runtime/runs/<run-id>/` 的正式 commit track。Explore 和 preflight session 会归档到 `agentflow/runtime/archives/`。正式 planning 会在当前 run 中产出自包含 PM package，因此 `$spec:design` 可以依赖 run package，而不是归档 session 或原始需求笔记。
+长期项目知识保存在顶层 `codexspec/` 文件和目录中：vision、roadmap、ADR、spec 和测试计划。运行时状态和审计记录保存在 `codexspec/runtime/` 下。`$spec:plan` 可以执行 `codexspec/runtime/explore/<explore-id>/` 下的 explore track、`codexspec/runtime/preflight/<preflight-id>/` 下的 preflight track，或创建 `codexspec/runtime/runs/<run-id>/` 的正式 commit track。Explore 和 preflight session 会归档到 `codexspec/runtime/archives/`。正式 planning 会在当前 run 中产出自包含 PM package，因此 `$spec:design` 可以依赖 run package，而不是归档 session 或原始需求笔记。
 
 ### 角色
 
@@ -116,7 +116,7 @@ codex-spec --version
 ```
 
 项目命令都可以使用可选的 `--target`。不传时，`codex-spec` 使用当前目录。
-`init` 默认保留已有生成文件，并会在交互式终端中询问是否覆盖。已有 `agentflow/` 文件视为项目产物，永不覆盖。
+`init` 默认保留已有生成文件，并会在交互式终端中询问是否覆盖。已有 `codexspec/` 文件视为项目产物，永不覆盖。
 
 `doctor` 只检查脚手架安装文件。工作流进度由 `$spec:status` skill 报告。workflow skills 会调用内部脚本处理 state、archive 和 raw status 操作。`profile` 用于查看或更新生成的模型配置。
 
@@ -132,9 +132,9 @@ codex-spec --version
 - 区分 Doc Reviewer 和 Code Reviewer：先验证文档正确性，再验证实现正确性。
 - 常规 roadmap 推进可以使用 `$spec:auto`，但当下一步无法安全判断时应停止。
 - `$spec:execute` 提交完成的 milestone，提交信息使用简洁的用户可见描述，例如 `feat: add import workflow`、`fix: handle empty config`、`docs: update setup guide`。
-- 归档 run 是历史记录，不作为后续上下文来源。可复用信息保存在 `agentflow/`。
+- 归档 run 是历史记录，不作为后续上下文来源。可复用信息保存在 `codexspec/`。
 
-完整流程适合多步骤改动、跨文件重构或需要审查证据的工作。小改动、探索性原型或缺少测试基础的项目，可以在没有 active run 时使用较短的手动 Codex 流程。存在 active run 时，Developer 和 Code Reviewer 将 dispatch 列出的 `agentflow/` 文档和允许路径作为 prompt 层面的实现边界。
+完整流程适合多步骤改动、跨文件重构或需要审查证据的工作。小改动、探索性原型或缺少测试基础的项目，可以在没有 active run 时使用较短的手动 Codex 流程。存在 active run 时，Developer 和 Code Reviewer 将 dispatch 列出的 `codexspec/` 文档和允许路径作为 prompt 层面的实现边界。
 
 ## 开发
 

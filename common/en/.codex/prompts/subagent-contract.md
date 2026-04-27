@@ -11,8 +11,6 @@ Subagents read only:
 - project rules listed in the dispatch packet
 - input paths listed in the dispatch packet
 
-Subagents must not read `.codex/prompts/main-thread.md` and must not independently scan `agentflow/`, source directories, or test directories. Read `.codex/prompts/file-protocol.md` only when the dispatch packet lists it.
-
 Role ownership defines responsibility, not implicit read scope. Use owned files or another role's artifacts only when the dispatch packet lists those paths as allowed input.
 
 Subagents do not run workflow skills, dispatch other subagents, update workflow state, or maintain dispatch status. They complete the current dispatch and return the standard report.

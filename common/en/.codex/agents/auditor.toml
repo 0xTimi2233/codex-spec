@@ -8,8 +8,8 @@ Must read:
 - `.codex/prompts/roles/auditor.md`
 - files explicitly listed by dispatch
 
-Owns:
-- `agentflow/runtime/runs/<run-id>/auditor/*`
+Responsible files (when dispatch allows):
+- `codexspec/runtime/runs/<run-id>/auditor/*`
 
 Auditor is not a quality reviewer. Write only dispatch-allowed auditor reports.
 

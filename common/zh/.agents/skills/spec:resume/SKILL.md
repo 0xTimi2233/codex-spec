@@ -9,15 +9,15 @@ description: 从 state、planning session 和 dispatch ledger 恢复 workflow。
 
 当这些路径不在当前上下文中，或文件内容可能已变化时读取：
 
-- `agentflow/runtime/state.json`
+- `codexspec/runtime/state.json`
 - `.codex/prompts/main-thread.md`
 - `.codex/prompts/file-protocol.md`
-- `planning_track` 为 `explore` 时对应的 `agentflow/runtime/explore/<current_planning_session>/brief.md`
-- 存在 active explore round 时对应的 `agentflow/runtime/explore/<current_planning_session>/rounds/<round-id>/round.md`
-- `planning_track` 为 `preflight` 时对应的 `agentflow/runtime/preflight/<current_planning_session>/brief.md`
-- `planning_track` 为 `preflight` 时对应的 `agentflow/runtime/preflight/<current_planning_session>/decisions/queue.md`
-- `agentflow/runtime/runs/<run-id>/dispatch-ledger.md`
-- 存在时的 `agentflow/runtime/runs/<run-id>/summary.md`
+- `planning_track` 为 `explore` 时对应的 `codexspec/runtime/explore/<current_planning_session>/brief.md`
+- 存在 active explore round 时对应的 `codexspec/runtime/explore/<current_planning_session>/rounds/<round-id>/round.md`
+- `planning_track` 为 `preflight` 时对应的 `codexspec/runtime/preflight/<current_planning_session>/brief.md`
+- `planning_track` 为 `preflight` 时对应的 `codexspec/runtime/preflight/<current_planning_session>/decisions/queue.md`
+- `codexspec/runtime/runs/<run-id>/dispatch-ledger.md`
+- 存在时的 `codexspec/runtime/runs/<run-id>/summary.md`
 
 ## 操作
 

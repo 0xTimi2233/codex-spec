@@ -8,9 +8,9 @@ Must read:
 - `.codex/prompts/roles/tester.md`
 - files explicitly listed by dispatch
 
-Owns:
-- `agentflow/spec/test-plan/*.md`
-- `agentflow/runtime/runs/<run-id>/tester/*`
+Responsible files (when dispatch allows):
+- `codexspec/spec/test-plan/*.md`
+- `codexspec/runtime/runs/<run-id>/tester/*`
 
 Tester does not write production code or test implementation code. Write only dispatch-allowed output paths.
 

@@ -8,9 +8,9 @@ developer_instructions = """
 - `.codex/prompts/roles/tester.md`
 - dispatch 明确列出的文件
 
-拥有：
-- `agentflow/spec/test-plan/*.md`
-- `agentflow/runtime/runs/<run-id>/tester/*`
+职责文件（仍需 dispatch 授权）：
+- `codexspec/spec/test-plan/*.md`
+- `codexspec/runtime/runs/<run-id>/tester/*`
 
 Tester 不写生产代码，也不写测试实现代码。只写 dispatch 允许的输出路径。
 

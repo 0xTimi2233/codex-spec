@@ -2,7 +2,7 @@
 
 [English](README.md) | [中文](README_ZH.md)
 
-`codex-spec` is a project-local workflow scaffold for Codex. It gives Codex a small, file-based operating system for spec-driven work: a main thread coordinates the run, role-specific subagents receive narrow dispatch packets, reviewers verify boundaries, and `agentflow/` documents replace chat history as the durable source of truth.
+`codex-spec` is a project-local workflow scaffold for Codex. It gives Codex a small, file-based operating system for spec-driven work: a main thread coordinates the run, role-specific subagents receive narrow dispatch packets, reviewers verify boundaries, and `codexspec/` documents replace chat history as the durable source of truth.
 
 ## Install
 
@@ -57,10 +57,10 @@ $spec:auto
 ```text
 .codex/
 .agents/
-agentflow/
+codexspec/
 ```
 
-Long-lived project knowledge lives in the top-level `agentflow/` files and folders: vision, roadmap, ADRs, specs, and test plans. Runtime state and audit records live under `agentflow/runtime/`. `$spec:plan` can run an explore track under `agentflow/runtime/explore/<explore-id>/`, a preflight track under `agentflow/runtime/preflight/<preflight-id>/`, or a formal commit track that creates `agentflow/runtime/runs/<run-id>/`. Explore and preflight sessions are archived under `agentflow/runtime/archives/`. Formal planning produces a self-contained PM package in the current run, so `$spec:design` can rely on the run package instead of archived sessions or original source notes.
+Long-lived project knowledge lives in the top-level `codexspec/` files and folders: vision, roadmap, ADRs, specs, and test plans. Runtime state and audit records live under `codexspec/runtime/`. `$spec:plan` can run an explore track under `codexspec/runtime/explore/<explore-id>/`, a preflight track under `codexspec/runtime/preflight/<preflight-id>/`, or a formal commit track that creates `codexspec/runtime/runs/<run-id>/`. Explore and preflight sessions are archived under `codexspec/runtime/archives/`. Formal planning produces a self-contained PM package in the current run, so `$spec:design` can rely on the run package instead of archived sessions or original source notes.
 
 ### Roles
 
@@ -116,7 +116,7 @@ codex-spec --version
 ```
 
 `--target` is optional for project commands. Without it, `codex-spec` uses the current working directory.
-`init` preserves existing generated files by default and asks before overwriting them in interactive shells. Existing `agentflow/` files are treated as project artifacts and are never overwritten.
+`init` preserves existing generated files by default and asks before overwriting them in interactive shells. Existing `codexspec/` files are treated as project artifacts and are never overwritten.
 
 `doctor` checks the installed scaffold files. Workflow progress is reported by the `$spec:status` skill. Workflow skills call internal scripts for state, archive, and raw status operations. `profile` shows or updates generated model settings.
 
@@ -132,9 +132,9 @@ codex-spec --version
 - Treat Doc Reviewer and Code Reviewer as separate review steps: document correctness before execution, implementation correctness after execution.
 - Use `$spec:auto` for routine roadmap progress, but expect it to stop when the next safe decision is unclear.
 - `$spec:execute` commits the completed milestone with a short user-facing message such as `feat: add import workflow`, `fix: handle empty config`, or `docs: update setup guide`.
-- Do not use archived runs as future context. Reusable knowledge lives in `agentflow/`.
+- Do not use archived runs as future context. Reusable knowledge lives in `codexspec/`.
 
-Use the full workflow for multi-step changes, cross-file refactors, or work where review evidence matters. For small edits, exploratory prototypes, or projects without tests, use a shorter manual Codex flow outside an active run. During an active run, Developer and Code Reviewer use dispatch-listed `agentflow/` docs and allowed paths as the prompt-level implementation boundary.
+Use the full workflow for multi-step changes, cross-file refactors, or work where review evidence matters. For small edits, exploratory prototypes, or projects without tests, use a shorter manual Codex flow outside an active run. During an active run, Developer and Code Reviewer use dispatch-listed `codexspec/` docs and allowed paths as the prompt-level implementation boundary.
 
 ## Development
 

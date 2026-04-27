@@ -11,8 +11,8 @@ Read these paths only when they are not already in the active context or their c
 
 - `.codex/prompts/main-thread.md`
 - `.codex/prompts/file-protocol.md`
-- `agentflow/roadmap.md`
-- `agentflow/runtime/state.json`
+- `codexspec/roadmap.md`
+- `codexspec/runtime/state.json`
 
 ## Procedure
 
@@ -26,7 +26,7 @@ For each roadmap milestone, create or resume its run and execute:
 $spec:design -> $spec:execute
 ```
 
-If a milestone run does not exist, use `$spec:plan` behavior to create the run task from the roadmap entry. After every step, use `agentflow/runtime/state.json`, dispatch status, and subagent replies.
+If a milestone run does not exist, use `$spec:plan` behavior to create the run task from the roadmap entry. After every step, use `codexspec/runtime/state.json`, dispatch status, and subagent replies.
 
 ## Rejection And Stop Rules
 

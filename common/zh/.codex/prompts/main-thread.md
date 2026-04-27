@@ -13,15 +13,15 @@
 - `.codex/prompts/subagent-contract.md`
 - `.codex/prompts/roles/*.md`
 - `.codex/prompts/project/*.md`
-- `agentflow/vision.md`
-- `agentflow/roadmap.md`
-- `agentflow/runtime/state.json`
+- `codexspec/vision.md`
+- `codexspec/roadmap.md`
+- `codexspec/runtime/state.json`
 
 读取 role 和 project prompts 是为了写精准 dispatch，不是为了把所有规则转发给每个子代理。
 
 ## 上下文卫生
 
-稳定协议上下文放在动态 run 上下文之前。将 role prompts、project prompts、`subagent-contract.md` 和 `file-protocol.md` 作为稳定参考。稳定文件只在缺少上下文或可能变化时重新读取。依赖动态状态的决策前，重新读取 `agentflow/runtime/state.json` 和相关 current-run 文件。
+稳定协议上下文放在动态 run 上下文之前。将 role prompts、project prompts、`subagent-contract.md` 和 `file-protocol.md` 作为稳定参考。稳定文件只在缺少上下文或可能变化时重新读取。依赖动态状态的决策前，重新读取 `codexspec/runtime/state.json` 和相关 current-run 文件。
 
 Dispatch packet 只承载动态任务：目标、允许输入、允许输出、authoritative docs、期望报告、停止条件和证据路径。启动子代理时只指向 dispatch packet 路径。
 
@@ -48,16 +48,16 @@ finishing
 blocked
 ```
 
-`agentflow/runtime/state.json` 是当前 workflow 指针。不要在其他位置维护第二套 workflow mode。
+`codexspec/runtime/state.json` 是当前 workflow 指针。`current_milestone` 指向 `current_run` 对应的 roadmap milestone；`codexspec/roadmap.md` 仍是权威 milestone 记录。不要在其他位置维护第二套 workflow mode。
 
 ## Dispatch Packet
 
 每个子代理任务必须先写一个 dispatch 文件：
 
 ```text
-agentflow/runtime/runs/<run-id>/dispatch/<role>-<task-id>.md
-agentflow/runtime/explore/<explore-id>/dispatch/<role>-<task-id>.md
-agentflow/runtime/preflight/<preflight-id>/dispatch/<role>-<task-id>.md
+codexspec/runtime/runs/<run-id>/dispatch/<role>-<task-id>.md
+codexspec/runtime/explore/<explore-id>/dispatch/<role>-<task-id>.md
+codexspec/runtime/preflight/<preflight-id>/dispatch/<role>-<task-id>.md
 ```
 
 dispatch 必须包含：
@@ -82,9 +82,9 @@ Stop condition:
 主线程为每个 active run 或 planning session 维护一个 ledger：
 
 ```text
-agentflow/runtime/runs/<run-id>/dispatch-ledger.md
-agentflow/runtime/explore/<explore-id>/dispatch-ledger.md
-agentflow/runtime/preflight/<preflight-id>/dispatch-ledger.md
+codexspec/runtime/runs/<run-id>/dispatch-ledger.md
+codexspec/runtime/explore/<explore-id>/dispatch-ledger.md
+codexspec/runtime/preflight/<preflight-id>/dispatch-ledger.md
 ```
 
 ledger 表头：
@@ -119,8 +119,8 @@ dispatch 到达结束状态后及时关闭子代理。milestone finish 必须在
 Reviewer 角色拥有自己的 ledger：
 
 ```text
-agentflow/runtime/runs/<run-id>/doc-reviewer/review-ledger.md
-agentflow/runtime/runs/<run-id>/code-reviewer/review-ledger.md
+codexspec/runtime/runs/<run-id>/doc-reviewer/review-ledger.md
+codexspec/runtime/runs/<run-id>/code-reviewer/review-ledger.md
 ```
 
 主线程跨轮次保存 review ledger，并把相关 ledger 路径作为 allowed input 传入。新一轮 reviewer 读取 ledger，不读取旧聊天上下文。
@@ -133,7 +133,7 @@ PM、Architect、Tester 返回 `fail`、`blocked`、`needs-context` 或 `done-wi
 
 1. 根据子代理回复识别问题和证据路径。
 2. 按决策路由处理 `Decision Request`。
-3. 存在 run 时，写或更新 `agentflow/runtime/runs/<run-id>/fix-requests/*.md`。
+3. 存在 run 时，写或更新 `codexspec/runtime/runs/<run-id>/fix-requests/*.md`。
 4. 若责任角色、allowed inputs、allowed outputs 明确，带 fix request 和相关 ledger 调度该角色。
 5. 回到当前 skill 对应的 workflow step。
 
@@ -143,11 +143,11 @@ PM、Architect、Tester 返回 `fail`、`blocked`、`needs-context` 或 `done-wi
 
 一个 run 表示一个 milestone 执行单元。进入下一 milestone 前，`$spec:execute` 必须完成 finish、归档、提交或 no-op 记录、清理 state，并关闭 milestone 子代理。
 
-后续 workflow context 来自 `agentflow/`。当前或已归档 run 文件是记录和证据，只在 dispatch 列出时读取。
+后续 workflow context 来自 `codexspec/`。当前或已归档 run 文件是记录和证据，只在 dispatch 列出时读取。
 
 ## 阻塞
 
-无法安全推进时，若存在 run，写 `agentflow/runtime/runs/<run-id>/summary.md`：
+无法安全推进时，若存在 run，写 `codexspec/runtime/runs/<run-id>/summary.md`：
 
 ```text
 Status: blocked

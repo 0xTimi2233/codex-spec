@@ -10,29 +10,29 @@ Use repo-relative paths only. Do not use absolute paths, aliases, or vague label
 |---|---|
 | `workflow skill` | A main-thread command such as `$spec:plan`, `$spec:design`, `$spec:execute`, `$spec:auto`, `$spec:status`, or `$spec:resume`. |
 | `planning track` | The active `$spec:plan` track: `explore`, `preflight`, or `commit`. |
-| `planning session` | One active pre-run planning session recorded in `agentflow/runtime/state.json.current_planning_session`. |
-| `run-id` | One milestone execution unit stored under `agentflow/runtime/runs/<run-id>/`. |
-| `explore-id` | One pre-run discovery session stored under `agentflow/runtime/explore/<explore-id>/`. |
-| `preflight-id` | One pre-plan requirement audit stored under `agentflow/runtime/preflight/<preflight-id>/`. |
-| `planning package` | Self-contained, run-scoped PM input record under `agentflow/runtime/runs/<run-id>/task.md` and `agentflow/runtime/runs/<run-id>/pm/`. |
-| `dispatch packet` | `agentflow/runtime/<work-unit>/dispatch/<role>-<task-id>.md`; the task packet a subagent reads for one assignment. `<work-unit>` is `runs/<run-id>`, `explore/<explore-id>`, or `preflight/<preflight-id>`. |
-| `authoritative docs` | Dispatch-listed `agentflow/` documents a role must follow for the current assignment. |
+| `planning session` | One active pre-run planning session recorded in `codexspec/runtime/state.json.current_planning_session`. |
+| `run-id` | One milestone execution unit stored under `codexspec/runtime/runs/<run-id>/`. |
+| `explore-id` | One pre-run discovery session stored under `codexspec/runtime/explore/<explore-id>/`. |
+| `preflight-id` | One pre-plan requirement audit stored under `codexspec/runtime/preflight/<preflight-id>/`. |
+| `planning package` | Self-contained, run-scoped PM input record under `codexspec/runtime/runs/<run-id>/task.md` and `codexspec/runtime/runs/<run-id>/pm/`. |
+| `dispatch packet` | `codexspec/runtime/<work-unit>/dispatch/<role>-<task-id>.md`; the task packet a subagent reads for one assignment. `<work-unit>` is `runs/<run-id>`, `explore/<explore-id>`, or `preflight/<preflight-id>`. |
+| `authoritative docs` | Dispatch-listed `codexspec/` documents a role must follow for the current assignment. |
 | `dispatch-ledger.md` | Main-thread dispatch status table for the current run or planning session. |
 | `review-ledger.md` | Reviewer-owned issue ledger for review rounds. |
 | `verification.md` | Main-thread acceptance evidence collected before milestone finish. |
 | `summary.md` | Current run stop or completion summary. |
 | `fix-requests/` | Main-thread repair requests for responsible roles. |
-| `role artifact` | Output written under `agentflow/runtime/runs/<run-id>/<role>/`. |
+| `role artifact` | Output written under `codexspec/runtime/runs/<run-id>/<role>/`. |
 
 ## Long-Lived Files
 
 | Path | Purpose | Owner |
 |---|---|---|
-| `agentflow/vision.md` | Product goals, scope, non-goals, project constraints | PM |
-| `agentflow/roadmap.md` | Milestones, status, dependencies, exit criteria | PM |
-| `agentflow/adr/*.md` | Accepted architecture decisions | Architect |
-| `agentflow/spec/*.md` | Stable designs, interfaces, behavior specs | Architect |
-| `agentflow/spec/test-plan/*.md` | Stable test plans and acceptance matrices | Tester |
+| `codexspec/vision.md` | Product goals, scope, non-goals, project constraints | PM |
+| `codexspec/roadmap.md` | Milestones, status, dependencies, exit criteria | PM |
+| `codexspec/adr/*.md` | Accepted architecture decisions | Architect |
+| `codexspec/spec/*.md` | Stable designs, interfaces, behavior specs | Architect |
+| `codexspec/spec/test-plan/*.md` | Stable test plans and acceptance matrices | Tester |
 
 These files are the durable product, architecture, spec, and test facts. Runtime files record work and evidence; they do not create a second fact source.
 
@@ -41,7 +41,7 @@ These files are the durable product, architecture, spec, and test facts. Runtime
 Explore files capture one pre-run discovery session.
 
 ```text
-agentflow/runtime/explore/<explore-id>/
+codexspec/runtime/explore/<explore-id>/
   dispatch-ledger.md
   dispatch/
   brief.md
@@ -60,7 +60,7 @@ agentflow/runtime/explore/<explore-id>/
 Preflight files audit existing requirements before planning.
 
 ```text
-agentflow/runtime/preflight/<preflight-id>/
+codexspec/runtime/preflight/<preflight-id>/
   dispatch-ledger.md
   dispatch/
   sources.md
@@ -81,7 +81,7 @@ agentflow/runtime/preflight/<preflight-id>/
 ## Current Run Files
 
 ```text
-agentflow/runtime/runs/<run-id>/
+codexspec/runtime/runs/<run-id>/
   dispatch-ledger.md
   task.md
   summary.md
@@ -102,16 +102,16 @@ agentflow/runtime/runs/<run-id>/
   fix-responses/
 ```
 
-The PM package is a current-milestone input record, not reusable project knowledge. It copies the requirements, decisions, constraints, assumptions, open risks, acceptance criteria, and source references needed for design into `agentflow/runtime/runs/<run-id>/pm/requirements.md`, `agentflow/runtime/runs/<run-id>/pm/scope.md`, `agentflow/runtime/runs/<run-id>/pm/acceptance-criteria.md`, and `agentflow/runtime/runs/<run-id>/pm/planning-summary.md`.
+The PM package is a current-milestone input record, not reusable project knowledge. It copies the requirements, decisions, constraints, assumptions, open risks, acceptance criteria, and source references needed for design into `codexspec/runtime/runs/<run-id>/pm/requirements.md`, `codexspec/runtime/runs/<run-id>/pm/scope.md`, `codexspec/runtime/runs/<run-id>/pm/acceptance-criteria.md`, and `codexspec/runtime/runs/<run-id>/pm/planning-summary.md`.
 
-Run role artifacts are reports, ledgers, and evidence. Do not store alternate ADR, spec, or test-plan facts under `agentflow/runtime/runs/<run-id>/`; update the dispatch-listed `agentflow/` documents instead.
+Run role artifacts are reports, ledgers, and evidence. Do not store alternate ADR, spec, or test-plan facts under `codexspec/runtime/runs/<run-id>/`; update the dispatch-listed `codexspec/` documents instead.
 
 ## Archive Files
 
 ```text
-agentflow/runtime/archives/<run-id>/
-agentflow/runtime/archives/explore/<explore-id>/
-agentflow/runtime/archives/preflight/<preflight-id>/
+codexspec/runtime/archives/runs/<run-id>/
+codexspec/runtime/archives/explore/<explore-id>/
+codexspec/runtime/archives/preflight/<preflight-id>/
 ```
 
-`archives/` is immutable history. Archives must not overwrite existing archives. Reusable facts live in `agentflow/`; archived run files are evidence only when a dispatch lists them.
+`archives/` is immutable history. Archives must not overwrite existing archives. Reusable facts live in `codexspec/`; archived run files are evidence only when a dispatch lists them.

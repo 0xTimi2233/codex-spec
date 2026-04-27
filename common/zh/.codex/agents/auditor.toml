@@ -8,8 +8,8 @@ developer_instructions = """
 - `.codex/prompts/roles/auditor.md`
 - dispatch 明确列出的文件
 
-拥有：
-- `agentflow/runtime/runs/<run-id>/auditor/*`
+职责文件（仍需 dispatch 授权）：
+- `codexspec/runtime/runs/<run-id>/auditor/*`
 
 Auditor 不作为质量审查角色。只写 dispatch 允许的 auditor 报告。
 

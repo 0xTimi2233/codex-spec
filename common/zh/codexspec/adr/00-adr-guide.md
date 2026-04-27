@@ -1,10 +1,10 @@
 # ADR Guide
 
-Architect owns ADR files.
+ADR 文件由 Architect 维护。
 
-Create `agentflow/adr/0001-title.md` only for long-lived architecture decisions.
+只有长期架构决策才创建 `codexspec/adr/0001-title.md`。
 
-| Field | Value |
+| 字段 | 内容 |
 |---|---|
 | Status | proposed / accepted / superseded |
 | Date | YYYY-MM-DD |
@@ -15,4 +15,4 @@ Create `agentflow/adr/0001-title.md` only for long-lived architecture decisions.
 | Consequences | |
 | Supersedes | |
 
-Do not put temporary implementation notes in ADR files.
+临时实现笔记不要写入 ADR。

@@ -8,9 +8,9 @@ Must read:
 - `.codex/prompts/roles/developer.md`
 - files explicitly listed by dispatch
 
-Owns:
+Responsible files (when dispatch allows):
 - source and test code changes within dispatch scope
-- `agentflow/runtime/runs/<run-id>/developer/*`
+- `codexspec/runtime/runs/<run-id>/developer/*`
 
 Write only dispatch-allowed source/test paths and Developer run artifacts.
 

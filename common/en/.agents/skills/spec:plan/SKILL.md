@@ -11,13 +11,13 @@ Read these paths only when they are not already in the active context or their c
 
 - `.codex/prompts/main-thread.md`
 - `.codex/prompts/file-protocol.md`
-- `agentflow/vision.md`
-- `agentflow/roadmap.md`
-- `agentflow/runtime/explore/<explore-id>/brief.md` when continuing an explore track
-- `agentflow/runtime/preflight/<preflight-id>/brief.md` when continuing a preflight track
+- `codexspec/vision.md`
+- `codexspec/roadmap.md`
+- `codexspec/runtime/explore/<explore-id>/brief.md` when continuing an explore track
+- `codexspec/runtime/preflight/<preflight-id>/brief.md` when continuing a preflight track
 - source requirement paths specified by the user
-- `agentflow/runtime/state.json`
-- fields `current_planning_session` and `planning_track` in `agentflow/runtime/state.json` when a planning session is active
+- `codexspec/runtime/state.json`
+- fields `current_planning_session` and `planning_track` in `codexspec/runtime/state.json` when a planning session is active
 
 ## Procedure
 
@@ -28,59 +28,59 @@ Read these paths only when they are not already in the active context or their c
    - `preflight`: audit existing requirement sources for planning blockers.
    - `commit`: confirm requirements, create a run, and dispatch PM.
 4. If the track is unclear, ask the user for a numbered choice with impacts and a recommendation.
-5. For `explore`, create or continue `agentflow/runtime/explore/<explore-id>/`, set `codex-spec-internal state set --planning-session <explore-id> --planning-track explore --blocked false`, write `agentflow/runtime/explore/<explore-id>/dispatch-ledger.md` when missing, write `agentflow/runtime/explore/<explore-id>/dispatch/pm-<n>.md` for the next question round or closure, append the PM row, dispatch PM, and update the row when PM replies.
-6. For `preflight`, create or continue `agentflow/runtime/preflight/<preflight-id>/`, set `codex-spec-internal state set --planning-session <preflight-id> --planning-track preflight --blocked false`, write `agentflow/runtime/preflight/<preflight-id>/dispatch-ledger.md` when missing, write `agentflow/runtime/preflight/<preflight-id>/dispatch/pm-<n>.md` for requirement audit or closure, append the PM row, dispatch PM, and update the row when PM replies.
+5. For `explore`, create or continue `codexspec/runtime/explore/<explore-id>/`, set `codex-spec-internal state set --planning-session <explore-id> --planning-track explore --blocked false`, write `codexspec/runtime/explore/<explore-id>/dispatch-ledger.md` when missing, write `codexspec/runtime/explore/<explore-id>/dispatch/pm-<n>.md` for the next question round or closure, append the PM row, dispatch PM, and update the row when PM replies.
+6. For `preflight`, create or continue `codexspec/runtime/preflight/<preflight-id>/`, set `codex-spec-internal state set --planning-session <preflight-id> --planning-track preflight --blocked false`, write `codexspec/runtime/preflight/<preflight-id>/dispatch-ledger.md` when missing, write `codexspec/runtime/preflight/<preflight-id>/dispatch/pm-<n>.md` for requirement audit or closure, append the PM row, dispatch PM, and update the row when PM replies.
 7. When an explore or preflight track is closed as `ready-for-plan` or `discarded`, run `codex-spec-internal archive --explore <explore-id>` or `codex-spec-internal archive --preflight <preflight-id>`, then clear planning state with `codex-spec-internal state set --planning-session null --planning-track null`.
-8. For `commit`, create a run id and write `agentflow/runtime/runs/<run-id>/dispatch-ledger.md` with the dispatch table header.
-9. Run `codex-spec-internal state set --phase planning --run <run-id> --planning-session null --planning-track null --blocked false`.
-10. Write `agentflow/runtime/runs/<run-id>/dispatch/pm-001.md` with the planning input and self-contained PM output paths.
+8. For `commit`, choose the roadmap milestone id for this run, create a run id, and write `codexspec/runtime/runs/<run-id>/dispatch-ledger.md` with the dispatch table header.
+9. Run `codex-spec-internal state set --phase planning --run <run-id> --milestone <milestone-id> --planning-session null --planning-track null --blocked false`.
+10. Write `codexspec/runtime/runs/<run-id>/dispatch/pm-001.md` with the planning input and self-contained PM output paths.
 11. Append the PM row to `dispatch-ledger.md`, dispatch PM, record the runtime agent id, and update the row when the PM response arrives.
 12. PM confirms requirements, scope, non-goals, roadmap milestones, acceptance criteria, and `pm/planning-summary.md`.
-13. When requested by dispatch, PM may update `agentflow/vision.md` and `agentflow/roadmap.md`.
+13. When requested by dispatch, PM may update `codexspec/vision.md` and `codexspec/roadmap.md`.
 14. Confirm the planning package is self-contained before returning `$spec:design` as next step.
 
 ## Planning Package
 
 The `commit` track must copy every relevant requirement, decision, constraint, assumption, open risk, and acceptance criterion into the current run. This is a run-scoped planning record for the current milestone:
 
-- `agentflow/runtime/runs/<run-id>/task.md`
-- `agentflow/runtime/runs/<run-id>/pm/requirements.md`
-- `agentflow/runtime/runs/<run-id>/pm/scope.md`
-- `agentflow/runtime/runs/<run-id>/pm/acceptance-criteria.md`
-- `agentflow/runtime/runs/<run-id>/pm/planning-summary.md`
+- `codexspec/runtime/runs/<run-id>/task.md`
+- `codexspec/runtime/runs/<run-id>/pm/requirements.md`
+- `codexspec/runtime/runs/<run-id>/pm/scope.md`
+- `codexspec/runtime/runs/<run-id>/pm/acceptance-criteria.md`
+- `codexspec/runtime/runs/<run-id>/pm/planning-summary.md`
 
-Downstream design uses this package as the planning input. Reusable product knowledge belongs in `agentflow/`.
+Downstream design uses this package as the planning input. Reusable product knowledge belongs in `codexspec/`.
 
 ## PM Decision Handling
 
-If PM returns `User decision required`, present the numbered options to the user, record the selected answer in `task.md` under `User decisions`, and dispatch PM again with that decision as input.
+If PM returns a `Decision Request` that the main thread cannot resolve, present the numbered options to the user, record the selected answer in `task.md` under `User decisions`, and dispatch PM again with that decision as input.
 
 ## Required Outputs
 
 For `explore`:
 
-- `agentflow/runtime/explore/<explore-id>/dispatch-ledger.md`
-- `agentflow/runtime/explore/<explore-id>/dispatch/pm-<n>.md`
-- `agentflow/runtime/explore/<explore-id>/brief.md`
-- `agentflow/runtime/explore/<explore-id>/summary.md` when the session closes
+- `codexspec/runtime/explore/<explore-id>/dispatch-ledger.md`
+- `codexspec/runtime/explore/<explore-id>/dispatch/pm-<n>.md`
+- `codexspec/runtime/explore/<explore-id>/brief.md`
+- `codexspec/runtime/explore/<explore-id>/summary.md` when the session closes
 
 For `preflight`:
 
-- `agentflow/runtime/preflight/<preflight-id>/dispatch-ledger.md`
-- `agentflow/runtime/preflight/<preflight-id>/dispatch/pm-<n>.md`
-- `agentflow/runtime/preflight/<preflight-id>/brief.md`
-- `agentflow/runtime/preflight/<preflight-id>/summary.md` when the session closes
+- `codexspec/runtime/preflight/<preflight-id>/dispatch-ledger.md`
+- `codexspec/runtime/preflight/<preflight-id>/dispatch/pm-<n>.md`
+- `codexspec/runtime/preflight/<preflight-id>/brief.md`
+- `codexspec/runtime/preflight/<preflight-id>/summary.md` when the session closes
 
 For `commit`:
 
-- `agentflow/runtime/runs/<run-id>/task.md`
-- `agentflow/runtime/runs/<run-id>/dispatch-ledger.md`
-- `agentflow/runtime/runs/<run-id>/dispatch/pm-001.md`
-- `agentflow/runtime/runs/<run-id>/pm/requirements.md`
-- `agentflow/runtime/runs/<run-id>/pm/scope.md`
-- `agentflow/runtime/runs/<run-id>/pm/acceptance-criteria.md`
-- `agentflow/runtime/runs/<run-id>/pm/planning-summary.md` with source coverage, copied requirements, decisions, open risks, and ready-for-design status
-- updated `agentflow/vision.md` or `agentflow/roadmap.md` when PM dispatch requests it
+- `codexspec/runtime/runs/<run-id>/task.md`
+- `codexspec/runtime/runs/<run-id>/dispatch-ledger.md`
+- `codexspec/runtime/runs/<run-id>/dispatch/pm-001.md`
+- `codexspec/runtime/runs/<run-id>/pm/requirements.md`
+- `codexspec/runtime/runs/<run-id>/pm/scope.md`
+- `codexspec/runtime/runs/<run-id>/pm/acceptance-criteria.md`
+- `codexspec/runtime/runs/<run-id>/pm/planning-summary.md` with source coverage, copied requirements, decisions, open risks, and ready-for-design status
+- updated `codexspec/vision.md` or `codexspec/roadmap.md` when PM dispatch requests it
 
 ## Next
 

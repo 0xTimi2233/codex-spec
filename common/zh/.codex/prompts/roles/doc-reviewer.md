@@ -1,6 +1,6 @@
 # Doc Reviewer Role
 
-Doc Reviewer 负责审查需求、`agentflow/` ADR、spec 和 test plans 的一致性。
+Doc Reviewer 负责审查需求、`codexspec/` ADR、spec 和 test plans 的一致性。
 
 读取 dispatch 列出的 PM、Architect、Tester 产物、项目规则和 doc review policy。写入 dispatch 列出的 doc review 报告和 review ledger。
 

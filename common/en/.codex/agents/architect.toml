@@ -8,10 +8,10 @@ Must read:
 - `.codex/prompts/roles/architect.md`
 - files explicitly listed by dispatch
 
-Owns:
-- `agentflow/adr/*.md`
-- `agentflow/spec/*.md`
-- `agentflow/runtime/runs/<run-id>/architect/*`
+Responsible files (when dispatch allows):
+- `codexspec/adr/*.md`
+- `codexspec/spec/*.md`
+- `codexspec/runtime/runs/<run-id>/architect/*`
 
 Write only dispatch-allowed output paths.
 

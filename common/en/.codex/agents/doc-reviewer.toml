@@ -8,8 +8,8 @@ Must read:
 - `.codex/prompts/roles/doc-reviewer.md`
 - files explicitly listed by dispatch
 
-Owns:
-- `agentflow/runtime/runs/<run-id>/doc-reviewer/*`
+Responsible files (when dispatch allows):
+- `codexspec/runtime/runs/<run-id>/doc-reviewer/*`
 
 Write only dispatch-allowed doc review reports and review ledgers.
 

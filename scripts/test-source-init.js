@@ -56,27 +56,27 @@ function assertPlanningDocs(root, lang) {
 
   assert(mainThread.includes(lang === "zh" ? "决策路由" : "Decision Routing"), `${lang} main-thread should define decision routing`);
   assert(mainThread.includes(lang === "zh" ? "只有 PM 或 Architect" : "Only unresolved PM or Architect"), `${lang} main-thread should limit user decision escalation`);
-  assert(mainThread.includes("agentflow/runtime/explore/<explore-id>/dispatch-ledger.md"), `${lang} main-thread should define explore dispatch ledger`);
-  assert(mainThread.includes("agentflow/runtime/preflight/<preflight-id>/dispatch-ledger.md"), `${lang} main-thread should define preflight dispatch ledger`);
+  assert(mainThread.includes("codexspec/runtime/explore/<explore-id>/dispatch-ledger.md"), `${lang} main-thread should define explore dispatch ledger`);
+  assert(mainThread.includes("codexspec/runtime/preflight/<preflight-id>/dispatch-ledger.md"), `${lang} main-thread should define preflight dispatch ledger`);
   assert(mainThread.includes(lang === "zh" ? "Skill 边界" : "Skill Boundary"), `${lang} main-thread should keep skill procedures out of main protocol`);
   assert(mainThread.includes(lang === "zh" ? "子代理" : "Close subagents promptly"), `${lang} main-thread should define subagent closure`);
   assert(!mainThread.includes("Public CLI commands"), `${lang} main-thread should not describe public CLI commands`);
   assert(!mainThread.includes("对用户公开的 CLI"), `${lang} main-thread should not describe public CLI commands`);
-  assert(mainThread.includes(lang === "zh" ? "后续 workflow context 来自 `agentflow/`" : "Future workflow context comes from `agentflow/`"), `${lang} main-thread should keep agentflow as the future context source`);
+  assert(mainThread.includes(lang === "zh" ? "后续 workflow context 来自 `codexspec/`" : "Future workflow context comes from `codexspec/`"), `${lang} main-thread should keep codexspec as the future context source`);
   assert(!mainThread.includes(lang === "zh" ? "`$spec:design`：" : "`$spec:design`:"), `${lang} main-thread should not duplicate design skill flow`);
   assert(!mainThread.includes(lang === "zh" ? "`$spec:execute`：" : "`$spec:execute`:"), `${lang} main-thread should not duplicate execute skill flow`);
   assert(!mainThread.includes("gate.md"), `${lang} main-thread should not reference gate.md`);
 
-  assert(fileProtocol.includes("agentflow/runtime/explore/<explore-id>/"), `${lang} file protocol should define explore session path`);
-  assert(fileProtocol.includes("agentflow/runtime/<work-unit>/dispatch/<role>-<task-id>.md"), `${lang} file protocol should define generic dispatch packet paths`);
+  assert(fileProtocol.includes("codexspec/runtime/explore/<explore-id>/"), `${lang} file protocol should define explore session path`);
+  assert(fileProtocol.includes("codexspec/runtime/<work-unit>/dispatch/<role>-<task-id>.md"), `${lang} file protocol should define generic dispatch packet paths`);
   assert(fileProtocol.includes("current run or planning session") || fileProtocol.includes("当前 run 或 planning session"), `${lang} file protocol should define planning-session dispatch ledger`);
   assert(fileProtocol.includes("rounds/"), `${lang} file protocol should define explore rounds`);
   assert(fileProtocol.includes("round-001"), `${lang} file protocol should show append-only round directories`);
-  assert(fileProtocol.includes("agentflow/runtime/archives/explore/<explore-id>/"), `${lang} file protocol should define explore archive path`);
-  assert(fileProtocol.includes("agentflow/runtime/preflight/<preflight-id>/"), `${lang} file protocol should define preflight session path`);
+  assert(fileProtocol.includes("codexspec/runtime/archives/explore/<explore-id>/"), `${lang} file protocol should define explore archive path`);
+  assert(fileProtocol.includes("codexspec/runtime/preflight/<preflight-id>/"), `${lang} file protocol should define preflight session path`);
   assert(fileProtocol.includes("blocker-ledger.md"), `${lang} file protocol should define preflight blocker ledger`);
   assert(fileProtocol.includes("decisions/batches"), `${lang} file protocol should define stable preflight decision batches`);
-  assert(fileProtocol.includes("agentflow/runtime/archives/preflight/<preflight-id>/"), `${lang} file protocol should define preflight archive path`);
+  assert(fileProtocol.includes("codexspec/runtime/archives/preflight/<preflight-id>/"), `${lang} file protocol should define preflight archive path`);
   assert(fileProtocol.includes("pm/requirements.md"), `${lang} file protocol should define planning package requirements`);
   assert(fileProtocol.includes("pm/acceptance-criteria.md"), `${lang} file protocol should define planning package acceptance criteria`);
   assert(fileProtocol.includes(lang === "zh" ? "不是可复用项目知识" : "not reusable project knowledge"), `${lang} file protocol should keep PM package run-scoped`);
@@ -90,19 +90,19 @@ function assertPlanningDocs(root, lang) {
 
   assert(planSkill.includes("current_planning_session"), `${lang} plan skill should track current planning session`);
   assert(planSkill.includes("planning_track"), `${lang} plan skill should track planning track`);
-  assert(!planSkill.includes("agentflow/runtime/state.json.current_planning_session"), `${lang} plan skill should not describe state fields as file paths`);
-  assert(!planSkill.includes("agentflow/runtime/state.json.planning_track"), `${lang} plan skill should not describe state fields as file paths`);
+  assert(!planSkill.includes("codexspec/runtime/state.json.current_planning_session"), `${lang} plan skill should not describe state fields as file paths`);
+  assert(!planSkill.includes("codexspec/runtime/state.json.planning_track"), `${lang} plan skill should not describe state fields as file paths`);
   assert(planSkill.includes("codex-spec-internal archive --explore <explore-id>"), `${lang} plan skill should archive completed explore sessions`);
   assert(planSkill.includes("codex-spec-internal archive --preflight <preflight-id>"), `${lang} plan skill should archive completed preflights`);
-  assert(planSkill.includes("agentflow/runtime/explore/<explore-id>/dispatch/pm-<n>.md"), `${lang} plan skill should write explore PM dispatches`);
-  assert(planSkill.includes("agentflow/runtime/preflight/<preflight-id>/dispatch/pm-<n>.md"), `${lang} plan skill should write preflight PM dispatches`);
+  assert(planSkill.includes("codexspec/runtime/explore/<explore-id>/dispatch/pm-<n>.md"), `${lang} plan skill should write explore PM dispatches`);
+  assert(planSkill.includes("codexspec/runtime/preflight/<preflight-id>/dispatch/pm-<n>.md"), `${lang} plan skill should write preflight PM dispatches`);
   assert(planSkill.includes("Planning Package"), `${lang} plan skill should define the planning package`);
   assert(planSkill.includes("pm/planning-summary.md"), `${lang} plan skill should write planning summary`);
   assert(planSkill.includes(lang === "zh" ? "调度 PM" : "dispatch PM"), `${lang} plan skill should use PM dispatch`);
   assert(designSkill.includes("pm/requirements.md"), `${lang} design skill should read planning requirements`);
   assert(designSkill.includes("pm/scope.md"), `${lang} design skill should read planning scope`);
   assert(designSkill.includes("doc-reviewing"), `${lang} design skill should set doc-reviewing phase`);
-  assert(designSkill.includes("agentflow/spec/*.md"), `${lang} design skill should update authoritative specs`);
+  assert(designSkill.includes("codexspec/spec/*.md"), `${lang} design skill should update authoritative specs`);
   assert(!designSkill.includes("gate.md"), `${lang} design skill should not create gate.md`);
   assert(executeSkill.includes(lang === "zh" ? "commit 或 no-op 成功后" : "After commit or no-op succeeds"), `${lang} execute skill should clear state after commit or no-op`);
   assert(executeSkill.includes("Doc Reviewer"), `${lang} execute skill should require doc reviewer pass`);
@@ -121,8 +121,9 @@ function assertPlanningDocs(root, lang) {
 
   assert(subagentContract.includes(lang === "zh" ? "跨越当前角色边界" : "crosses the current role boundary"), `${lang} subagent contract should define decision request boundaries`);
   assert(subagentContract.includes("Inputs read"), `${lang} subagent contract should require standard report inputs`);
-  assert(subagentContract.includes(lang === "zh" ? "只有 dispatch 列出" : "only when the dispatch packet lists it"), `${lang} subagent contract should make file protocol optional`);
   assert(!subagentContract.includes("- `.codex/prompts/file-protocol.md`"), `${lang} subagent contract should not require file protocol by default`);
+  assert(!subagentContract.includes(".codex/prompts/file-protocol.md"), `${lang} subagent contract should not mention file protocol`);
+  assert(!subagentContract.includes(".codex/prompts/main-thread.md"), `${lang} subagent contract should not repeat main-thread read boundary`);
   assert(!subagentContract.includes("Files written:"), `${lang} subagent contract should not use legacy report fields`);
   assert(!agentConfigs.includes("file-protocol.md"), `${lang} agent configs should not require file protocol by default`);
   assert(agentConfigs.includes("subagent-contract.md"), `${lang} agent configs should use subagent contract`);
@@ -133,18 +134,20 @@ function assertPlanningDocs(root, lang) {
 }
 
 function assertGeneratedDirs(root) {
-  assert(fs.existsSync(path.join(root, "agentflow/runtime", "explore", ".gitkeep")), "explore directory should be initialized");
-  assert(fs.existsSync(path.join(root, "agentflow/runtime", "preflight", ".gitkeep")), "preflight directory should be initialized");
-  assert(fs.existsSync(path.join(root, "agentflow/runtime", "archives", "explore", ".gitkeep")), "explore archive directory should be initialized");
-  assert(fs.existsSync(path.join(root, "agentflow/runtime", "archives", "preflight", ".gitkeep")), "preflight archive directory should be initialized");
+  assert(fs.existsSync(path.join(root, "codexspec/runtime", "explore", ".gitkeep")), "explore directory should be initialized");
+  assert(fs.existsSync(path.join(root, "codexspec/runtime", "preflight", ".gitkeep")), "preflight directory should be initialized");
+  assert(fs.existsSync(path.join(root, "codexspec/runtime", "archives", "runs", ".gitkeep")), "run archive directory should be initialized");
+  assert(fs.existsSync(path.join(root, "codexspec/runtime", "archives", "explore", ".gitkeep")), "explore archive directory should be initialized");
+  assert(fs.existsSync(path.join(root, "codexspec/runtime", "archives", "preflight", ".gitkeep")), "preflight archive directory should be initialized");
 }
 
 function assertTemplateDirs(lang) {
   const templateRoot = path.join(root, "common", lang);
-  assert(fs.existsSync(path.join(templateRoot, "agentflow/runtime", "explore", ".gitkeep")), `${lang} template should include explore placeholder`);
-  assert(fs.existsSync(path.join(templateRoot, "agentflow/runtime", "preflight", ".gitkeep")), `${lang} template should include preflight placeholder`);
-  assert(fs.existsSync(path.join(templateRoot, "agentflow/runtime", "archives", "explore", ".gitkeep")), `${lang} template should include explore archive placeholder`);
-  assert(fs.existsSync(path.join(templateRoot, "agentflow/runtime", "archives", "preflight", ".gitkeep")), `${lang} template should include preflight archive placeholder`);
+  assert(fs.existsSync(path.join(templateRoot, "codexspec/runtime", "explore", ".gitkeep")), `${lang} template should include explore placeholder`);
+  assert(fs.existsSync(path.join(templateRoot, "codexspec/runtime", "preflight", ".gitkeep")), `${lang} template should include preflight placeholder`);
+  assert(fs.existsSync(path.join(templateRoot, "codexspec/runtime", "archives", "runs", ".gitkeep")), `${lang} template should include run archive placeholder`);
+  assert(fs.existsSync(path.join(templateRoot, "codexspec/runtime", "archives", "explore", ".gitkeep")), `${lang} template should include explore archive placeholder`);
+  assert(fs.existsSync(path.join(templateRoot, "codexspec/runtime", "archives", "preflight", ".gitkeep")), `${lang} template should include preflight archive placeholder`);
 }
 
 const tmp = tempDir("codex-spec-source-init-");
@@ -157,7 +160,7 @@ assertGeneratedDirs(tmp);
 assert(!fs.existsSync(path.join(tmp, "AGENTS.md")), "init should not generate AGENTS.md");
 
 const defaultConfig = readText(tmp, ".codex", "config.toml");
-const defaultState = readText(tmp, "agentflow/runtime", "state.json");
+const defaultState = readText(tmp, "codexspec/runtime", "state.json");
 const zhPmAgent = readText(tmp, ".codex", "agents", "pm.toml");
 const zhArchitectAgent = readText(tmp, ".codex", "agents", "architect.toml");
 const zhTesterAgent = readText(tmp, ".codex", "agents", "tester.toml");
@@ -190,15 +193,15 @@ assert(!runCli("src", ["help"]).includes("AGENTS.md"), "help should not mention 
 const customAgents = "# Custom agents\n";
 const customVision = "# Custom vision\n";
 fs.writeFileSync(path.join(tmp, "AGENTS.md"), customAgents, "utf8");
-fs.writeFileSync(path.join(tmp, "agentflow", "vision.md"), customVision, "utf8");
+fs.writeFileSync(path.join(tmp, "codexspec", "vision.md"), customVision, "utf8");
 
 runCli("src", ["init", "--lang", "zh", "--target", tmp]);
 assert(readText(tmp, "AGENTS.md") === customAgents, "init should not touch existing project AGENTS.md by default");
-assert(readText(tmp, "agentflow", "vision.md") === customVision, "init should preserve existing agentflow files by default");
+assert(readText(tmp, "codexspec", "vision.md") === customVision, "init should preserve existing codexspec files by default");
 
 runCli("src", ["init", "--lang", "zh", "--force", "--target", tmp]);
 assert(readText(tmp, "AGENTS.md") === customAgents, "--force should not touch existing project AGENTS.md");
-assert(readText(tmp, "agentflow", "vision.md") === customVision, "--force should not overwrite existing agentflow files");
+assert(readText(tmp, "codexspec", "vision.md") === customVision, "--force should not overwrite existing codexspec files");
 
 const highTmp = tempDir("codex-spec-source-high-");
 assertTemplateDirs("en");

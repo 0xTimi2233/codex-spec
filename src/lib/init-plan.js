@@ -7,19 +7,19 @@ function normalizeRel(rel) {
   return rel.replaceAll(path.sep, "/").replace(/^\.\/+/, "");
 }
 
-export function isAgentflowArtifact(rel) {
+export function isCodexspecArtifact(rel) {
   const normalized = normalizeRel(rel);
-  return normalized.startsWith("agentflow/");
+  return normalized.startsWith("codexspec/");
 }
 
 export function findInitConflicts({ packageRoot, target, lang }) {
   return listTemplateOutputs(packageRoot, lang)
-    .filter((rel) => !isAgentflowArtifact(rel))
+    .filter((rel) => !isCodexspecArtifact(rel))
     .filter((rel) => exists(path.join(target, rel)));
 }
 
 export function shouldPreserveInitTarget(target, dstPath) {
-  return isAgentflowArtifact(path.relative(target, dstPath)) && exists(dstPath);
+  return isCodexspecArtifact(path.relative(target, dstPath)) && exists(dstPath);
 }
 
 export async function resolveOverwriteChoice({ conflicts, force, input = process.stdin, output = process.stdout, print = () => {} }) {

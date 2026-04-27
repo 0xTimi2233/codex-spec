@@ -32,18 +32,19 @@ const REQUIRED = [
   ".agents/skills/spec:auto/SKILL.md",
   ".agents/skills/spec:status/SKILL.md",
   ".agents/skills/spec:resume/SKILL.md",
-  "agentflow/vision.md",
-  "agentflow/roadmap.md",
-  "agentflow/adr/00-adr-guide.md",
-  "agentflow/spec/00-spec-guide.md",
-  "agentflow/spec/test-plan/00-test-plan-guide.md",
-  "agentflow/runtime/state.json",
-  "agentflow/runtime/explore/.gitkeep",
-  "agentflow/runtime/preflight/.gitkeep",
-  "agentflow/runtime/runs/.gitkeep",
-  "agentflow/runtime/archives/.gitkeep",
-  "agentflow/runtime/archives/explore/.gitkeep",
-  "agentflow/runtime/archives/preflight/.gitkeep"
+  "codexspec/vision.md",
+  "codexspec/roadmap.md",
+  "codexspec/adr/00-adr-guide.md",
+  "codexspec/spec/00-spec-guide.md",
+  "codexspec/spec/test-plan/00-test-plan-guide.md",
+  "codexspec/runtime/state.json",
+  "codexspec/runtime/explore/.gitkeep",
+  "codexspec/runtime/preflight/.gitkeep",
+  "codexspec/runtime/runs/.gitkeep",
+  "codexspec/runtime/archives/.gitkeep",
+  "codexspec/runtime/archives/runs/.gitkeep",
+  "codexspec/runtime/archives/explore/.gitkeep",
+  "codexspec/runtime/archives/preflight/.gitkeep"
 ];
 
 export function doctorCommand(_args, context) {

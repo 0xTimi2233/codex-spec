@@ -43,7 +43,7 @@ export function normalizeState(state) {
 }
 
 export function statePath(root) {
-  return path.join(root, "agentflow", "runtime", "state.json");
+  return path.join(root, "codexspec", "runtime", "state.json");
 }
 
 export function readState(root) {
@@ -55,5 +55,5 @@ export function writeState(root, state) {
 }
 
 export function currentRunPath(root, state = readState(root)) {
-  return state.current_run ? path.join(root, "agentflow", "runtime", "runs", state.current_run) : null;
+  return state.current_run ? path.join(root, "codexspec", "runtime", "runs", state.current_run) : null;
 }

@@ -15,6 +15,6 @@
 ## Notes
 
 - 本文件由 PM 维护。
-- 临时执行记录写入 `agentflow/runtime/runs/<run-id>/`。
-- 架构决策写入 `agentflow/adr/*.md`。
-- 稳定功能和模块规格写入 `agentflow/spec/*.md`。
+- 临时执行记录写入 `codexspec/runtime/runs/<run-id>/`。
+- 架构决策写入 `codexspec/adr/*.md`。
+- 稳定功能和模块规格写入 `codexspec/spec/*.md`。

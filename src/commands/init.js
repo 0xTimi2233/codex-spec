@@ -48,12 +48,13 @@ export async function initCommand(args, context) {
   }
 
   for (const rel of [
-    "agentflow/runtime/explore/.gitkeep",
-    "agentflow/runtime/preflight/.gitkeep",
-    "agentflow/runtime/runs/.gitkeep",
-    "agentflow/runtime/archives/.gitkeep",
-    "agentflow/runtime/archives/explore/.gitkeep",
-    "agentflow/runtime/archives/preflight/.gitkeep"
+    "codexspec/runtime/explore/.gitkeep",
+    "codexspec/runtime/preflight/.gitkeep",
+    "codexspec/runtime/runs/.gitkeep",
+    "codexspec/runtime/archives/.gitkeep",
+    "codexspec/runtime/archives/runs/.gitkeep",
+    "codexspec/runtime/archives/explore/.gitkeep",
+    "codexspec/runtime/archives/preflight/.gitkeep"
   ]) {
     const p = path.join(target, rel);
     if (!exists(p)) writeText(p, "", { force: false });
@@ -64,6 +65,6 @@ export async function initCommand(args, context) {
   println(`Model profile: ${modelProfile}`);
   println(`Fast mode: ${fastMode}`);
   println(`Files created or updated: ${copied.length}`);
-  if (conflicts.length && !overwriteGenerated) println("Existing generated files were preserved. Use --force or answer y to overwrite generated non-agentflow files.");
-  if (overwriteGenerated) println("Existing agentflow/ files were preserved.");
+  if (conflicts.length && !overwriteGenerated) println("Existing generated files were preserved. Use --force or answer y to overwrite generated non-codexspec files.");
+  if (overwriteGenerated) println("Existing codexspec/ files were preserved.");
 }

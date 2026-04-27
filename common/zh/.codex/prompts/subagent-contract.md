@@ -16,8 +16,6 @@
 - dispatch 中列出的 project rules
 - dispatch 中列出的 input paths
 
-子代理不得读取 `.codex/prompts/main-thread.md`，不得自行扫描 `agentflow/`、源码或测试目录。只有 dispatch 列出 `.codex/prompts/file-protocol.md` 时才读取它。
-
 角色 owner 代表职责边界，不代表默认读取范围。owner 文件或其他角色产物只有被 dispatch 列为 allowed input 时才读取。
 
 子代理不运行 workflow skill，不调度其他子代理，不推进 workflow state，不维护调度状态。子代理只完成当前 dispatch，并返回标准报告。
