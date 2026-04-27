@@ -2,7 +2,7 @@
 
 This file is for the main thread only. Subagents must not read it.
 
-The main thread is the orchestrator, integrator, and gatekeeper. It selects roles, creates dispatch packets, reads subagent replies, maintains dispatch status, advances state, and archives runs. It does not perform heavy design, implementation, or code review work.
+The main thread is the orchestrator, integrator, and review coordinator. It selects roles, creates dispatch packets, reads subagent replies, maintains dispatch status, advances state, and archives runs. It does not perform heavy design, implementation, or code review work.
 
 ## Workflow Bootstrap
 
@@ -48,6 +48,8 @@ Every subagent task starts with a dispatch file:
 
 ```text
 .agentflow/runs/<run-id>/dispatch/<role>-<task-id>.md
+.agentflow/explore/<explore-id>/dispatch/<role>-<task-id>.md
+.agentflow/preflight/<preflight-id>/dispatch/<role>-<task-id>.md
 ```
 
 Dispatch packets must contain:
@@ -57,6 +59,7 @@ Role:
 Goal:
 Allowed input paths:
 Allowed output paths:
+Authoritative docs:
 Allowed source/test paths:
 Project rules:
 Expected report path:
@@ -74,9 +77,11 @@ The main thread maintains:
 
 ```text
 .agentflow/runs/<run-id>/dispatch-ledger.md
+.agentflow/explore/<explore-id>/dispatch-ledger.md
+.agentflow/preflight/<preflight-id>/dispatch-ledger.md
 ```
 
-Create the ledger when a run starts:
+Create the ledger when a run or planning session starts:
 
 ```markdown
 | Dispatch ID | Role | Agent ID | Status | Dispatch Path | Report Path | Started At | Updated At | Notes |
@@ -86,7 +91,7 @@ Create the ledger when a run starts:
 Append one row for every dispatch. After creating a subagent, record its runtime agent id in that row.
 
 ```markdown
-| architect-001 | architect | <runtime-agent-id> | running | .agentflow/runs/<run-id>/dispatch/architect-001.md | .agentflow/runs/<run-id>/architect/design.md | <iso-8601> | <iso-8601> | - |
+| architect-001 | architect | <runtime-agent-id> | running | .agentflow/runs/<run-id>/dispatch/architect-001.md | .agentflow/runs/<run-id>/architect/report.md | <iso-8601> | <iso-8601> | - |
 ```
 
 Allowed status values are `queued`, `running`, `completed`, `blocked`, `failed`, `closed`, and `stale`.
@@ -103,9 +108,9 @@ For normal workflow progress, the main thread schedules from subagent replies an
 
 Any role may return a `Decision Request` when several valid paths exist and the choice crosses that role's boundary.
 
-The main thread first resolves it from `task.md`, `gate.md`, project rules, and prior decisions. If the route is clear, record the choice in `task.md` or a fix request, then dispatch the responsible role.
+The main thread first resolves it from `task.md`, project rules, prior decisions, and subagent reports. If the route is clear, record the choice in `task.md` or a fix request, then dispatch the responsible role.
 
-Only unresolved PM or Architect decisions become user decision gates. Destructive actions, external systems, and publishing choices also require user decision. Present 2-4 numbered options with impact and a recommendation. After the user chooses, record the decision in `task.md` under `User decisions` or in `summary.md` for milestone-finish choices.
+Only unresolved PM or Architect decisions go to the user. Destructive actions, external systems, and publishing choices also require user decision. Present 2-4 numbered options with impact and a recommendation. After the user chooses, record the decision in `task.md` under `User decisions` or in `summary.md` for milestone-finish choices.
 
 ## Review Ledger
 
@@ -133,21 +138,21 @@ The main thread preserves review ledgers across rounds and passes the relevant l
 
 `$spec:plan`: select one internal track and keep its artifacts file-based.
 
-`explore` track clarifies early or vague requirements. The main thread creates or resumes `.agentflow/explore/<explore-id>/`, records planning state, writes a PM dispatch, and routes user decisions. PM owns question rounds, decisions, and `brief.md`. When the session closes, the main thread archives it.
+`explore` track clarifies early or vague requirements. The main thread creates or resumes `.agentflow/explore/<explore-id>/`, records planning state, writes the PM dispatch and dispatch ledger in that session, and routes user decisions. PM owns question rounds, decisions, and `brief.md`. When the session closes, the main thread archives it.
 
-`preflight` track audits existing requirement sources before formal planning. The main thread creates or resumes `.agentflow/preflight/<preflight-id>/`, records planning state, writes a PM dispatch, and routes user decisions. PM owns requirement-map, blocker-ledger, assumptions, decision queue, decision batches, and `brief.md`. When the session closes, the main thread archives it.
+`preflight` track audits existing requirement sources before formal planning. The main thread creates or resumes `.agentflow/preflight/<preflight-id>/`, records planning state, writes the PM dispatch and dispatch ledger in that session, and routes user decisions. PM owns requirement-map, blocker-ledger, assumptions, decision queue, decision batches, and `brief.md`. When the session closes, the main thread archives it.
 
-`commit` track dispatches PM to confirm requirements, update vision/roadmap when requested, select the next milestone, create the milestone run, write `task.md`, and produce the self-contained PM package under `.agentflow/runs/<run-id>/pm/`.
+`commit` track dispatches PM to confirm requirements, update vision/roadmap when requested, select the next milestone, create the milestone run, write `task.md`, and produce the self-contained run-scoped PM package under `.agentflow/runs/<run-id>/pm/`.
 
 If the track is unclear, ask the user for 2-4 numbered options with impact and a recommendation. If an explore or preflight session becomes `ready-for-plan`, recommend a clean chat context before the commit track.
 
-`$spec:design`: require a current run and a self-contained planning package. Dispatch Architect and Tester. Architect writes design, spec, and ADR drafts; Tester writes a test plan from the design. Before Doc Reviewer dispatch, move to `doc-reviewing`. Then dispatch Doc Reviewer to check consistency across requirements, design, spec, ADR, and test plan. On pass, write `gate.md` and move to `ready-to-execute`; on failure, write `fix-requests/doc-fix-<n>.md` and route the fix.
+`$spec:design`: require a current run and a self-contained planning package. Dispatch Architect and Tester. Architect updates dispatch-listed `agentflow/adr/*.md` and `agentflow/spec/*.md`; Tester updates dispatch-listed `agentflow/spec/test-plan/*.md`. Before Doc Reviewer dispatch, move to `doc-reviewing`. Then dispatch Doc Reviewer to check consistency across requirements and the changed `agentflow/` documents. On pass, move to `ready-to-execute`; on failure, write `fix-requests/doc-fix-<n>.md` and route the fix.
 
-`$spec:design` uses the current run planning package as its requirements source. Archived explore or preflight sessions and original user source documents are evidence only when a dispatch explicitly lists them.
+`$spec:design` uses the current run planning package as its requirements input. The package is a current-milestone record, not reusable project knowledge. Archived explore or preflight sessions and original user source documents are evidence only when a dispatch explicitly lists them. ADR, spec, and test-plan facts live in `agentflow/`.
 
-`$spec:execute`: require a current run and approved `gate.md`. Complete the current milestone from approved `gate.md`: dispatch Developer, dispatch Code Reviewer, dispatch Tester when coverage review is needed, verify acceptance evidence, finish the run, archive it, commit or record no-op, clear current state, and close milestone subagents.
+`$spec:execute`: require a current run, `ready-to-execute` state, and a passing Doc Reviewer report. Build Developer dispatch from reviewed subagent report paths: authoritative `agentflow/` docs, allowed source/test write scope, and required tests. Then dispatch Developer, dispatch Code Reviewer, dispatch Tester when coverage review is needed, verify acceptance evidence, finish the run, archive it, commit or record no-op, clear current state, and close milestone subagents.
 
-Before `$spec:execute`, `gate.md` must be an approved contract with allowed source/test paths and required tests. Do not dispatch Developer for source edits outside that contract.
+The main thread copies execution scope from subagent reports and review results. It does not derive allowed paths or required tests by interpreting ADR or spec content.
 
 Review, verification, finish, archive, and milestone commit are internal `$spec:execute` stages. They are not user-facing workflow skills.
 
@@ -161,11 +166,11 @@ When PM, Architect, or Tester returns `fail`, `blocked`, `needs-context`, or `do
 2. Resolve any `Decision Request` through "Decision Routing".
 3. Write or update `.agentflow/runs/<run-id>/fix-requests/*.md`.
 4. If the responsible role, allowed input paths, and allowed output paths are clear, dispatch that subagent with the fix request and relevant ledger as allowed input.
-5. After the fix, return to the corresponding workflow step or review gate.
+5. After the fix, return to the corresponding workflow step or review step.
 
 The main thread enters blocked, or stops `$spec:auto`, only when safe routing is not possible. Typical cases include:
 
-- the main thread cannot choose the responsible role, fix scope, or next gate safely;
+- the main thread cannot choose the responsible role, fix scope, or next workflow step safely;
 - a user, external system, or destructive operation decision is needed;
 - required artifacts are missing and cannot be recreated through a clear dispatch;
 - the same open issue still has no executable next step after a fix attempt;
@@ -175,11 +180,11 @@ When stopping, the main thread writes `.agentflow/runs/<run-id>/summary.md` with
 
 ## Auto Execution
 
-`$spec:auto` runs roadmap milestones serially. If the user provides an inline requirement with `$spec:auto`, start with `$spec:plan` using that requirement, then continue through `$spec:design` and `$spec:execute`. If no inline requirement and no confirmed roadmap exists, stop and recommend `$spec:plan`. For each milestone, create or resume its run, run `$spec:design` when no approved gate exists, then run `$spec:execute`. After every step, the main thread uses state, dispatch status, and subagent replies. On rejection, route the issue through "Rejection Routing" first; stop automatic progress only when safe routing is not possible.
+`$spec:auto` runs roadmap milestones serially. If the user provides an inline requirement with `$spec:auto`, start with `$spec:plan` using that requirement, then continue through `$spec:design` and `$spec:execute`. If no inline requirement and no confirmed roadmap exists, stop and recommend `$spec:plan`. For each milestone, create or resume its run, run `$spec:design` until the run reaches `ready-to-execute`, then run `$spec:execute`. After every step, the main thread uses state, dispatch status, and subagent replies. On rejection, route the issue through "Rejection Routing" first; stop automatic progress only when safe routing is not possible.
 
 ## Milestone Boundary
 
-A run represents one milestone execution unit. `$spec:execute` owns finish, archive, commit or no-op, state cleanup, and subagent closure before the next milestone starts. Archived runs are history; future workflow context comes from `agentflow/` or the current run package, not from archived run files unless a dispatch lists them as evidence.
+A run represents one milestone execution unit. `$spec:execute` owns finish, archive, commit or no-op, state cleanup, and subagent closure before the next milestone starts. Future workflow context comes from `agentflow/`. Current or archived run files are records and evidence, and they are read only when a dispatch lists them.
 
 ## Blocked
 

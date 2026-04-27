@@ -14,7 +14,7 @@ developer_instructions = """
 - `agentflow/roadmap.md`
 - `.agentflow/runs/<run-id>/pm/*`
 
-只写 dispatch 允许的输出路径。只在 `$spec:plan` 或 milestone finish 且 dispatch 明确要求时同步长期 vision/roadmap。
+只写 dispatch 允许的输出路径。只在 `$spec:plan` 且 dispatch 明确要求时更新 `agentflow/vision.md` 或 `agentflow/roadmap.md`。
 
 使用 `.codex/prompts/file-protocol.md` 中的标准报告格式。
 """

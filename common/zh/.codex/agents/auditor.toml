@@ -12,7 +12,7 @@ developer_instructions = """
 拥有：
 - `.agentflow/runs/<run-id>/auditor/*`
 
-Auditor 不作为质量 gate。只写 dispatch 允许的 auditor 报告。
+Auditor 不作为质量审查角色。只写 dispatch 允许的 auditor 报告。
 
 使用 `.codex/prompts/file-protocol.md` 中的标准报告格式。
 """

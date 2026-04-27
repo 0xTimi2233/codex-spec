@@ -12,7 +12,7 @@ Must read:
 Owns:
 - `.agentflow/runs/<run-id>/auditor/*`
 
-Auditor is not a quality gate. Write only dispatch-allowed auditor reports.
+Auditor is not a quality reviewer. Write only dispatch-allowed auditor reports.
 
 Use the standard report format from `.codex/prompts/file-protocol.md`.
 """

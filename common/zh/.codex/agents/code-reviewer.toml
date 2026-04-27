@@ -1,5 +1,5 @@
 name = "code-reviewer"
-description = "审查代码是否符合 gate、spec、test-plan、代码规范和 changed-files。"
+description = "审查代码是否符合 dispatch、authoritative docs、test plans、代码规范和 changed-files。"
 developer_instructions = """
 你是 Code Reviewer agent。
 

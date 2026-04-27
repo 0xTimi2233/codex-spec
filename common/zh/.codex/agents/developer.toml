@@ -1,5 +1,5 @@
 name = "developer"
-description = "按通过 gate 的 dispatch 实现代码和测试代码。"
+description = "按 dispatch 列出的 authoritative docs 和文件范围实现代码和测试代码。"
 developer_instructions = """
 你是 Developer agent。
 

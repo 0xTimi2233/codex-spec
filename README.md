@@ -2,7 +2,7 @@
 
 [English](README.md) | [中文](README_ZH.md)
 
-`codex-spec` is a project-local workflow scaffold for Codex. It gives Codex a small, file-based operating system for spec-driven work: a main thread coordinates the run, role-specific subagents receive narrow dispatch packets, reviewers guard the gates, and durable artifacts replace chat history as the source of truth.
+`codex-spec` is a project-local workflow scaffold for Codex. It gives Codex a small, file-based operating system for spec-driven work: a main thread coordinates the run, role-specific subagents receive narrow dispatch packets, reviewers verify boundaries, and `agentflow/` documents replace chat history as the durable source of truth.
 
 ## Install
 
@@ -76,13 +76,13 @@ Code Reviewer
 Auditor
 ```
 
-The main thread orchestrates and integrates. PM defines scope and roadmap milestones. Architect writes design/spec/ADR drafts. Tester writes test plans and coverage reviews, not implementation code. Doc Reviewer checks document consistency before execution. Developer implements code and tests from an approved gate. Code Reviewer checks implementation after execution. Auditor summarizes the run during milestone finish.
+The main thread orchestrates and integrates. PM defines scope and roadmap milestones. Architect updates ADRs and specs. Tester updates test plans and performs coverage reviews, not implementation code. Doc Reviewer checks document consistency before execution. Developer implements code and tests from dispatch-listed authoritative docs. Code Reviewer checks implementation after execution. Auditor summarizes the run during milestone finish.
 
 ### Workflow
 
 ```text
 $spec:plan        explore, audit, or confirm requirements, then prepare the next milestone run
-$spec:design      produce design/spec/ADR drafts, test plan, doc review, and approved gate
+$spec:design      update ADR/spec/test-plan docs, run doc review, and mark the run ready to execute
 $spec:execute     implement, code-review, verify, finish, archive, and commit the current milestone
 $spec:auto        run roadmap milestones serially through design and execute
 ```
@@ -131,12 +131,12 @@ codex-spec --version
 - Keep prompt prefixes stable: put protocol and role context first, and keep per-task dispatch as the dynamic suffix.
 - Subagents return short reports; the main thread uses those reports and dispatch status to route the next step.
 - When PM needs a product decision, the main thread presents numbered options with impacts and a recommendation.
-- Treat Doc Reviewer and Code Reviewer as separate gates: document correctness before execution, implementation correctness after execution.
+- Treat Doc Reviewer and Code Reviewer as separate review steps: document correctness before execution, implementation correctness after execution.
 - Use `$spec:auto` for routine roadmap progress, but expect it to stop when the next safe decision is unclear.
 - `$spec:execute` commits the completed milestone with a short user-facing message such as `feat: add import workflow`, `fix: handle empty config`, or `docs: update setup guide`.
-- Do not use archived runs as future context. Sync reusable knowledge into `agentflow/` during milestone finish.
+- Do not use archived runs as future context. Reusable knowledge lives in `agentflow/`.
 
-Use the full workflow for multi-step changes, cross-file refactors, or work where review evidence matters. For small edits, exploratory prototypes, or projects without tests, use a shorter manual Codex flow outside an active run. During an active run, Developer and Code Reviewer use the approved run contract as the prompt-level implementation boundary.
+Use the full workflow for multi-step changes, cross-file refactors, or work where review evidence matters. For small edits, exploratory prototypes, or projects without tests, use a shorter manual Codex flow outside an active run. During an active run, Developer and Code Reviewer use dispatch-listed `agentflow/` docs and allowed paths as the prompt-level implementation boundary.
 
 ## Development
 

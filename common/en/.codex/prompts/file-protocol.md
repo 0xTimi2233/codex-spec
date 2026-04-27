@@ -15,11 +15,11 @@ Files are the workflow source of truth. Chat history is not a source of truth. U
 | `explore brief` | `.agentflow/explore/<explore-id>/brief.md`; the planning-ready result merged from explore rounds. |
 | `preflight-id` | One pre-plan requirement audit stored under `.agentflow/preflight/<preflight-id>/`. |
 | `preflight brief` | `.agentflow/preflight/<preflight-id>/brief.md`; the planning-ready result of a requirement preflight. |
-| `planning package` | Self-contained current-run PM package under `.agentflow/runs/<run-id>/task.md` and `.agentflow/runs/<run-id>/pm/`. |
-| `dispatch packet` | `.agentflow/runs/<run-id>/dispatch/<role>-<task-id>.md`; the task packet a subagent reads for one assignment. |
+| `planning package` | Self-contained, run-scoped PM input record under `.agentflow/runs/<run-id>/task.md` and `.agentflow/runs/<run-id>/pm/`. |
+| `dispatch packet` | `.agentflow/<work-unit>/dispatch/<role>-<task-id>.md`; the task packet a subagent reads for one assignment. `<work-unit>` is `runs/<run-id>`, `explore/<explore-id>`, or `preflight/<preflight-id>`. |
+| `authoritative docs` | Dispatch-listed `agentflow/` documents a role must follow for the current assignment. |
 | `task.md` | Current run goal, scope, constraints, done criteria, and user decisions. |
-| `gate.md` | Approved execution contract produced after document review. Developer and Code Reviewer use it as the implementation boundary. |
-| `dispatch-ledger.md` | Main-thread dispatch status table for the current run. |
+| `dispatch-ledger.md` | Main-thread dispatch status table for the current run or planning session. |
 | `review-ledger.md` | Reviewer-owned issue ledger for review rounds. |
 | `verification.md` | Main-thread acceptance evidence collected before milestone finish. |
 | `summary.md` | Current run stop or completion summary. |
@@ -36,7 +36,7 @@ Files are the workflow source of truth. Chat history is not a source of truth. U
 | `agentflow/spec/*.md` | Stable designs, interfaces, behavior specs | Architect |
 | `agentflow/spec/test-plan/*.md` | Stable test plans and acceptance matrices | Tester |
 
-Long-lived files are synced only during milestone finish by the owning role.
+These files are the only durable product, architecture, spec, and test facts. Current-run files record work and evidence; they do not create a second fact source. During design, Architect and Tester update dispatch-listed `agentflow/` documents. Doc Reviewer pass means those documents are consistent enough for execution.
 
 ## Explore Files
 
@@ -44,6 +44,8 @@ Explore files capture one pre-run discovery session. PM owns the session analysi
 
 ```text
 .agentflow/explore/<explore-id>/
+  dispatch-ledger.md
+  dispatch/
   brief.md
   rounds/
     round-001/
@@ -79,6 +81,8 @@ Preflight files audit existing requirements before planning. PM owns requirement
 
 ```text
 .agentflow/preflight/<preflight-id>/
+  dispatch-ledger.md
+  dispatch/
   sources.md
   requirement-map.md
   blocker-ledger.md
@@ -117,7 +121,6 @@ PM planning uses the preflight `brief.md` path specified by the main thread.
 .agentflow/runs/<run-id>/
   dispatch-ledger.md
   task.md
-  gate.md
   summary.md
   dispatch/
   pm/
@@ -136,7 +139,7 @@ PM planning uses the preflight `brief.md` path specified by the main thread.
   fix-responses/
 ```
 
-The PM package must be self-contained before `$spec:design`. It copies the relevant requirements, decisions, constraints, assumptions, open risks, acceptance criteria, and source references needed for design into `.agentflow/runs/<run-id>/pm/requirements.md`, `.agentflow/runs/<run-id>/pm/scope.md`, `.agentflow/runs/<run-id>/pm/acceptance-criteria.md`, and `.agentflow/runs/<run-id>/pm/planning-summary.md`.
+The PM package is a current-milestone input record, not reusable project knowledge. It must be self-contained before `$spec:design` by copying the relevant requirements, decisions, constraints, assumptions, open risks, acceptance criteria, and source references needed for design into `.agentflow/runs/<run-id>/pm/requirements.md`, `.agentflow/runs/<run-id>/pm/scope.md`, `.agentflow/runs/<run-id>/pm/acceptance-criteria.md`, and `.agentflow/runs/<run-id>/pm/planning-summary.md`.
 
 `pm/planning-summary.md` must include:
 
@@ -148,24 +151,32 @@ Open risks:
 Ready for design: yes | no
 ```
 
-## Gate Contract
+Run role artifacts are reports, ledgers, and evidence. Do not store alternate ADR, spec, or test-plan facts under `.agentflow/runs/<run-id>/`; update the dispatch-listed `agentflow/` documents instead.
 
-`gate.md` must start with machine-readable frontmatter:
+## Dispatch Scope
 
-```yaml
----
-status: approved
-allowed_source_paths:
+Developer and Code Reviewer use the Developer dispatch as the execution index. The dispatch points to the reviewed `agentflow/` documents and constrains the current edit scope:
+
+```text
+Authoritative docs:
+  - agentflow/vision.md
+  - agentflow/roadmap.md
+  - agentflow/adr/example.md
+  - agentflow/spec/example.md
+  - agentflow/spec/test-plan/example.md
+Allowed input paths:
   - src/example-feature/**
-allowed_test_paths:
   - tests/example-feature/**
-required_tests:
+Allowed source/test paths:
+  - src/example-feature/**
+  - tests/example-feature/**
+Required tests:
   - npm test
-doc_review_report: .agentflow/runs/<run-id>/doc-reviewer/review-report.md
----
+Expected report path:
+  - .agentflow/runs/<run-id>/developer/implementation-report.md
 ```
 
-The main thread writes this file after Doc Reviewer returns `pass`. Source and test edits are allowed only during `executing` and only when the target path is covered by `allowed_source_paths` or `allowed_test_paths`.
+The main thread builds execution dispatches from subagent reports and review results. It copies document paths, source/test scopes, and required tests; it does not derive them by interpreting ADR or spec content.
 
 ## Archive Files
 
@@ -175,7 +186,7 @@ The main thread writes this file after Doc Reviewer returns `pass`. Source and t
 .agentflow/archives/preflight/<preflight-id>/
 ```
 
-`archives/` is immutable history. `codex-spec-internal archive --run <run-id>` moves the completed run from `.agentflow/runs/<run-id>/` into `.agentflow/archives/<run-id>/`. `codex-spec-internal archive --explore <explore-id>` moves the completed explore session from `.agentflow/explore/<explore-id>/` into `.agentflow/archives/explore/<explore-id>/`. `codex-spec-internal archive --preflight <preflight-id>` moves the completed preflight from `.agentflow/preflight/<preflight-id>/` into `.agentflow/archives/preflight/<preflight-id>/`. Archives must not overwrite existing archives. Reusable facts must be synced into `agentflow/` or written into the current run's planning package.
+`archives/` is immutable history. `codex-spec-internal archive --run <run-id>` moves the completed run from `.agentflow/runs/<run-id>/` into `.agentflow/archives/<run-id>/`. `codex-spec-internal archive --explore <explore-id>` moves the completed explore session from `.agentflow/explore/<explore-id>/` into `.agentflow/archives/explore/<explore-id>/`. `codex-spec-internal archive --preflight <preflight-id>` moves the completed preflight from `.agentflow/preflight/<preflight-id>/` into `.agentflow/archives/preflight/<preflight-id>/`. Archives must not overwrite existing archives. Reusable facts live in `agentflow/`; archived run files are evidence only when a dispatch lists them.
 
 ## Report Format
 

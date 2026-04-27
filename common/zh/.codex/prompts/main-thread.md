@@ -2,7 +2,7 @@
 
 本文件只供主线程读取。子代理不得读取本文件。
 
-主线程是 orchestrator、integrator、gatekeeper。主线程负责选择角色、创建 dispatch、读取子代理回报、维护调度状态、推进 state、归档 run。主线程不承担重设计、重实现、重代码审查。
+主线程是 orchestrator、integrator 和 review coordinator。主线程负责选择角色、创建 dispatch、读取子代理回报、维护调度状态、推进 state、归档 run。主线程不承担重设计、重实现、重代码审查。
 
 ## Workflow Bootstrap
 
@@ -53,6 +53,8 @@ blocked
 
 ```text
 .agentflow/runs/<run-id>/dispatch/<role>-<task-id>.md
+.agentflow/explore/<explore-id>/dispatch/<role>-<task-id>.md
+.agentflow/preflight/<preflight-id>/dispatch/<role>-<task-id>.md
 ```
 
 dispatch 必须包含：
@@ -62,6 +64,7 @@ Role:
 Goal:
 Allowed input paths:
 Allowed output paths:
+Authoritative docs:
 Allowed source/test paths:
 Project rules:
 Expected report path:
@@ -79,9 +82,11 @@ Stop condition:
 
 ```text
 .agentflow/runs/<run-id>/dispatch-ledger.md
+.agentflow/explore/<explore-id>/dispatch-ledger.md
+.agentflow/preflight/<preflight-id>/dispatch-ledger.md
 ```
 
-run 开始时创建 ledger：
+run 或 planning session 开始时创建 ledger：
 
 ```markdown
 | Dispatch ID | Role | Agent ID | Status | Dispatch Path | Report Path | Started At | Updated At | Notes |
@@ -91,7 +96,7 @@ run 开始时创建 ledger：
 每次调度追加一行。创建子代理后，在该行记录 runtime agent id。
 
 ```markdown
-| architect-001 | architect | <runtime-agent-id> | running | .agentflow/runs/<run-id>/dispatch/architect-001.md | .agentflow/runs/<run-id>/architect/design.md | <iso-8601> | <iso-8601> | - |
+| architect-001 | architect | <runtime-agent-id> | running | .agentflow/runs/<run-id>/dispatch/architect-001.md | .agentflow/runs/<run-id>/architect/report.md | <iso-8601> | <iso-8601> | - |
 ```
 
 允许的 status 为 `queued`、`running`、`completed`、`blocked`、`failed`、`closed`、`stale`。
@@ -108,9 +113,9 @@ run 开始时创建 ledger：
 
 任一角色发现多个合理路径且选择跨越当前角色边界时，可返回 `Decision Request`。
 
-主线程先根据 `task.md`、`gate.md`、project rules 和既有决策处理。路线明确时，将选择写入 `task.md` 或 fix request，再调度责任角色。
+主线程先根据 `task.md`、project rules、既有决策和子代理报告处理。路线明确时，将选择写入 `task.md` 或 fix request，再调度责任角色。
 
-只有 PM 或 Architect 的未决选择进入用户决策 gate。破坏性操作、外部系统和发布动作也需要用户决策。给用户 2-4 个编号选项、影响和推荐项。用户选择后，将结论写入 `task.md` 的 `User decisions`，milestone finish 阶段选择写入 `summary.md`。
+只有 PM 或 Architect 的未决选择交给用户。破坏性操作、外部系统和发布动作也需要用户决策。给用户 2-4 个编号选项、影响和推荐项。用户选择后，将结论写入 `task.md` 的 `User decisions`，milestone finish 阶段选择写入 `summary.md`。
 
 ## Review Ledger
 
@@ -138,21 +143,21 @@ Verification:
 
 `$spec:plan`：选择一个内部 track，并用文件承载产物。
 
-`explore` track 澄清早期或模糊需求。主线程创建或恢复 `.agentflow/explore/<explore-id>/`、记录 planning state、写 PM dispatch，并路由用户决策。PM 负责问题轮次、决策和 `brief.md`。session 结束时由主线程归档。
+`explore` track 澄清早期或模糊需求。主线程创建或恢复 `.agentflow/explore/<explore-id>/`、记录 planning state、在该 session 中写 PM dispatch 和 dispatch ledger，并路由用户决策。PM 负责问题轮次、决策和 `brief.md`。session 结束时由主线程归档。
 
-`preflight` track 在正式 planning 前审计已有需求来源。主线程创建或恢复 `.agentflow/preflight/<preflight-id>/`、记录 planning state、写 PM dispatch，并路由用户决策。PM 负责 requirement-map、blocker-ledger、assumptions、decision queue、decision batches 和 `brief.md`。session 结束时由主线程归档。
+`preflight` track 在正式 planning 前审计已有需求来源。主线程创建或恢复 `.agentflow/preflight/<preflight-id>/`、记录 planning state、在该 session 中写 PM dispatch 和 dispatch ledger，并路由用户决策。PM 负责 requirement-map、blocker-ledger、assumptions、decision queue、decision batches 和 `brief.md`。session 结束时由主线程归档。
 
-`commit` track 调度 PM 确认需求、按需更新 vision/roadmap、选择下一 milestone、创建 milestone run、写 `task.md`，并在 `.agentflow/runs/<run-id>/pm/` 下产出自包含 PM package。
+`commit` track 调度 PM 确认需求、按需更新 vision/roadmap、选择下一 milestone、创建 milestone run、写 `task.md`，并在 `.agentflow/runs/<run-id>/pm/` 下产出自包含、run-scoped PM package。
 
 track 不明确时，向用户给出 2-4 个带影响和推荐项的编号选项。explore 或 preflight session 变为 `ready-for-plan` 后，建议用户使用干净聊天上下文再进入 commit track。
 
-`$spec:design`：要求存在 current run 和自包含 planning package。调度 Architect 和 Tester。Architect 写设计、spec、ADR 草案；Tester 根据设计写测试计划。调度 Doc Reviewer 前进入 `doc-reviewing`。随后调度 Doc Reviewer 审查需求、设计、spec、ADR、test plan 的一致性。通过时写 `gate.md` 并进入 `ready-to-execute`；失败时写 `fix-requests/doc-fix-<n>.md` 并路由修复。
+`$spec:design`：要求存在 current run 和自包含 planning package。调度 Architect 和 Tester。Architect 更新 dispatch 列出的 `agentflow/adr/*.md` 和 `agentflow/spec/*.md`；Tester 更新 dispatch 列出的 `agentflow/spec/test-plan/*.md`。调度 Doc Reviewer 前进入 `doc-reviewing`。随后调度 Doc Reviewer 审查需求和变更后的 `agentflow/` 文档一致性。通过时进入 `ready-to-execute`；失败时写 `fix-requests/doc-fix-<n>.md` 并路由修复。
 
-`$spec:design` 以当前 run 的 planning package 作为需求来源。归档的 explore、preflight session 和用户原始来源文档只在 dispatch 明确列为证据时读取。
+`$spec:design` 以当前 run 的 planning package 作为需求输入。该 package 是当前 milestone 记录，不是可复用项目知识。归档的 explore、preflight session 和用户原始来源文档只在 dispatch 明确列为证据时读取。ADR、spec 和 test-plan 事实保存在 `agentflow/`。
 
-`$spec:execute`：要求存在 current run 和 approved `gate.md`。从已通过的 `gate.md` 完成当前 milestone：调度 Developer、调度 Code Reviewer、必要时调度 Tester 做覆盖审查、收集验收证据、finish run、归档 run、提交或记录 no-op、清空当前 state，并结束 milestone 子代理上下文。
+`$spec:execute`：要求存在 current run、`ready-to-execute` state 和通过的 Doc Reviewer 报告。根据已审查的子代理报告路径构造 Developer dispatch：authoritative `agentflow/` docs、允许写入的源码/测试范围和 required tests。随后调度 Developer、调度 Code Reviewer、必要时调度 Tester 做覆盖审查、收集验收证据、finish run、归档 run、提交或记录 no-op、清空当前 state，并结束 milestone 子代理上下文。
 
-`$spec:execute` 前，`gate.md` 必须是已通过的执行契约，包含允许的源码/测试路径和必须运行的测试。不要调度 Developer 修改契约之外的源码。
+主线程从子代理报告和 review 结果复制执行范围，不通过理解 ADR 或 spec 内容自行推导 allowed paths 或 required tests。
 
 review、verification、finish、archive 和 milestone commit 是 `$spec:execute` 内部阶段，不作为用户侧 workflow skill 暴露。
 
@@ -166,11 +171,11 @@ review、verification、finish、archive 和 milestone commit 是 `$spec:execute
 2. 按“决策路由”处理 `Decision Request`。
 3. 写或更新 `.agentflow/runs/<run-id>/fix-requests/*.md`。
 4. 若责任角色、允许输入路径和允许输出路径明确，调度对应子代理处理，并把 fix request 和相关 ledger 作为 allowed input。
-5. 修复后回到对应的工作流节点或 review gate。
+5. 修复后回到对应的工作流节点或 review step。
 
 只有无法安全路由时，主线程才进入 blocked，或让 `$spec:auto` 停止。典型情况包括：
 
-- 主线程无法判断责任角色、修复范围或下一步 gate。
+- 主线程无法判断责任角色、修复范围或下一步 workflow step。
 - 需要用户、外部系统或破坏性操作决策。
 - 必需产物缺失，且无法通过明确 dispatch 补齐。
 - 同一 open issue 经修复后仍缺少可执行下一步。
@@ -180,11 +185,11 @@ review、verification、finish、archive 和 milestone commit 是 `$spec:execute
 
 ## 自动执行
 
-`$spec:auto` 按 roadmap 串行执行 milestone。用户在 `$spec:auto` 后提供 inline requirement 时，先用该需求执行 `$spec:plan`，再继续 `$spec:design` 和 `$spec:execute`。没有 inline requirement 且没有已确认 roadmap 时停止，并建议执行 `$spec:plan`。每个 milestone 创建或恢复对应 run；没有 approved gate 时先运行 `$spec:design`，然后运行 `$spec:execute`。每个节点结束后，主线程使用 state、调度状态和子代理回报。遇到打回时，先按“打回与路由”处理；只有无法安全路由时才停止自动推进。
+`$spec:auto` 按 roadmap 串行执行 milestone。用户在 `$spec:auto` 后提供 inline requirement 时，先用该需求执行 `$spec:plan`，再继续 `$spec:design` 和 `$spec:execute`。没有 inline requirement 且没有已确认 roadmap 时停止，并建议执行 `$spec:plan`。每个 milestone 创建或恢复对应 run；先运行 `$spec:design` 直到 run 进入 `ready-to-execute`，然后运行 `$spec:execute`。每个节点结束后，主线程使用 state、调度状态和子代理回报。遇到打回时，先按“打回与路由”处理；只有无法安全路由时才停止自动推进。
 
 ## Milestone 边界
 
-一个 run 表示一个 milestone 执行单元。`$spec:execute` 负责在进入下一 milestone 前完成 finish、归档、提交或 no-op、state 清理和子代理关闭。已归档 run 是历史记录；后续 workflow context 来自 `agentflow/` 或当前 run package，不从归档 run 读取，除非 dispatch 将其列为证据。
+一个 run 表示一个 milestone 执行单元。`$spec:execute` 负责在进入下一 milestone 前完成 finish、归档、提交或 no-op、state 清理和子代理关闭。后续 workflow context 来自 `agentflow/`。当前或已归档 run 文件是记录和证据，只在 dispatch 列出时读取。
 
 ## 阻塞
 

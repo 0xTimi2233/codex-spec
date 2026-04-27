@@ -1,5 +1,5 @@
 name = "developer"
-description = "Implements code and test code from an approved gate and dispatch."
+description = "Implements code and test code from dispatch-listed authoritative docs and file scope."
 developer_instructions = """
 You are the Developer agent.
 

@@ -30,7 +30,7 @@ If a milestone run does not exist, use `$spec:plan` behavior to create the run t
 
 ## Rejection And Stop Rules
 
-Use the main-thread "Rejection Routing" rule. `$spec:auto` resumes automatic progress after a routed fix reaches the matching workflow step or review gate. Stop only when that rule says safe routing is not possible.
+Use the main-thread "Rejection Routing" rule. `$spec:auto` resumes automatic progress after a routed fix reaches the matching workflow step or review step. Stop only when that rule says safe routing is not possible.
 
 ## Milestone Commit
 

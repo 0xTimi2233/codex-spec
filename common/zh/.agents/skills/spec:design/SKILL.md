@@ -1,6 +1,6 @@
 ---
 name: spec:design
-description: 产出并审查当前 milestone 方案，然后创建 approved gate。
+description: 更新权威设计文档、完成审查，并将 run 标记为可执行。
 ---
 
 # Skill: spec:design
@@ -25,27 +25,26 @@ description: 产出并审查当前 milestone 方案，然后创建 approved gate
 2. 调度 Architect 前，确认 current run 和 planning package 已存在。否则停止并建议 `$spec:plan`。
 3. 写 `.agentflow/runs/<run-id>/dispatch/architect-001.md`。
 4. 将当前 run 的 planning package 作为 Architect allowed inputs。追加 Architect 调度行，调度 Architect，写入 runtime agent id，并在收到 Architect 回复后更新该行。
-5. Architect 写设计、spec、ADR 草案。
+5. Architect 更新 dispatch 列出的 `agentflow/adr/*.md` 和 `agentflow/spec/*.md`，并在报告中列出变更文档路径和建议实现范围。
 6. 写 `.agentflow/runs/<run-id>/dispatch/tester-001.md`。
-7. 将 Architect 产物路径作为 Tester allowed inputs。追加 Tester 调度行，调度 Tester，写入 runtime agent id，并在收到 Tester 回复后更新该行。
-8. Tester 根据 Architect 产物写测试计划。
+7. 将 Architect 变更的 `agentflow/` 文档路径和报告作为 Tester allowed inputs。追加 Tester 调度行，调度 Tester，写入 runtime agent id，并在收到 Tester 回复后更新该行。
+8. Tester 更新 dispatch 列出的 `agentflow/spec/test-plan/*.md`，并在报告中列出变更 test-plan 路径和 required tests。
 9. 执行 `codex-spec-internal state set --phase doc-reviewing --run <run-id>`。
 10. 写 `.agentflow/runs/<run-id>/dispatch/doc-reviewer-001.md`。
-11. 将 planning package、Architect 产物、Tester 产物、项目规则和 doc review ledger 作为 Doc Reviewer allowed inputs。追加 Doc Reviewer 调度行，调度 Doc Reviewer，写入 runtime agent id，并在收到 Doc Reviewer 回复后更新该行。
-12. 通过时写 `.agentflow/runs/<run-id>/gate.md`，包含 `status: approved`、允许源码/测试路径、必须运行的测试和 Doc Reviewer 报告路径。执行 `codex-spec-internal state set --phase ready-to-execute --run <run-id> --blocked false`。
+11. 将 planning package、Architect 和 Tester 报告列出的 `agentflow/` 变更文档路径、项目规则和 doc review ledger 作为 Doc Reviewer allowed inputs。追加 Doc Reviewer 调度行，调度 Doc Reviewer，写入 runtime agent id，并在收到 Doc Reviewer 回复后更新该行。
+12. 通过时执行 `codex-spec-internal state set --phase ready-to-execute --run <run-id> --blocked false`。
 13. 失败时写 `.agentflow/runs/<run-id>/fix-requests/doc-fix-<n>.md`，并路由给 Architect、Tester 或 PM 修复。
 
 ## 必须产出
 
-- `.agentflow/runs/<run-id>/architect/design.md`
-- `.agentflow/runs/<run-id>/architect/spec-draft.md`
-- `.agentflow/runs/<run-id>/architect/adr-draft.md`
-- `.agentflow/runs/<run-id>/tester/test-plan.md`
+- Architect dispatch 列出的更新后 `agentflow/adr/*.md` 和 `agentflow/spec/*.md`
+- `.agentflow/runs/<run-id>/architect/report.md`
+- Tester dispatch 列出的更新后 `agentflow/spec/test-plan/*.md`
+- `.agentflow/runs/<run-id>/tester/report.md`
 - `.agentflow/runs/<run-id>/doc-reviewer/review-report.md`
 - `.agentflow/runs/<run-id>/doc-reviewer/review-ledger.md`
 - 更新后的 `.agentflow/runs/<run-id>/dispatch-ledger.md`
-- 通过时：`.agentflow/runs/<run-id>/gate.md`
 
 ## 下一步
 
-返回设计产物路径、测试计划路径、gate 状态、下一步 `$spec:execute`，或 blocker。
+返回变更后的权威文档路径、doc review 状态、下一步 `$spec:execute`，或 blocker。

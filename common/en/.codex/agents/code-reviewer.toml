@@ -1,5 +1,5 @@
 name = "code-reviewer"
-description = "Checks code against gate, spec, test plan, coding standards, and changed files."
+description = "Checks code against dispatch, authoritative docs, test plans, coding standards, and changed files."
 developer_instructions = """
 You are the Code Reviewer agent.
 

@@ -28,8 +28,8 @@ description: 探索、审计或确认需求，并准备下一 milestone run。
    - `preflight`：审计已有需求来源中的 planning 阻塞点。
    - `commit`：确认需求、创建 run 并调度 PM。
 4. track 不明确时，向用户给出带影响和推荐项的编号选项。
-5. `explore`：创建或继续 `.agentflow/explore/<explore-id>/`，执行 `codex-spec-internal state set --planning-session <explore-id> --planning-track explore --blocked false`，写 PM dispatch 处理下一轮问题或 closure，追加 PM 调度行，调度 PM，并在 PM 回复后更新该行。
-6. `preflight`：创建或继续 `.agentflow/preflight/<preflight-id>/`，执行 `codex-spec-internal state set --planning-session <preflight-id> --planning-track preflight --blocked false`，写 PM dispatch 处理需求审计或 closure，追加 PM 调度行，调度 PM，并在 PM 回复后更新该行。
+5. `explore`：创建或继续 `.agentflow/explore/<explore-id>/`，执行 `codex-spec-internal state set --planning-session <explore-id> --planning-track explore --blocked false`，缺失时写 `.agentflow/explore/<explore-id>/dispatch-ledger.md`，写 `.agentflow/explore/<explore-id>/dispatch/pm-<n>.md` 处理下一轮问题或 closure，追加 PM 调度行，调度 PM，并在 PM 回复后更新该行。
+6. `preflight`：创建或继续 `.agentflow/preflight/<preflight-id>/`，执行 `codex-spec-internal state set --planning-session <preflight-id> --planning-track preflight --blocked false`，缺失时写 `.agentflow/preflight/<preflight-id>/dispatch-ledger.md`，写 `.agentflow/preflight/<preflight-id>/dispatch/pm-<n>.md` 处理需求审计或 closure，追加 PM 调度行，调度 PM，并在 PM 回复后更新该行。
 7. explore 或 preflight track 以 `ready-for-plan` 或 `discarded` 结束时，执行 `codex-spec-internal archive --explore <explore-id>` 或 `codex-spec-internal archive --preflight <preflight-id>`，再用 `codex-spec-internal state set --planning-session null --planning-track null` 清理 planning state。
 8. `commit`：创建 run id，写 `.agentflow/runs/<run-id>/dispatch-ledger.md`，包含调度表格表头。
 9. 执行 `codex-spec-internal state set --phase planning --run <run-id> --planning-session null --planning-track null --blocked false`。
@@ -41,7 +41,7 @@ description: 探索、审计或确认需求，并准备下一 milestone run。
 
 ## Planning Package
 
-`commit` track 必须把所有相关需求、决策、约束、假设、未关闭风险和验收标准写入当前 run：
+`commit` track 必须把所有相关需求、决策、约束、假设、未关闭风险和验收标准写入当前 run。这是当前 milestone 的 run-scoped planning 记录：
 
 - `.agentflow/runs/<run-id>/task.md`
 - `.agentflow/runs/<run-id>/pm/requirements.md`
@@ -49,13 +49,29 @@ description: 探索、审计或确认需求，并准备下一 milestone run。
 - `.agentflow/runs/<run-id>/pm/acceptance-criteria.md`
 - `.agentflow/runs/<run-id>/pm/planning-summary.md`
 
-后续 design 以该 package 作为 planning 来源。
+后续 design 以该 package 作为 planning input。可复用产品知识保存在 `agentflow/`。
 
 ## PM 决策处理
 
 若 PM 返回 `User decision required`，将编号选项呈现给用户；把用户选择写入 `task.md` 的 `User decisions`，再带着该决策重新调度 PM。
 
 ## 必须产出
+
+`explore` track：
+
+- `.agentflow/explore/<explore-id>/dispatch-ledger.md`
+- `.agentflow/explore/<explore-id>/dispatch/pm-<n>.md`
+- `.agentflow/explore/<explore-id>/brief.md`
+- session 关闭时的 `.agentflow/explore/<explore-id>/summary.md`
+
+`preflight` track：
+
+- `.agentflow/preflight/<preflight-id>/dispatch-ledger.md`
+- `.agentflow/preflight/<preflight-id>/dispatch/pm-<n>.md`
+- `.agentflow/preflight/<preflight-id>/brief.md`
+- session 关闭时的 `.agentflow/preflight/<preflight-id>/summary.md`
+
+`commit` track：
 
 - `.agentflow/runs/<run-id>/task.md`
 - `.agentflow/runs/<run-id>/dispatch-ledger.md`

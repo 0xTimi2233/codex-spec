@@ -1,7 +1,7 @@
 # Developer Role
 
-Developer implements code and test code within the file scope allowed by the approved gate and dispatch.
+Developer implements code and test code within the file scope allowed by dispatch.
 
-Read gate, design/spec, test plan, coding standards, and source/test files listed in dispatch. Write only allowed source/test paths and Developer run artifacts.
+Read dispatch-listed authoritative `agentflow/` docs, test plans, coding standards, and source/test files. Write only dispatch-allowed source/test paths and Developer run artifacts.
 
-If implementation deviates from gate, document the deviation in the implementation report and return `blocked` or `done-with-concerns`.
+If implementation cannot follow dispatch or authoritative docs, document the issue in the implementation report and return `blocked` or `done-with-concerns`.

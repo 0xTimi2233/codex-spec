@@ -2,7 +2,7 @@
 
 [English](README.md) | [中文](README_ZH.md)
 
-`codex-spec` 是一个面向 Codex 的项目本地工作流脚手架。它为 Codex 提供一套轻量的、基于文件的 spec-driven 工作方式：主线程负责编排，角色子代理接收窄范围 dispatch，reviewer 负责 gate，长期文档和 run 产物替代聊天历史成为事实来源。
+`codex-spec` 是一个面向 Codex 的项目本地工作流脚手架。它为 Codex 提供一套轻量的、基于文件的 spec-driven 工作方式：主线程负责编排，角色子代理接收窄范围 dispatch，reviewer 验证边界，`agentflow/` 文档替代聊天历史成为持久事实来源。
 
 ## 安装
 
@@ -76,13 +76,13 @@ Code Reviewer
 Auditor
 ```
 
-主线程只负责编排和整合。PM 定义范围和 roadmap milestone。Architect 编写设计、spec 和 ADR 草案。Tester 编写测试计划和覆盖审查，不写实现代码。Doc Reviewer 在实现前审查文档一致性。Developer 根据通过 gate 的方案实现代码和测试。Code Reviewer 在实现后审查代码。Auditor 在 milestone finish 阶段总结当前 run。
+主线程只负责编排和整合。PM 定义范围和 roadmap milestone。Architect 更新 ADR 和 spec。Tester 更新测试计划并做覆盖审查，不写实现代码。Doc Reviewer 在实现前审查文档一致性。Developer 根据 dispatch 列出的权威文档实现代码和测试。Code Reviewer 在实现后审查代码。Auditor 在 milestone finish 阶段总结当前 run。
 
 ### 工作流
 
 ```text
 $spec:plan        探索、审计或确认需求，并准备下一 milestone run
-$spec:design      产出设计、spec、ADR 草案、测试计划、doc review 和 approved gate
+$spec:design      更新 ADR/spec/test-plan 文档、执行 doc review，并将 run 标记为可执行
 $spec:execute     实现、code review、验证、finish、归档并提交当前 milestone
 $spec:auto        按 roadmap 串行执行 milestone
 ```
@@ -134,9 +134,9 @@ codex-spec --version
 - 区分 Doc Reviewer 和 Code Reviewer：先验证文档正确性，再验证实现正确性。
 - 常规 roadmap 推进可以使用 `$spec:auto`，但当下一步无法安全判断时应停止。
 - `$spec:execute` 提交完成的 milestone，提交信息使用简洁的用户可见描述，例如 `feat: add import workflow`、`fix: handle empty config`、`docs: update setup guide`。
-- 归档 run 是历史记录，不作为后续上下文来源。可复用信息应在 milestone finish 阶段同步到 `agentflow/`。
+- 归档 run 是历史记录，不作为后续上下文来源。可复用信息保存在 `agentflow/`。
 
-完整流程适合多步骤改动、跨文件重构或需要审查证据的工作。小改动、探索性原型或缺少测试基础的项目，可以在没有 active run 时使用较短的手动 Codex 流程。存在 active run 时，Developer 和 Code Reviewer 将已通过的 run contract 作为 prompt 层面的实现边界。
+完整流程适合多步骤改动、跨文件重构或需要审查证据的工作。小改动、探索性原型或缺少测试基础的项目，可以在没有 active run 时使用较短的手动 Codex 流程。存在 active run 时，Developer 和 Code Reviewer 将 dispatch 列出的 `agentflow/` 文档和允许路径作为 prompt 层面的实现边界。
 
 ## 开发
 

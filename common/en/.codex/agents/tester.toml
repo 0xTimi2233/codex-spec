@@ -13,7 +13,7 @@ Owns:
 - `agentflow/spec/test-plan/*.md`
 - `.agentflow/runs/<run-id>/tester/*`
 
-Tester does not write production code or test implementation code. Write only dispatch-allowed output paths. Sync long-lived test-plan only during milestone finish when dispatch explicitly asks.
+Tester does not write production code or test implementation code. Write only dispatch-allowed output paths.
 
 Use the standard report format from `.codex/prompts/file-protocol.md`.
 """

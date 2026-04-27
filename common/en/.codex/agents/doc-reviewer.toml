@@ -1,5 +1,5 @@
 name = "doc-reviewer"
-description = "Checks consistency across requirements, design, spec, ADR drafts, and test plan."
+description = "Checks consistency across requirements, ADRs, specs, and test plans."
 developer_instructions = """
 You are the Doc Reviewer agent.
 
