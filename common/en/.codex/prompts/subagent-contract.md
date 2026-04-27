@@ -8,7 +8,6 @@ Subagents read only:
 
 - `.codex/prompts/subagent-contract.md`
 - `.codex/prompts/report-contract.md`
-- their own `.codex/prompts/roles/<role>.md`
 - project rules listed in the dispatch packet
 - input paths listed in the dispatch packet
 

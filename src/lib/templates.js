@@ -19,7 +19,8 @@ export function renderConfigToml(template, _packageRoot, { modelProfile = "high"
 export function renderAgentToml(template, role, { modelProfile = "high", fastMode = "off" } = {}) {
   const modelConfig = renderAgentModelConfig(role, modelProfile, fastMode);
   if (!modelConfig) return template;
-  return template.replace(/(description = ".*"\n)/, `$1${modelConfig}`);
+  if (/description = ".*"\n/.test(template)) return template.replace(/(description = ".*"\n)/, `$1${modelConfig}`);
+  return `${modelConfig}${template.replace(/^\n+/, "")}`;
 }
 
 export function listTemplateOutputs(packageRoot, lang) {

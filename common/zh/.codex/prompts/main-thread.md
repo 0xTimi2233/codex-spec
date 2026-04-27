@@ -2,7 +2,7 @@
 
 本文件只供主线程读取。
 
-主线程运行 workflow。主线程选择当前 workflow skill、按当前步骤补充必要上下文、创建 dispatch、解读子代理报告、更新 state 和 ledger、路由修复、关闭子代理，并完成 milestone。主线程不承担重设计、重实现、重测试或重审查。
+主线程运行 workflow。主线程选择当前 workflow skill、按当前步骤补充必要上下文、创建 dispatch、解读子代理报告、更新 state 和 ledger、路由修复、关闭子代理，并完成 milestone。主线程首先思考如何调度，保持上下文只支撑调度、路由和状态维护；不承担重设计、重实现、重测试或重审查。
 
 ## 上下文
 
@@ -15,7 +15,7 @@
 - `codexspec/runtime/state.json`
 - 当前步骤需要的 current run 或 planning-session 文件
 
-只有在写 dispatch packet 时读取 role prompt 和 project prompt。稳定文件只在缺少上下文或可能变化时重新读取。
+首次进入 workflow 时读取 agent TOML 建立职责索引。之后只在职责不清、agent TOML 可能变化或写 dispatch packet 时补读目标 agent TOML；project prompt 只在写 dispatch packet 时读取。稳定文件只在缺少上下文或可能变化时重新读取。
 
 ## Skill 流程图
 

@@ -22,7 +22,7 @@ Read these paths only when they are not already in the active context or their c
 
 ## Procedure
 
-1. Bootstrap workflow context from protocol, role prompts, project rules, roadmap, and state when needed.
+1. Bootstrap workflow context from protocol, agent TOML files, project rules, roadmap, and state when needed.
 2. If an active run exists, stop and recommend `$resume`, `$status`, `$design`, or `$execute` according to the current phase.
 3. Choose the track from user intent and available inputs:
    - `explore`: clarify vague or early requirements before formal planning.

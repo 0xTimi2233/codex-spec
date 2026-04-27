@@ -2,7 +2,7 @@
 
 This file is for the main thread only.
 
-The main thread runs the workflow. It selects the active workflow skill, loads only the context needed for the current step, creates dispatch packets, interprets subagent reports, updates state and ledgers, routes fixes, closes subagents, and finishes milestones. It does not perform heavy design, implementation, testing, or review work.
+The main thread runs the workflow. It selects the active workflow skill, loads only the context needed for the current step, creates dispatch packets, interprets subagent reports, updates state and ledgers, routes fixes, closes subagents, and finishes milestones. It thinks in terms of dispatch first and keeps context limited to orchestration, routing, and state maintenance; it does not perform heavy design, implementation, testing, or review work.
 
 ## Context
 
@@ -15,7 +15,7 @@ At the start of a workflow skill, load stable context before dynamic context:
 - `codexspec/runtime/state.json`
 - current run or planning-session files needed by the active step
 
-Read role prompts and project prompts only when writing a dispatch packet. Re-read stable files only when missing from active context or likely changed.
+Read agent TOML files once at workflow entry to build a role index. After that, re-read the target agent TOML only when the role boundary is unclear, the config may have changed, or a dispatch packet is being written; read project prompts only when writing a dispatch packet. Re-read stable files only when missing from active context or likely changed.
 
 ## Skill Flow
 

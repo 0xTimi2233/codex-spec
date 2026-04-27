@@ -125,7 +125,7 @@ codex-spec --version
 - Keep each milestone small enough to design, implement, review, and finish cleanly.
 - Start with `$plan`. Use the explore track for unclear requirements, the preflight track for existing requirement sources, and the commit track for formal roadmap planning.
 - Keep the planning package self-contained: copy relevant requirements, decisions, constraints, assumptions, risks, and acceptance criteria into the current run before `$design`.
-- Keep context in files, not chat memory. Subagents should read only dispatch-listed paths and their own role prompt.
+- Keep context in files, not chat memory. Subagents should read only dispatch-listed paths and their own agent TOML instructions.
 - Keep prompt prefixes stable: put protocol and role context first, and keep per-task dispatch as the dynamic suffix.
 - Subagents return short reports; the main thread uses those reports and dispatch status to route the next step.
 - When PM needs a product decision, the main thread presents numbered options with impacts and a recommendation.

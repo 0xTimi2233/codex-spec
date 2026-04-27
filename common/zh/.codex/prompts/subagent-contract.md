@@ -13,7 +13,6 @@
 
 - `.codex/prompts/subagent-contract.md`
 - `.codex/prompts/report-contract.md`
-- 自己的 `.codex/prompts/roles/<role>.md`
 - dispatch 中列出的 project rules
 - dispatch 中列出的 input paths
 
