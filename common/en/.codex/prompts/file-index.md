@@ -1,6 +1,6 @@
 # File Index
 
-Use repo-relative paths only. Do not use absolute paths, aliases, or vague labels.
+Use repo-relative paths only. Do not use absolute paths, aliases, or vague labels. Discovery or audit inputs may use repo-relative directories or globs as input scopes; output paths must be concrete files.
 
 ## Long-Lived Files
 

@@ -1,6 +1,6 @@
 # 文件索引
 
-所有路径都使用 repo-relative path。不使用绝对路径、代称或模糊名称。
+所有路径都使用 repo-relative path。不使用绝对路径、代称或模糊名称。探索或审计任务的输入可使用 repo-relative 目录或 glob 作为 input scope；输出路径必须是具体文件。
 
 ## 长期文件
 

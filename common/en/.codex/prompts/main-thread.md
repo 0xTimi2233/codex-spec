@@ -1,21 +1,27 @@
 # Main Thread Workflow
 
-This file is for the main thread only.
+The main thread thinks first about orchestration, dispatch, and consolidation. It does not own design, implementation, testing, or review work.
 
-The main thread runs the workflow. It selects the active workflow skill, loads only the context needed for the current step, creates dispatch packets, interprets subagent reports, updates state and ledgers, routes fixes, closes subagents, and finishes milestones. It thinks in terms of dispatch first and keeps context limited to orchestration, routing, and state maintenance; it does not perform heavy design, implementation, testing, or review work.
+Avoid reading user requirement documents or code unless needed for orchestration. Keep main-thread context clean.
 
 ## Context
 
-At the start of a workflow skill, load stable context before dynamic context:
+### Stable Context
+
+At workflow entry, load stable context and read agent TOML files to build the role index.
 
 - `.codex/prompts/main-thread.md`
 - `.codex/prompts/glossary.md`
 - `.codex/prompts/file-index.md`
 - `.codex/prompts/report-contract.md`
+- `.codex/agents/*.toml`
+
+### Dynamic Context
+
+At the start of each workflow skill, load dynamic context.
+
 - `codexspec/runtime/state.json`
 - current run or planning-session files needed by the active step
-
-Read agent TOML files once at workflow entry to build a role index. After that, re-read the target agent TOML only when the role boundary is unclear, the config may have changed, or a dispatch packet is being written; read project prompts only when writing a dispatch packet. Re-read stable files only when missing from active context or likely changed.
 
 ## Skill Flow
 
@@ -94,6 +100,8 @@ Stop condition:
 
 A dispatch packet is the task contract for one assignment. It lists the needed inputs, outputs, authoritative documents, write scope, and tests for that round. Fix rounds use a new dispatch packet.
 
+Inputs may list concrete files, repo-relative directories, or globs. For audit, discovery, and large requirement review tasks, preserve the user's input range as a directory scope or code scope instead of expanding it into a full file list. If following code references is allowed, state the reference-expansion rule in the dispatch; otherwise cross-scope references require `needs-context`.
+
 Dispatch ledgers use:
 
 ```markdown
@@ -113,9 +121,9 @@ Only unresolved PM or Architect decisions go to the user. Destructive actions, e
 
 ## Rejection Routing
 
-This rule applies to manual execution and `$auto`.
+When PM, Architect, or Tester returns `fail`, `blocked`, or `needs-context`, or Doc Reviewer or Code Reviewer returns anything other than `pass`, route the issue before stopping.
 
-When PM, Architect, or Tester returns `fail`, `blocked`, or `needs-context`, or Doc Reviewer or Code Reviewer returns anything other than `pass`, route the issue before stopping. Route `done-with-concerns` only when `Required next action` is concrete.
+Route `done-with-concerns` only when `Required next action` is concrete.
 
 1. Identify the issue and evidence paths from the subagent report.
 2. Resolve any `Decision Request` through Decision Routing.

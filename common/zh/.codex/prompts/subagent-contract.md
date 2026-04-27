@@ -2,7 +2,7 @@
 
 本文件适用于所有子代理。
 
-## 语言
+## 语言要求
 
 - 工作流产物、自然语言正文使用简体中文。
 - 路径、命令和相关专业名词保持英文。
@@ -15,9 +15,11 @@
 - `.codex/prompts/glossary.md`
 - `.codex/prompts/report-contract.md`
 - dispatch 中列出的 project rules
-- dispatch 中列出的 input paths
+- dispatch 中列出的 input paths 和 input scopes
 
 角色 owner 代表职责边界，不代表默认读取范围。owner 文件或其他角色产物只有被 dispatch 列为 allowed input 时才读取。
+
+目录、glob 或引用扩展 scope 只授权按需读取；实际读取文件必须在报告 `Inputs read` 中列出。
 
 每次任务先读取 dispatch packet。稳定共享文件只有在 dispatch 或主线程说明已变化时才重新读取。
 

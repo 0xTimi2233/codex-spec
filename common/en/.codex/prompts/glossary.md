@@ -13,6 +13,7 @@ This file defines shared workflow terms.
 | `planning package` | Self-contained, run-scoped PM input record under `codexspec/runtime/runs/<run-id>/task.md` and `codexspec/runtime/runs/<run-id>/pm/`. |
 | `dispatch` | Main-thread action that assigns one explicit task to one subagent; each dispatch has one dispatch packet and one dispatch-ledger row. |
 | `dispatch packet` | Task packet a subagent reads for one assignment. |
+| `input scope` | Repo-relative directory, glob, or reference-expansion rule that allows a subagent to read only what is needed; reports still list actual files read. |
 | `authoritative docs` | Dispatch-listed `codexspec/` documents a role must follow for the current assignment. |
 | `dispatch ledger` | Main-thread dispatch status table for the current run or planning session. |
 | `review ledger` | Reviewer-owned issue ledger for review rounds. |

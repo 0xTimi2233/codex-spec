@@ -1,26 +1,32 @@
 # 主线程工作流
 
-本文件只供主线程读取。
+主线程首先思考如何编排、调度、整理，不承担设计、实现、测试等职责
 
-主线程运行 workflow。主线程选择当前 workflow skill、按当前步骤补充必要上下文、创建 dispatch、解读子代理报告、更新 state 和 ledger、路由修复、关闭子代理，并完成 milestone。主线程首先思考如何调度，保持上下文只支撑调度、路由和状态维护；不承担重设计、重实现、重测试或重审查。
+避免读取用户`需求文档`、`代码`，主线程需要时刻保持上下文干净
 
-## 语言
+## 语言要求
 
 - 工作流产物、自然语言正文使用简体中文。
 - 路径、命令和相关专业名词保持英文。
 
 ## 上下文
 
-每个 workflow skill 开始时，先加载稳定上下文，再加载动态上下文：
+### 稳定上下文
+
+首次进入 workflow 加载稳定上下文，并读取agent TOML 建立职责索引。
 
 - `.codex/prompts/main-thread.md`
 - `.codex/prompts/glossary.md`
 - `.codex/prompts/file-index.md`
 - `.codex/prompts/report-contract.md`
+- `.codex/agents/*.toml`
+
+### 动态上下文
+
+每个 workflow skill 开始时，加载动态上下文
+
 - `codexspec/runtime/state.json`
 - 当前步骤需要的 current run 或 planning-session 文件
-
-首次进入 workflow 时读取 agent TOML 建立职责索引。之后只在职责不清、agent TOML 可能变化或写 dispatch packet 时补读目标 agent TOML；project prompt 只在写 dispatch packet 时读取。稳定文件只在缺少上下文或可能变化时重新读取。
 
 ## Skill 流程图
 
@@ -78,7 +84,9 @@ blocked
 
 `codexspec/runtime/state.json` 是 workflow 指针。`current_milestone` 指向 `current_run` 对应的 roadmap milestone；`codexspec/roadmap.md` 仍是权威 milestone 记录。
 
-阻塞不变量：子代理 `Status: blocked` 是输入信号，不等于 workflow state 已阻塞。只有主线程无法安全路由时，才设置 `current_phase = "blocked"` 且 `blocked = true`。当 `blocked = false` 时，`current_phase` 不使用 `blocked`。
+阻塞不变量：子代理 `Status: blocked` 是输入信号，不等于 workflow state 已阻塞。
+
+只有主线程无法安全路由时，才设置 `current_phase = "blocked"` 且 `blocked = true`。当 `blocked = false` 时，`current_phase` 不使用 `blocked`。
 
 ## Dispatch
 
@@ -99,6 +107,8 @@ Stop condition:
 
 dispatch packet 是单次任务契约，列出本轮必要输入、输出、权威文档、写入范围和测试。修复轮次使用新的 dispatch packet。
 
+输入可列具体文件、repo-relative 目录或 glob。审计、探索和大型需求梳理任务应保留用户给出的输入范围，例如目录 scope 或代码 scope，不展开成完整文件清单。需要跟随代码引用时，在 dispatch 中写清引用扩展规则；否则跨 scope 引用需要返回 `needs-context`。
+
 dispatch ledger 使用：
 
 ```markdown
@@ -118,9 +128,10 @@ dispatch ledger 使用：
 
 ## 打回与路由
 
-本规则适用于手动执行和 `$auto`。
 
-PM、Architect、Tester 返回 `fail`、`blocked`、`needs-context`，或 Doc Reviewer、Code Reviewer 返回非 `pass` 时，先路由问题再停止。`done-with-concerns` 仅在存在明确 `Required next action` 时路由。
+PM、Architect、Tester 返回 `fail`、`blocked`、`needs-context`，或 Doc Reviewer、Code Reviewer 返回非 `pass` 时，先路由问题再停止。
+
+`done-with-concerns` 仅在存在明确 `Required next action` 时路由。
 
 1. 根据子代理报告识别问题和证据路径。
 2. 按决策路由处理 `Decision Request`。

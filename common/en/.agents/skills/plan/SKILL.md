@@ -10,8 +10,6 @@ description: Explore, audit, or confirm requirements, then prepare the next mile
 Read these paths only when they are not already in the active context or their contents may have changed:
 
 - `.codex/prompts/main-thread.md`
-- `.codex/prompts/glossary.md`
-- `.codex/prompts/file-index.md`
 - `codexspec/vision.md`
 - `codexspec/roadmap.md`
 - `codexspec/runtime/explore/<explore-id>/brief.md` when continuing an explore track
@@ -29,16 +27,17 @@ Read these paths only when they are not already in the active context or their c
    - `preflight`: audit existing requirement sources for planning blockers.
    - `commit`: confirm requirements, create a run, and dispatch PM.
 4. If the track is unclear, ask the user for a numbered choice with impacts and a recommendation.
-5. For `explore`, create or continue `codexspec/runtime/explore/<explore-id>/`, set `codex-spec-internal state set --planning-session <explore-id> --planning-track explore --blocked false`, write `codexspec/runtime/explore/<explore-id>/dispatch-ledger.md` when missing, write `codexspec/runtime/explore/<explore-id>/dispatch/pm-<n>.md` for the next question round or closure, append the PM row, dispatch PM, and update the row, `rounds/<round-id>/round.md`, and `brief.md` when PM replies.
-6. For `preflight`, create or continue `codexspec/runtime/preflight/<preflight-id>/`, set `codex-spec-internal state set --planning-session <preflight-id> --planning-track preflight --blocked false`, write `codexspec/runtime/preflight/<preflight-id>/dispatch-ledger.md` when missing, write `codexspec/runtime/preflight/<preflight-id>/dispatch/pm-<n>.md` for requirement audit or closure, append the PM row, dispatch PM, and update the row, audit artifacts, and `brief.md` when PM replies.
-7. When an explore or preflight track is closed as `ready-for-plan` or `discarded`, run `codex-spec-internal archive --explore <explore-id>` or `codex-spec-internal archive --preflight <preflight-id>`, then clear planning state with `codex-spec-internal state set --planning-session null --planning-track null`.
-8. For `commit`, choose the roadmap milestone id for this run, create a run id, and write `codexspec/runtime/runs/<run-id>/dispatch-ledger.md` with the dispatch table header.
-9. Run `codex-spec-internal state set --phase planning --run <run-id> --milestone <milestone-id> --planning-session null --planning-track null --blocked false`.
-10. Write `codexspec/runtime/runs/<run-id>/dispatch/pm-001.md` with the planning input and self-contained PM output paths.
-11. Append the PM row to `dispatch-ledger.md`, dispatch PM, record the runtime agent id, and update the row when the PM response arrives.
-12. PM confirms requirements, scope, non-goals, roadmap milestones, acceptance criteria, and `pm/planning-summary.md`.
-13. When requested by dispatch, PM may update `codexspec/vision.md` and `codexspec/roadmap.md`.
-14. Confirm the planning package is self-contained before returning `$design` as next step.
+5. When the user gives directories, globs, or code ranges, preserve them as dispatch input scopes; do not expand them into a full file list. If following references is allowed, state the reference-expansion rule in dispatch.
+6. For `explore`, create or continue `codexspec/runtime/explore/<explore-id>/`, set `codex-spec-internal state set --planning-session <explore-id> --planning-track explore --blocked false`, write `codexspec/runtime/explore/<explore-id>/dispatch-ledger.md` when missing, write `codexspec/runtime/explore/<explore-id>/dispatch/pm-<n>.md` for the next question round or closure, append the PM row, dispatch PM, and update the row, `rounds/<round-id>/round.md`, and `brief.md` when PM replies.
+7. For `preflight`, create or continue `codexspec/runtime/preflight/<preflight-id>/`, set `codex-spec-internal state set --planning-session <preflight-id> --planning-track preflight --blocked false`, write `codexspec/runtime/preflight/<preflight-id>/dispatch-ledger.md` when missing, write `codexspec/runtime/preflight/<preflight-id>/dispatch/pm-<n>.md` for requirement audit or closure, append the PM row, dispatch PM, and update the row, audit artifacts, and `brief.md` when PM replies.
+8. When an explore or preflight track is closed as `ready-for-plan` or `discarded`, run `codex-spec-internal archive --explore <explore-id>` or `codex-spec-internal archive --preflight <preflight-id>`, then clear planning state with `codex-spec-internal state set --planning-session null --planning-track null`.
+9. For `commit`, choose the roadmap milestone id for this run, create a run id, and write `codexspec/runtime/runs/<run-id>/dispatch-ledger.md` with the dispatch table header.
+10. Run `codex-spec-internal state set --phase planning --run <run-id> --milestone <milestone-id> --planning-session null --planning-track null --blocked false`.
+11. Write `codexspec/runtime/runs/<run-id>/dispatch/pm-001.md` with the planning input and self-contained PM output paths.
+12. Append the PM row to `dispatch-ledger.md`, dispatch PM, record the runtime agent id, and update the row when the PM response arrives.
+13. PM confirms requirements, scope, non-goals, roadmap milestones, acceptance criteria, and `pm/planning-summary.md`.
+14. When requested by dispatch, PM may update `codexspec/vision.md` and `codexspec/roadmap.md`.
+15. Confirm the planning package is self-contained before returning `$design` as next step.
 
 ## Planning Package
 

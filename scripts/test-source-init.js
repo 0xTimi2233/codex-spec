@@ -75,6 +75,7 @@ function assertPlanningDocs(root, lang) {
   assert(mainThread.includes(lang === "zh" ? "agent TOML" : "agent TOML"), `${lang} main-thread should use agent TOML as the role index`);
   assert(mainThread.includes(lang === "zh" ? "关闭子代理" : "close the subagent"), `${lang} main-thread should define subagent closure`);
   assert(mainThread.includes(lang === "zh" ? "阻塞不变量" : "Blocked invariant"), `${lang} main-thread should define blocked state invariants`);
+  assert(mainThread.includes(lang === "zh" ? "不展开成完整文件清单" : "instead of expanding it into a full file list"), `${lang} main-thread should preserve broad input scopes`);
   assert(!mainThread.includes("Public CLI commands"), `${lang} main-thread should not describe public CLI commands`);
   assert(!mainThread.includes("对用户公开的 CLI"), `${lang} main-thread should not describe public CLI commands`);
   assert(mainThread.includes(lang === "zh" ? "后续 workflow context 来自 `codexspec/`" : "Future workflow context comes from `codexspec/`"), `${lang} main-thread should keep codexspec as the future context source`);
@@ -85,10 +86,12 @@ function assertPlanningDocs(root, lang) {
 
   assert(glossary.includes("planning track"), `${lang} glossary should define planning track`);
   assert(glossary.includes("`dispatch`"), `${lang} glossary should define dispatch`);
+  assert(glossary.includes("input scope"), `${lang} glossary should define input scope`);
   assert(glossary.includes("dispatch packet"), `${lang} glossary should define dispatch packet`);
   assert(glossary.includes("archive"), `${lang} glossary should define archive`);
 
   assert(fileIndex.includes("codexspec/runtime/explore/<explore-id>/"), `${lang} file index should define explore session path`);
+  assert(fileIndex.includes("input scope"), `${lang} file index should allow input scopes`);
   assert(fileIndex.includes("dispatch/<role>-<task-id>.md"), `${lang} file index should define dispatch packet path`);
   assert(fileIndex.includes("rounds/<round-id>/round.md"), `${lang} file index should define explore rounds`);
   assert(fileIndex.includes("codexspec/runtime/archives/runs/<run-id>/"), `${lang} file index should define run archive path`);
@@ -114,6 +117,7 @@ function assertPlanningDocs(root, lang) {
   assert(reportContract.includes("Required next action"), `${lang} report contract should define done-with-concerns routing`);
 
   assert(planSkill.includes("current_planning_session"), `${lang} plan skill should track current planning session`);
+  assert(planSkill.includes(lang === "zh" ? "不要展开为完整文件清单" : "do not expand them into a full file list"), `${lang} plan skill should preserve user input scopes`);
   assert(planSkill.includes("planning_track"), `${lang} plan skill should track planning track`);
   assert(!planSkill.includes("codexspec/runtime/state.json.current_planning_session"), `${lang} plan skill should not describe state fields as file paths`);
   assert(!planSkill.includes("codexspec/runtime/state.json.planning_track"), `${lang} plan skill should not describe state fields as file paths`);
@@ -152,14 +156,13 @@ function assertPlanningDocs(root, lang) {
   assert(!autoSkill.includes("Stop automatic progress only"), `${lang} auto skill should not duplicate stop rules`);
   assert(!autoSkill.includes("只有以下情况停止自动推进"), `${lang} auto skill should not duplicate stop rules`);
   assert(resumeSkill.includes("current_planning_session"), `${lang} resume skill should restore planning sessions`);
-  assert(resumeSkill.includes(".codex/prompts/main-thread.md"), `${lang} resume skill should read main-thread protocol`);
-  assert(resumeSkill.includes(".codex/prompts/glossary.md"), `${lang} resume skill should read glossary`);
   assert(resumeSkill.includes(".codex/prompts/file-index.md"), `${lang} resume skill should read file index`);
   assert(resumeSkill.includes("dispatch-ledger.md"), `${lang} resume skill should use dispatch ledger for planning sessions`);
   assert(statusSkill.includes("planning track"), `${lang} status skill should report planning track`);
 
   assert(subagentContract.includes(".codex/prompts/glossary.md"), `${lang} subagent contract should require glossary`);
   assert(subagentContract.includes(".codex/prompts/report-contract.md"), `${lang} subagent contract should reference report contract`);
+  assert(subagentContract.includes("input scopes"), `${lang} subagent contract should allow input scopes`);
   assert(!subagentContract.includes("- `.codex/prompts/file-index.md`"), `${lang} subagent contract should not require file index by default`);
   assert(!subagentContract.includes(".codex/prompts/file-protocol.md"), `${lang} subagent contract should not mention old file protocol`);
   assert(!subagentContract.includes(".codex/prompts/roles"), `${lang} subagent contract should not require separate role prompts`);

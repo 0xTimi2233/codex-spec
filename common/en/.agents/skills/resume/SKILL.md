@@ -10,8 +10,6 @@ description: Resume workflow from state, planning session, and dispatch ledger.
 Read these paths only when they are not already in the active context or their contents may have changed:
 
 - `codexspec/runtime/state.json`
-- `.codex/prompts/main-thread.md`
-- `.codex/prompts/glossary.md`
 - `.codex/prompts/file-index.md`
 - `codexspec/runtime/explore/<current_planning_session>/dispatch-ledger.md` when `planning_track` is `explore`
 - `codexspec/runtime/explore/<current_planning_session>/brief.md` when `planning_track` is `explore`

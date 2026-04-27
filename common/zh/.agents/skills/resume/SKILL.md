@@ -10,8 +10,6 @@ description: 从 state、planning session 和 dispatch ledger 恢复 workflow。
 当这些路径不在当前上下文中，或文件内容可能已变化时读取：
 
 - `codexspec/runtime/state.json`
-- `.codex/prompts/main-thread.md`
-- `.codex/prompts/glossary.md`
 - `.codex/prompts/file-index.md`
 - `planning_track` 为 `explore` 时对应的 `codexspec/runtime/explore/<current_planning_session>/dispatch-ledger.md`
 - `planning_track` 为 `explore` 时对应的 `codexspec/runtime/explore/<current_planning_session>/brief.md`
