@@ -4,8 +4,8 @@ This file defines shared workflow terms.
 
 | Term | Meaning |
 |---|---|
-| `workflow skill` | A main-thread workflow command such as `$spec:plan`, `$spec:design`, `$spec:execute`, `$spec:auto`, `$spec:status`, or `$spec:resume`. |
-| `planning track` | The active `$spec:plan` track: `explore`, `preflight`, or `commit`. |
+| `workflow skill` | A main-thread workflow command such as `$plan`, `$design`, `$execute`, `$auto`, `$status`, or `$resume`. |
+| `planning track` | The active `$plan` track: `explore`, `preflight`, or `commit`. |
 | `planning session` | One active pre-run planning session recorded in `codexspec/runtime/state.json.current_planning_session`. |
 | `run-id` | One milestone execution unit stored under `codexspec/runtime/runs/<run-id>/`. |
 | `explore-id` | One pre-run discovery session stored under `codexspec/runtime/explore/<explore-id>/`. |

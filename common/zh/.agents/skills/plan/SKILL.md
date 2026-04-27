@@ -1,9 +1,9 @@
 ---
-name: spec:plan
+name: plan
 description: 探索、审计或确认需求，并准备下一 milestone run。
 ---
 
-# Skill: spec:plan
+# Skill: plan
 
 ## 上下文输入
 
@@ -23,7 +23,7 @@ description: 探索、审计或确认需求，并准备下一 milestone run。
 ## 操作
 
 1. 按需补充协议、role prompts、project rules、roadmap 和 state 上下文。
-2. 若存在 active run，停止并根据当前 phase 建议 `$spec:resume`、`$spec:status`、`$spec:design` 或 `$spec:execute`。
+2. 若存在 active run，停止并根据当前 phase 建议 `$resume`、`$status`、`$design` 或 `$execute`。
 3. 根据用户意图和可用输入选择 track：
    - `explore`：在正式 planning 前澄清模糊或早期需求。
    - `preflight`：审计已有需求来源中的 planning 阻塞点。
@@ -38,7 +38,7 @@ description: 探索、审计或确认需求，并准备下一 milestone run。
 11. 在 `dispatch-ledger.md` 追加 PM 记录，调度 PM，写入 runtime agent id，并在收到 PM 回复后更新该行。
 12. PM 确认 requirements、scope、non-goals、roadmap milestones、acceptance criteria 和 `pm/planning-summary.md`。
 13. dispatch 明确要求时，PM 可以更新 `codexspec/vision.md` 和 `codexspec/roadmap.md`。
-14. 返回 `$spec:design` 作为下一步前，确认 planning package 已自包含。
+14. 返回 `$design` 作为下一步前，确认 planning package 已自包含。
 
 ## Planning Package
 
@@ -85,4 +85,4 @@ description: 探索、审计或确认需求，并准备下一 milestone run。
 
 ## 下一步
 
-返回 active track、run id、创建文件、下一步 `$spec:design`，或 blocker。
+返回 active track、run id、创建文件、下一步 `$design`，或 blocker。

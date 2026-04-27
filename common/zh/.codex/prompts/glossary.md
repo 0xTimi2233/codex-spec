@@ -4,8 +4,8 @@
 
 | 术语 | 含义 |
 |---|---|
-| `workflow skill` | 主线程工作流命令，例如 `$spec:plan`、`$spec:design`、`$spec:execute`、`$spec:auto`、`$spec:status` 或 `$spec:resume`。 |
-| `planning track` | 当前 `$spec:plan` track：`explore`、`preflight` 或 `commit`。 |
+| `workflow skill` | 主线程工作流命令，例如 `$plan`、`$design`、`$execute`、`$auto`、`$status` 或 `$resume`。 |
+| `planning track` | 当前 `$plan` track：`explore`、`preflight` 或 `commit`。 |
 | `planning session` | 一个 active pre-run planning session，记录在 `codexspec/runtime/state.json.current_planning_session`。 |
 | `run-id` | 一个 milestone 执行单元，存放在 `codexspec/runtime/runs/<run-id>/`。 |
 | `explore-id` | 一个 pre-run 探索单元，存放在 `codexspec/runtime/explore/<explore-id>/`。 |

@@ -21,25 +21,25 @@
 
 ```mermaid
 flowchart TD
-  Start([用户请求]) --> Plan["$spec:plan<br/>explore / preflight / commit"]
+  Start([用户请求]) --> Plan["$plan<br/>explore / preflight / commit"]
   Plan --> ReadyDesign{run 是否可 design?}
-  ReadyDesign -- 是 --> Design["$spec:design"]
+  ReadyDesign -- 是 --> Design["$design"]
   ReadyDesign -- 否 --> Plan
   Design --> ReadyExecute{doc review 是否通过?}
-  ReadyExecute -- 是 --> Execute["$spec:execute"]
+  ReadyExecute -- 是 --> Execute["$execute"]
   ReadyExecute -- 路由修复 --> Design
   Execute --> Finished{milestone 是否完成?}
   Finished -- 是 --> Next{是否有下一 milestone?}
   Finished -- 路由修复 --> Execute
   Next -- 是 --> Plan
   Next -- 否 --> Idle([idle])
-  Auto["$spec:auto"] --> Plan
+  Auto["$auto"] --> Plan
   Auto --> Design
   Auto --> Execute
-  Resume["$spec:resume"] --> Plan
+  Resume["$resume"] --> Plan
   Resume --> Design
   Resume --> Execute
-  Status["$spec:status"] -. 只报告 .-> Idle
+  Status["$status"] -. 只报告 .-> Idle
 ```
 
 ## 工作流循环
@@ -111,7 +111,7 @@ dispatch ledger 使用：
 
 ## 打回与路由
 
-本规则适用于手动执行和 `$spec:auto`。
+本规则适用于手动执行和 `$auto`。
 
 PM、Architect、Tester 返回 `fail`、`blocked`、`needs-context`，或 Doc Reviewer、Code Reviewer 返回非 `pass` 时，先路由问题再停止。`done-with-concerns` 仅在存在明确 `Required next action` 时路由。
 
@@ -121,10 +121,10 @@ PM、Architect、Tester 返回 `fail`、`blocked`、`needs-context`，或 Doc Re
 4. 若责任角色、allowed inputs、allowed outputs 明确，带 fix request 和相关 review ledger 调度该角色。
 5. 回到当前 skill 对应的 workflow step。
 
-只有无法安全路由时，才进入 `blocked` 或停止 `$spec:auto`。
+只有无法安全路由时，才进入 `blocked` 或停止 `$auto`。
 
 ## Milestone 边界
 
-一个 run 表示一个 milestone 执行单元。进入下一 milestone 前，`$spec:execute` 必须完成 finish、归档、提交或 no-op 记录、清理 state，并关闭 milestone 子代理。
+一个 run 表示一个 milestone 执行单元。进入下一 milestone 前，`$execute` 必须完成 finish、归档、提交或 no-op 记录、清理 state，并关闭 milestone 子代理。
 
 finish 必须更新 `codexspec/roadmap.md` 中当前 milestone 的结果。后续 workflow context 来自 `codexspec/`；archive 只作为记录和证据，在 dispatch 列出时读取。

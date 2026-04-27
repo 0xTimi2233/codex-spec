@@ -21,25 +21,25 @@ Read role prompts and project prompts only when writing a dispatch packet. Re-re
 
 ```mermaid
 flowchart TD
-  Start([User request]) --> Plan["$spec:plan<br/>explore / preflight / commit"]
+  Start([User request]) --> Plan["$plan<br/>explore / preflight / commit"]
   Plan --> ReadyDesign{run ready for design?}
-  ReadyDesign -- yes --> Design["$spec:design"]
+  ReadyDesign -- yes --> Design["$design"]
   ReadyDesign -- no --> Plan
   Design --> ReadyExecute{doc review pass?}
-  ReadyExecute -- yes --> Execute["$spec:execute"]
+  ReadyExecute -- yes --> Execute["$execute"]
   ReadyExecute -- routed fix --> Design
   Execute --> Finished{milestone finished?}
   Finished -- yes --> Next{next milestone?}
   Finished -- routed fix --> Execute
   Next -- yes --> Plan
   Next -- no --> Idle([idle])
-  Auto["$spec:auto"] --> Plan
+  Auto["$auto"] --> Plan
   Auto --> Design
   Auto --> Execute
-  Resume["$spec:resume"] --> Plan
+  Resume["$resume"] --> Plan
   Resume --> Design
   Resume --> Execute
-  Status["$spec:status"] -. report only .-> Idle
+  Status["$status"] -. report only .-> Idle
 ```
 
 ## Workflow Loop
@@ -111,7 +111,7 @@ Only unresolved PM or Architect decisions go to the user. Destructive actions, e
 
 ## Rejection Routing
 
-This rule applies to manual execution and `$spec:auto`.
+This rule applies to manual execution and `$auto`.
 
 When PM, Architect, or Tester returns `fail`, `blocked`, or `needs-context`, or Doc Reviewer or Code Reviewer returns anything other than `pass`, route the issue before stopping. Route `done-with-concerns` only when `Required next action` is concrete.
 
@@ -121,10 +121,10 @@ When PM, Architect, or Tester returns `fail`, `blocked`, or `needs-context`, or 
 4. If the responsible role, allowed inputs, and allowed outputs are clear, dispatch that role with the fix request and relevant review ledger.
 5. Return to the active skill's matching workflow step.
 
-Enter `blocked`, or stop `$spec:auto`, only when safe routing is not possible.
+Enter `blocked`, or stop `$auto`, only when safe routing is not possible.
 
 ## Milestone Boundary
 
-A run represents one milestone execution unit. Before the next milestone starts, `$spec:execute` must finish, archive, commit or record no-op, clear state, and close milestone subagents.
+A run represents one milestone execution unit. Before the next milestone starts, `$execute` must finish, archive, commit or record no-op, clear state, and close milestone subagents.
 
 Finish must update the current milestone result in `codexspec/roadmap.md`. Future workflow context comes from `codexspec/`; archives are records and evidence, read only when a dispatch lists them.

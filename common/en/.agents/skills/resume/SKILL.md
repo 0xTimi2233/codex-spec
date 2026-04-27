@@ -1,9 +1,9 @@
 ---
-name: spec:resume
+name: resume
 description: Resume workflow from state, planning session, and dispatch ledger.
 ---
 
-# Skill: spec:resume
+# Skill: resume
 
 ## Context Inputs
 
@@ -22,8 +22,8 @@ Read these paths only when they are not already in the active context or their c
 
 ## Procedure
 
-1. If `planning_track` is `explore`, resume the active explore brief and latest round, then continue or close the `$spec:plan` explore track.
-2. If `planning_track` is `preflight`, resume the active preflight brief and decision queue, then continue or close the `$spec:plan` preflight track.
+1. If `planning_track` is `explore`, resume the active explore brief and latest round, then continue or close the `$plan` explore track.
+2. If `planning_track` is `preflight`, resume the active preflight brief and decision queue, then continue or close the `$plan` preflight track.
 3. If `current_run` is set, read the run dispatch ledger.
 4. For rows whose status is not an ending status, continue the recorded agent id when possible.
 5. If continuing the agent is not possible, mark the row `stale` and create a new bounded dispatch from current file artifacts.

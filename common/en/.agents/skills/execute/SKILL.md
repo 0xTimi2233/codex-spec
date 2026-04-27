@@ -1,9 +1,9 @@
 ---
-name: spec:execute
+name: execute
 description: Complete the current milestone from reviewed authoritative documents through implementation, review, verification, archive, and commit.
 ---
 
-# Skill: spec:execute
+# Skill: execute
 
 ## Context Inputs
 
@@ -31,7 +31,7 @@ Read these paths only when they are not already in the active context or their c
 11. Collect acceptance evidence into `codexspec/runtime/runs/<run-id>/verification.md`.
 12. Run `codex-spec-internal state set --phase finishing --run <run-id>`.
 13. Dispatch Auditor to summarize the run.
-14. Confirm required long-lived document changes already happened during `$spec:plan` or `$spec:design`. Do not introduce new ADR, spec, or test-plan changes during finish.
+14. Confirm required long-lived document changes already happened during `$plan` or `$design`. Do not introduce new ADR, spec, or test-plan changes during finish.
 15. Close any still-open runtime agent ids recorded in `dispatch-ledger.md` and confirm there are no `queued`, `running`, or `blocked` rows.
 16. Update the current milestone result in `codexspec/roadmap.md`.
 17. Write `codexspec/runtime/runs/<run-id>/summary.md` with result, evidence, roadmap update, archive plan, and commit or no-op plan.

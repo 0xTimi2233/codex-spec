@@ -39,15 +39,15 @@ codex-spec doctor
 然后在项目中启动 Codex，并使用技能推进流程：
 
 ```text
-$spec:plan
-$spec:design
-$spec:execute
+$plan
+$design
+$execute
 ```
 
 需要受控自动推进时，使用：
 
 ```text
-$spec:auto
+$auto
 ```
 
 ## 详细介绍
@@ -60,7 +60,7 @@ $spec:auto
 codexspec/
 ```
 
-长期项目知识保存在顶层 `codexspec/` 文件和目录中：vision、roadmap、ADR、spec 和测试计划。运行时状态和审计记录保存在 `codexspec/runtime/` 下。`$spec:plan` 可以执行 `codexspec/runtime/explore/<explore-id>/` 下的 explore track、`codexspec/runtime/preflight/<preflight-id>/` 下的 preflight track，或创建 `codexspec/runtime/runs/<run-id>/` 的正式 commit track。Explore 和 preflight session 会归档到 `codexspec/runtime/archives/`。正式 planning 会在当前 run 中产出自包含 PM package，因此 `$spec:design` 可以依赖 run package，而不是归档 session 或原始需求笔记。
+长期项目知识保存在顶层 `codexspec/` 文件和目录中：vision、roadmap、ADR、spec 和测试计划。运行时状态和审计记录保存在 `codexspec/runtime/` 下。`$plan` 可以执行 `codexspec/runtime/explore/<explore-id>/` 下的 explore track、`codexspec/runtime/preflight/<preflight-id>/` 下的 preflight track，或创建 `codexspec/runtime/runs/<run-id>/` 的正式 commit track。Explore 和 preflight session 会归档到 `codexspec/runtime/archives/`。正式 planning 会在当前 run 中产出自包含 PM package，因此 `$design` 可以依赖 run package，而不是归档 session 或原始需求笔记。
 
 ### 角色
 
@@ -79,13 +79,13 @@ Auditor
 ### 工作流
 
 ```text
-$spec:plan        探索、审计或确认需求，并准备下一 milestone run
-$spec:design      更新 ADR/spec/test-plan 文档、执行 doc review，并将 run 标记为可执行
-$spec:execute     实现、code review、验证、finish、归档并提交当前 milestone
-$spec:auto        按 roadmap 串行执行 milestone
+$plan        探索、审计或确认需求，并准备下一 milestone run
+$design      更新 ADR/spec/test-plan 文档、执行 doc review，并将 run 标记为可执行
+$execute     实现、code review、验证、finish、归档并提交当前 milestone
+$auto        按 roadmap 串行执行 milestone
 ```
 
-`$spec:plan` 内部由主线程选择 explore、preflight 或 commit track。doc review、code review、verification、finish、archive 和 milestone commit 是内部阶段。遇到打回时，如果责任角色和修复范围明确，主线程会把问题路由给对应子代理；`$spec:auto` 只有无法安全判断下一步或需要外部决策时才停止。
+`$plan` 内部由主线程选择 explore、preflight 或 commit track。doc review、code review、verification、finish、archive 和 milestone commit 是内部阶段。遇到打回时，如果责任角色和修复范围明确，主线程会把问题路由给对应子代理；`$auto` 只有无法安全判断下一步或需要外部决策时才停止。
 
 ### 模型档位
 
@@ -118,20 +118,20 @@ codex-spec --version
 项目命令都可以使用可选的 `--target`。不传时，`codex-spec` 使用当前目录。
 `init` 默认保留已有生成文件，并会在交互式终端中询问是否覆盖。已有 `codexspec/` 文件视为项目产物，永不覆盖。
 
-`doctor` 只检查脚手架安装文件。工作流进度由 `$spec:status` skill 报告。workflow skills 会调用内部脚本处理 state、archive 和 raw status 操作。`profile` 用于查看或更新生成的模型配置。
+`doctor` 只检查脚手架安装文件。工作流进度由 `$status` skill 报告。workflow skills 会调用内部脚本处理 state、archive 和 raw status 操作。`profile` 用于查看或更新生成的模型配置。
 
 ## 最佳实践
 
 - 每个 milestone 保持足够小，确保可以完整完成设计、实现、审查和 finish。
-- 从 `$spec:plan` 开始。需求不清晰时使用 explore track，已有需求来源时使用 preflight track，正式立项时使用 commit track。
-- 保持 planning package 自包含：在 `$spec:design` 前，把相关需求、决策、约束、假设、风险和验收标准写入当前 run。
+- 从 `$plan` 开始。需求不清晰时使用 explore track，已有需求来源时使用 preflight track，正式立项时使用 commit track。
+- 保持 planning package 自包含：在 `$design` 前，把相关需求、决策、约束、假设、风险和验收标准写入当前 run。
 - 把上下文放在文件里，不依赖聊天记忆。子代理只读取 dispatch 指定路径和自己的角色 prompt。
 - 保持 prompt 前缀稳定：协议和角色上下文放前面，单次任务 dispatch 作为动态后缀。
 - 子代理返回简短报告；主线程根据报告和调度状态安排下一步。
 - PM 需要产品决策时，主线程给出带影响和推荐项的编号选项。
 - 区分 Doc Reviewer 和 Code Reviewer：先验证文档正确性，再验证实现正确性。
-- 常规 roadmap 推进可以使用 `$spec:auto`，但当下一步无法安全判断时应停止。
-- `$spec:execute` 提交完成的 milestone，提交信息使用简洁的用户可见描述，例如 `feat: add import workflow`、`fix: handle empty config`、`docs: update setup guide`。
+- 常规 roadmap 推进可以使用 `$auto`，但当下一步无法安全判断时应停止。
+- `$execute` 提交完成的 milestone，提交信息使用简洁的用户可见描述，例如 `feat: add import workflow`、`fix: handle empty config`、`docs: update setup guide`。
 - 归档 run 是历史记录，不作为后续上下文来源。可复用信息保存在 `codexspec/`。
 
 完整流程适合多步骤改动、跨文件重构或需要审查证据的工作。小改动、探索性原型或缺少测试基础的项目，可以在没有 active run 时使用较短的手动 Codex 流程。存在 active run 时，Developer 和 Code Reviewer 将 dispatch 列出的 `codexspec/` 文档和允许路径作为 prompt 层面的实现边界。

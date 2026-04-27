@@ -1,9 +1,9 @@
 ---
-name: spec:plan
+name: plan
 description: Explore, audit, or confirm requirements, then prepare the next milestone run.
 ---
 
-# Skill: spec:plan
+# Skill: plan
 
 ## Context Inputs
 
@@ -23,7 +23,7 @@ Read these paths only when they are not already in the active context or their c
 ## Procedure
 
 1. Bootstrap workflow context from protocol, role prompts, project rules, roadmap, and state when needed.
-2. If an active run exists, stop and recommend `$spec:resume`, `$spec:status`, `$spec:design`, or `$spec:execute` according to the current phase.
+2. If an active run exists, stop and recommend `$resume`, `$status`, `$design`, or `$execute` according to the current phase.
 3. Choose the track from user intent and available inputs:
    - `explore`: clarify vague or early requirements before formal planning.
    - `preflight`: audit existing requirement sources for planning blockers.
@@ -38,7 +38,7 @@ Read these paths only when they are not already in the active context or their c
 11. Append the PM row to `dispatch-ledger.md`, dispatch PM, record the runtime agent id, and update the row when the PM response arrives.
 12. PM confirms requirements, scope, non-goals, roadmap milestones, acceptance criteria, and `pm/planning-summary.md`.
 13. When requested by dispatch, PM may update `codexspec/vision.md` and `codexspec/roadmap.md`.
-14. Confirm the planning package is self-contained before returning `$spec:design` as next step.
+14. Confirm the planning package is self-contained before returning `$design` as next step.
 
 ## Planning Package
 
@@ -85,4 +85,4 @@ For `commit`:
 
 ## Next
 
-Return active track, run id, created files, next step `$spec:design`, or blocker.
+Return active track, run id, created files, next step `$design`, or blocker.

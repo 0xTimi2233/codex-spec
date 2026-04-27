@@ -39,15 +39,15 @@ codex-spec doctor
 Then start Codex in the project and drive the workflow with skills:
 
 ```text
-$spec:plan
-$spec:design
-$spec:execute
+$plan
+$design
+$execute
 ```
 
 For controlled end-to-end progress, use:
 
 ```text
-$spec:auto
+$auto
 ```
 
 ## Detailed Guide
@@ -60,7 +60,7 @@ $spec:auto
 codexspec/
 ```
 
-Long-lived project knowledge lives in the top-level `codexspec/` files and folders: vision, roadmap, ADRs, specs, and test plans. Runtime state and audit records live under `codexspec/runtime/`. `$spec:plan` can run an explore track under `codexspec/runtime/explore/<explore-id>/`, a preflight track under `codexspec/runtime/preflight/<preflight-id>/`, or a formal commit track that creates `codexspec/runtime/runs/<run-id>/`. Explore and preflight sessions are archived under `codexspec/runtime/archives/`. Formal planning produces a self-contained PM package in the current run, so `$spec:design` can rely on the run package instead of archived sessions or original source notes.
+Long-lived project knowledge lives in the top-level `codexspec/` files and folders: vision, roadmap, ADRs, specs, and test plans. Runtime state and audit records live under `codexspec/runtime/`. `$plan` can run an explore track under `codexspec/runtime/explore/<explore-id>/`, a preflight track under `codexspec/runtime/preflight/<preflight-id>/`, or a formal commit track that creates `codexspec/runtime/runs/<run-id>/`. Explore and preflight sessions are archived under `codexspec/runtime/archives/`. Formal planning produces a self-contained PM package in the current run, so `$design` can rely on the run package instead of archived sessions or original source notes.
 
 ### Roles
 
@@ -79,13 +79,13 @@ The main thread orchestrates and integrates. PM defines scope and roadmap milest
 ### Workflow
 
 ```text
-$spec:plan        explore, audit, or confirm requirements, then prepare the next milestone run
-$spec:design      update ADR/spec/test-plan docs, run doc review, and mark the run ready to execute
-$spec:execute     implement, code-review, verify, finish, archive, and commit the current milestone
-$spec:auto        run roadmap milestones serially through design and execute
+$plan        explore, audit, or confirm requirements, then prepare the next milestone run
+$design      update ADR/spec/test-plan docs, run doc review, and mark the run ready to execute
+$execute     implement, code-review, verify, finish, archive, and commit the current milestone
+$auto        run roadmap milestones serially through design and execute
 ```
 
-Inside `$spec:plan`, the main thread chooses an explore, preflight, or commit track. Doc review, code review, verification, finish, archive, and milestone commit are internal stages. When a rejection has a clear owner and fix scope, the main thread routes it to the responsible subagent. `$spec:auto` stops only when safe routing is not possible or an external decision is required.
+Inside `$plan`, the main thread chooses an explore, preflight, or commit track. Doc review, code review, verification, finish, archive, and milestone commit are internal stages. When a rejection has a clear owner and fix scope, the main thread routes it to the responsible subagent. `$auto` stops only when safe routing is not possible or an external decision is required.
 
 ### Model Profiles
 
@@ -118,20 +118,20 @@ codex-spec --version
 `--target` is optional for project commands. Without it, `codex-spec` uses the current working directory.
 `init` preserves existing generated files by default and asks before overwriting them in interactive shells. Existing `codexspec/` files are treated as project artifacts and are never overwritten.
 
-`doctor` checks the installed scaffold files. Workflow progress is reported by the `$spec:status` skill. Workflow skills call internal scripts for state, archive, and raw status operations. `profile` shows or updates generated model settings.
+`doctor` checks the installed scaffold files. Workflow progress is reported by the `$status` skill. Workflow skills call internal scripts for state, archive, and raw status operations. `profile` shows or updates generated model settings.
 
 ## Best Practices
 
 - Keep each milestone small enough to design, implement, review, and finish cleanly.
-- Start with `$spec:plan`. Use the explore track for unclear requirements, the preflight track for existing requirement sources, and the commit track for formal roadmap planning.
-- Keep the planning package self-contained: copy relevant requirements, decisions, constraints, assumptions, risks, and acceptance criteria into the current run before `$spec:design`.
+- Start with `$plan`. Use the explore track for unclear requirements, the preflight track for existing requirement sources, and the commit track for formal roadmap planning.
+- Keep the planning package self-contained: copy relevant requirements, decisions, constraints, assumptions, risks, and acceptance criteria into the current run before `$design`.
 - Keep context in files, not chat memory. Subagents should read only dispatch-listed paths and their own role prompt.
 - Keep prompt prefixes stable: put protocol and role context first, and keep per-task dispatch as the dynamic suffix.
 - Subagents return short reports; the main thread uses those reports and dispatch status to route the next step.
 - When PM needs a product decision, the main thread presents numbered options with impacts and a recommendation.
 - Treat Doc Reviewer and Code Reviewer as separate review steps: document correctness before execution, implementation correctness after execution.
-- Use `$spec:auto` for routine roadmap progress, but expect it to stop when the next safe decision is unclear.
-- `$spec:execute` commits the completed milestone with a short user-facing message such as `feat: add import workflow`, `fix: handle empty config`, or `docs: update setup guide`.
+- Use `$auto` for routine roadmap progress, but expect it to stop when the next safe decision is unclear.
+- `$execute` commits the completed milestone with a short user-facing message such as `feat: add import workflow`, `fix: handle empty config`, or `docs: update setup guide`.
 - Do not use archived runs as future context. Reusable knowledge lives in `codexspec/`.
 
 Use the full workflow for multi-step changes, cross-file refactors, or work where review evidence matters. For small edits, exploratory prototypes, or projects without tests, use a shorter manual Codex flow outside an active run. During an active run, Developer and Code Reviewer use dispatch-listed `codexspec/` docs and allowed paths as the prompt-level implementation boundary.

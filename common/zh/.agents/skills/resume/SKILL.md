@@ -1,9 +1,9 @@
 ---
-name: spec:resume
+name: resume
 description: 从 state、planning session 和 dispatch ledger 恢复 workflow。
 ---
 
-# Skill: spec:resume
+# Skill: resume
 
 ## 上下文输入
 
@@ -22,8 +22,8 @@ description: 从 state、planning session 和 dispatch ledger 恢复 workflow。
 
 ## 操作
 
-1. 若 `planning_track` 为 `explore`，恢复 active explore brief 和最新 round，然后继续或结束 `$spec:plan` 的 explore track。
-2. 若 `planning_track` 为 `preflight`，恢复 active preflight brief 和 decision queue，然后继续或结束 `$spec:plan` 的 preflight track。
+1. 若 `planning_track` 为 `explore`，恢复 active explore brief 和最新 round，然后继续或结束 `$plan` 的 explore track。
+2. 若 `planning_track` 为 `preflight`，恢复 active preflight brief 和 decision queue，然后继续或结束 `$plan` 的 preflight track。
 3. 若 `current_run` 存在，读取当前 run 的 dispatch ledger。
 4. 对非结束状态的行，优先继续记录中的 agent id。
 5. 无法继续该子代理时，将该行标记为 `stale`，再基于当前文件产物创建新的有界 dispatch。

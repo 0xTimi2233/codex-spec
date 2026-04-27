@@ -1,9 +1,9 @@
 ---
-name: spec:auto
+name: auto
 description: Run roadmap milestones serially through design and execute until blocked or complete.
 ---
 
-# Skill: spec:auto
+# Skill: auto
 
 ## Context Inputs
 
@@ -17,21 +17,21 @@ Read these paths only when they are not already in the active context or their c
 
 ## Procedure
 
-If the user provides an inline requirement after `$spec:auto`, use it as `$spec:plan` input, then continue through `$spec:design` and `$spec:execute` for the resulting milestone.
+If the user provides an inline requirement after `$auto`, use it as `$plan` input, then continue through `$design` and `$execute` for the resulting milestone.
 
-If there is no inline requirement and no confirmed roadmap exists, stop and recommend `$spec:plan`.
+If there is no inline requirement and no confirmed roadmap exists, stop and recommend `$plan`.
 
 For each roadmap milestone, create or resume its run and execute:
 
 ```text
-$spec:design -> $spec:execute
+$design -> $execute
 ```
 
-If a milestone run does not exist, use `$spec:plan` behavior to create the run task from the roadmap entry. After every step, use `codexspec/runtime/state.json`, dispatch status, and subagent replies.
+If a milestone run does not exist, use `$plan` behavior to create the run task from the roadmap entry. After every step, use `codexspec/runtime/state.json`, dispatch status, and subagent replies.
 
 ## Rejection And Stop Rules
 
-Use the main-thread "Rejection Routing" rule. `$spec:auto` resumes automatic progress after a routed fix reaches the matching workflow step or review step. Stop only when that rule says safe routing is not possible.
+Use the main-thread "Rejection Routing" rule. `$auto` resumes automatic progress after a routed fix reaches the matching workflow step or review step. Stop only when that rule says safe routing is not possible.
 
 ## Milestone Commit
 

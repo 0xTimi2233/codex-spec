@@ -2,8 +2,9 @@ import fs from "node:fs";
 import path from "node:path";
 import { assert, readText, root, runCli, runCliFail, tempDir } from "./test-utils.js";
 
-const LEGACY_WORKFLOW_SKILL = /\$(brainstorm|preflight|plan|design|execute|auto|resume|status)\b/;
-const WORKFLOW_SKILLS = ["spec:plan", "spec:design", "spec:execute", "spec:auto", "spec:status", "spec:resume"];
+const LEGACY_WORKFLOW_SKILL = /\$(brainstorm|preflight|doc-review|code-review|verify|finish)\b/;
+const WORKFLOW_SKILLS = ["plan", "design", "execute", "auto", "status", "resume"];
+const WINDOWS_UNSAFE_PATH_CHARS = /[<>:"\\|?*]/;
 
 function generatedFiles(root, relDir) {
   const dir = path.join(root, relDir);
@@ -23,8 +24,14 @@ function assertNoLegacyWorkflowSkills(root, label) {
   for (const rel of [...generatedFiles(root, ".agents"), ...generatedFiles(root, ".codex")]) {
     const content = readText(root, rel);
     assert(!LEGACY_WORKFLOW_SKILL.test(content), `${label} should not reference legacy workflow skill in ${rel}`);
-    assert(!content.includes("$spec:brainstorm"), `${label} should not reference removed spec:brainstorm in ${rel}`);
-    assert(!content.includes("$spec:preflight"), `${label} should not reference removed spec:preflight in ${rel}`);
+    assert(!content.includes("$brainstorm"), `${label} should not reference removed brainstorm in ${rel}`);
+    assert(!content.includes("$preflight"), `${label} should not reference removed preflight in ${rel}`);
+  }
+}
+
+function assertNoWindowsUnsafePaths(root, label) {
+  for (const rel of generatedFiles(root, ".")) {
+    assert(!WINDOWS_UNSAFE_PATH_CHARS.test(rel), `${label} should not install Windows-unsafe path: ${rel}`);
   }
 }
 
@@ -32,7 +39,7 @@ function assertWorkflowSkillSet(root) {
   for (const skill of WORKFLOW_SKILLS) {
     assert(fs.existsSync(path.join(root, ".agents", "skills", skill, "SKILL.md")), `${skill} should be installed`);
   }
-  for (const removedSkill of ["brainstorm", "preflight", "plan", "design", "execute", "auto", "status", "resume", "doc-review", "code-review", "verify", "finish", "spec:brainstorm", "spec:preflight"]) {
+  for (const removedSkill of ["brainstorm", "preflight", "doc-review", "code-review", "verify", "finish"]) {
     assert(!fs.existsSync(path.join(root, ".agents", "skills", removedSkill, "SKILL.md")), `${removedSkill} should not be installed as a user-facing skill`);
     assert(!fs.existsSync(path.join(root, ".agents", "skills", removedSkill)), `${removedSkill} skill directory should not be installed`);
   }
@@ -43,12 +50,12 @@ function assertPlanningDocs(root, lang) {
   const glossary = readText(root, ".codex", "prompts", "glossary.md");
   const fileIndex = readText(root, ".codex", "prompts", "file-index.md");
   const reportContract = readText(root, ".codex", "prompts", "report-contract.md");
-  const planSkill = readText(root, ".agents", "skills", "spec:plan", "SKILL.md");
-  const autoSkill = readText(root, ".agents", "skills", "spec:auto", "SKILL.md");
-  const designSkill = readText(root, ".agents", "skills", "spec:design", "SKILL.md");
-  const executeSkill = readText(root, ".agents", "skills", "spec:execute", "SKILL.md");
-  const resumeSkill = readText(root, ".agents", "skills", "spec:resume", "SKILL.md");
-  const statusSkill = readText(root, ".agents", "skills", "spec:status", "SKILL.md");
+  const planSkill = readText(root, ".agents", "skills", "plan", "SKILL.md");
+  const autoSkill = readText(root, ".agents", "skills", "auto", "SKILL.md");
+  const designSkill = readText(root, ".agents", "skills", "design", "SKILL.md");
+  const executeSkill = readText(root, ".agents", "skills", "execute", "SKILL.md");
+  const resumeSkill = readText(root, ".agents", "skills", "resume", "SKILL.md");
+  const statusSkill = readText(root, ".agents", "skills", "status", "SKILL.md");
   const subagentContract = readText(root, ".codex", "prompts", "subagent-contract.md");
   const pmRole = readText(root, ".codex", "prompts", "roles", "pm.md");
   const architectRole = readText(root, ".codex", "prompts", "roles", "architect.md");
@@ -71,8 +78,8 @@ function assertPlanningDocs(root, lang) {
   assert(!mainThread.includes("Public CLI commands"), `${lang} main-thread should not describe public CLI commands`);
   assert(!mainThread.includes("对用户公开的 CLI"), `${lang} main-thread should not describe public CLI commands`);
   assert(mainThread.includes(lang === "zh" ? "后续 workflow context 来自 `codexspec/`" : "Future workflow context comes from `codexspec/`"), `${lang} main-thread should keep codexspec as the future context source`);
-  assert(!mainThread.includes(lang === "zh" ? "`$spec:design`：" : "`$spec:design`:"), `${lang} main-thread should not duplicate design skill flow`);
-  assert(!mainThread.includes(lang === "zh" ? "`$spec:execute`：" : "`$spec:execute`:"), `${lang} main-thread should not duplicate execute skill flow`);
+  assert(!mainThread.includes(lang === "zh" ? "`$design`：" : "`$design`:"), `${lang} main-thread should not duplicate design skill flow`);
+  assert(!mainThread.includes(lang === "zh" ? "`$execute`：" : "`$execute`:"), `${lang} main-thread should not duplicate execute skill flow`);
   assert(!mainThread.includes("gate.md"), `${lang} main-thread should not reference gate.md`);
   assert(!mainThread.includes("execution-contract.md"), `${lang} main-thread should not introduce a shared execution contract file`);
 
@@ -176,6 +183,7 @@ function assertTemplateDirs(lang) {
 const tmp = tempDir("codex-spec-source-init-");
 assertTemplateDirs("zh");
 runCli("src", ["init", "--lang", "zh", "--target", tmp]);
+assertNoWindowsUnsafePaths(tmp, "zh init");
 assertNoLegacyWorkflowSkills(tmp, "zh init");
 assertWorkflowSkillSet(tmp);
 assertPlanningDocs(tmp, "zh");
@@ -229,6 +237,7 @@ assert(readText(tmp, "codexspec", "vision.md") === customVision, "--force should
 const highTmp = tempDir("codex-spec-source-high-");
 assertTemplateDirs("en");
 runCli("src", ["init", "--lang", "en", "--model", "high", "--fast", "on", "--target", highTmp]);
+assertNoWindowsUnsafePaths(highTmp, "en init");
 assertNoLegacyWorkflowSkills(highTmp, "en init");
 assertWorkflowSkillSet(highTmp);
 assertPlanningDocs(highTmp, "en");

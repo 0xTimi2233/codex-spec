@@ -1,9 +1,9 @@
 ---
-name: spec:auto
+name: auto
 description: 按 roadmap 串行执行 milestone，直到阻塞或完成。
 ---
 
-# Skill: spec:auto
+# Skill: auto
 
 ## 上下文输入
 
@@ -17,21 +17,21 @@ description: 按 roadmap 串行执行 milestone，直到阻塞或完成。
 
 ## 操作
 
-用户在 `$spec:auto` 后提供 inline requirement 时，将该需求作为 `$spec:plan` 输入，然后继续执行产出的 milestone 的 `$spec:design` 和 `$spec:execute`。
+用户在 `$auto` 后提供 inline requirement 时，将该需求作为 `$plan` 输入，然后继续执行产出的 milestone 的 `$design` 和 `$execute`。
 
-没有 inline requirement 且没有已确认 roadmap 时停止，并建议执行 `$spec:plan`。
+没有 inline requirement 且没有已确认 roadmap 时停止，并建议执行 `$plan`。
 
 对每个 roadmap milestone，创建或恢复对应 run，并执行：
 
 ```text
-$spec:design -> $spec:execute
+$design -> $execute
 ```
 
-若 milestone run 不存在，使用 `$spec:plan` 行为从 roadmap 条目创建 run task。每个节点结束后使用 `codexspec/runtime/state.json`、调度状态和子代理回报。
+若 milestone run 不存在，使用 `$plan` 行为从 roadmap 条目创建 run task。每个节点结束后使用 `codexspec/runtime/state.json`、调度状态和子代理回报。
 
 ## 打回与停止
 
-使用主线程的“打回与路由”规则。被路由的修复回到对应工作流节点或 review step 后，`$spec:auto` 继续自动推进。只有该规则判定无法安全路由时才停止。
+使用主线程的“打回与路由”规则。被路由的修复回到对应工作流节点或 review step 后，`$auto` 继续自动推进。只有该规则判定无法安全路由时才停止。
 
 ## Milestone 提交
 

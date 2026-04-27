@@ -2,12 +2,35 @@ import fs from "node:fs";
 import path from "node:path";
 import { assert, readText, root, runCli, runCliFail, runInternal, runInternalFail, tempDir } from "./test-utils.js";
 
+const WINDOWS_UNSAFE_PATH_CHARS = /[<>:"\\|?*]/;
+
+function generatedFiles(rootDir, relDir = ".") {
+  const dir = path.join(rootDir, relDir);
+  const out = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const rel = path.join(relDir, entry.name);
+    if (entry.isDirectory()) {
+      out.push(...generatedFiles(rootDir, rel));
+    } else {
+      out.push(rel);
+    }
+  }
+  return out;
+}
+
+function assertNoWindowsUnsafePaths(rootDir) {
+  for (const rel of generatedFiles(rootDir)) {
+    assert(!WINDOWS_UNSAFE_PATH_CHARS.test(rel), `dist init should not install Windows-unsafe path: ${rel}`);
+  }
+}
+
 function writeState(rootDir, state) {
   fs.writeFileSync(path.join(rootDir, "codexspec/runtime", "state.json"), JSON.stringify(state, null, 2), "utf8");
 }
 
 const tmp = tempDir("codex-spec-dist-");
 runCli("dist", ["init", "--lang", "en", "--model", "xhigh", "--fast", "off", "--target", tmp]);
+assertNoWindowsUnsafePaths(tmp);
 
 const config = readText(tmp, ".codex", "config.toml");
 const developerAgent = readText(tmp, ".codex", "agents", "developer.toml");
@@ -31,12 +54,12 @@ assert(profiledDeveloperAgent.includes('model_reasoning_effort = "high"'), "prof
 assert(profiledDeveloperAgent.includes('service_tier = "fast"'), "profile should enable developer fast mode");
 
 assert(!fs.existsSync(path.join(root, "dist", "hooks")), "dist should not include hooks");
-assert(fs.existsSync(path.join(tmp, ".agents", "skills", "spec:plan", "SKILL.md")), "dist init should include spec:plan skill");
-assert(!fs.existsSync(path.join(tmp, ".agents", "skills", "spec:brainstorm", "SKILL.md")), "dist init should not include spec:brainstorm skill");
-assert(!fs.existsSync(path.join(tmp, ".agents", "skills", "spec:preflight", "SKILL.md")), "dist init should not include spec:preflight skill");
-assert(!fs.existsSync(path.join(tmp, ".agents", "skills", "spec:brainstorm")), "dist init should not include spec:brainstorm directory");
-assert(!fs.existsSync(path.join(tmp, ".agents", "skills", "spec:preflight")), "dist init should not include spec:preflight directory");
-for (const removedSkill of ["brainstorm", "preflight", "plan", "design", "execute", "auto", "status", "resume", "doc-review", "code-review", "verify", "finish"]) {
+assert(fs.existsSync(path.join(tmp, ".agents", "skills", "plan", "SKILL.md")), "dist init should include plan skill");
+assert(!fs.existsSync(path.join(tmp, ".agents", "skills", "brainstorm", "SKILL.md")), "dist init should not include brainstorm skill");
+assert(!fs.existsSync(path.join(tmp, ".agents", "skills", "preflight", "SKILL.md")), "dist init should not include preflight skill");
+assert(!fs.existsSync(path.join(tmp, ".agents", "skills", "brainstorm")), "dist init should not include brainstorm directory");
+assert(!fs.existsSync(path.join(tmp, ".agents", "skills", "preflight")), "dist init should not include preflight directory");
+for (const removedSkill of ["brainstorm", "preflight", "doc-review", "code-review", "verify", "finish"]) {
   assert(!fs.existsSync(path.join(tmp, ".agents", "skills", removedSkill, "SKILL.md")), `${removedSkill} should not be installed as a user-facing skill`);
   assert(!fs.existsSync(path.join(tmp, ".agents", "skills", removedSkill)), `${removedSkill} skill directory should not be installed`);
 }
