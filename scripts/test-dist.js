@@ -43,7 +43,7 @@ assert(!config.includes("service_tier"), "fast mode off should not render servic
 assert(!config.includes("[[hooks."), "generated config should not install hooks");
 assert(!config.includes("codex_hooks"), "generated config should not enable hook features");
 assert(config.includes('[agents.developer]'), "config should declare developer role");
-assert(config.includes('config_file = ".codex/agents/developer.toml"'), "config should point developer at its role config layer");
+assert(config.includes('config_file = "./agents/developer.toml"'), "config should point developer at its role config layer");
 assert(config.includes('nickname_candidates = ["Developer", "Builder", "Implementer"]'), "developer should declare nickname candidates");
 assert(developerAgent.includes('name = "developer"'), "developer agent should keep its role name");
 assert(developerAgent.includes('description = "Implements code and test code from dispatch-listed authoritative docs and file scope."'), "developer agent should keep its description");

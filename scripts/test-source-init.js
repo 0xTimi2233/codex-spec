@@ -216,10 +216,10 @@ assert(defaultConfig.includes('model_reasoning_effort = "xhigh"'), "main thread 
 assert(defaultConfig.includes('sandbox_mode = "workspace-write"'), "root config should declare sandbox mode");
 assert(defaultConfig.includes('approval_policy = "on-request"'), "root config should declare approval policy");
 assert(defaultConfig.includes('[agents.pm]'), "config should declare pm agent role");
-assert(defaultConfig.includes('config_file = ".codex/agents/pm.toml"'), "config should point pm at its role config layer");
+assert(defaultConfig.includes('config_file = "./agents/pm.toml"'), "config should point pm at its role config layer");
 assert(defaultConfig.includes('nickname_candidates = ["PM", "Product", "Requirements"]'), "pm should declare nickname candidates");
 assert(defaultConfig.includes('[agents.doc-reviewer]'), "config should declare doc reviewer agent role");
-assert(defaultConfig.includes('config_file = ".codex/agents/doc-reviewer.toml"'), "config should point doc reviewer at its role config layer");
+assert(defaultConfig.includes('config_file = "./agents/doc-reviewer.toml"'), "config should point doc reviewer at its role config layer");
 assert(defaultConfig.includes('nickname_candidates = ["Doc Reviewer", "Verifier", "Checker"]'), "doc reviewer should declare nickname candidates");
 assert(!defaultConfig.includes("service_tier"), "fast mode should be off by default");
 assert(!zhPmAgent.includes("service_tier"), "fast mode off should not render agent service_tier");
