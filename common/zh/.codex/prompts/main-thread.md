@@ -51,7 +51,7 @@ flowchart TD
 5. 启动子代理时只传 dispatch packet 路径，然后记录 runtime agent id，并将该行设为 `running`。
 6. 收到子代理回复后，按 `report-contract.md` 解读报告，更新该行；到达结束状态时关闭子代理。
 7. `pass` 时继续当前 skill。
-8. `fail`、`blocked`、`needs-context`、`done-with-concerns` 或 reviewer 非 pass 时，执行打回与路由。
+8. `fail`、`blocked`、`needs-context` 或 reviewer 非 pass 时，执行打回与路由；`done-with-concerns` 按 `Required next action` 处理。
 9. 跨越 milestone 边界前，完成 finish、archive、commit 或 no-op 记录、清理 state，并关闭或标记 stale 所有打开的子代理。
 
 ## State
@@ -90,6 +90,8 @@ Decision format:
 Stop condition:
 ```
 
+dispatch packet 是单次任务契约，列出本轮必要输入、输出、权威文档、写入范围和测试。修复轮次使用新的 dispatch packet。
+
 dispatch ledger 使用：
 
 ```markdown
@@ -111,7 +113,7 @@ dispatch ledger 使用：
 
 本规则适用于手动执行和 `$spec:auto`。
 
-PM、Architect、Tester 返回 `fail`、`blocked`、`needs-context` 或 `done-with-concerns`，或 Doc Reviewer、Code Reviewer 返回非 `pass` 时，先路由问题再停止：
+PM、Architect、Tester 返回 `fail`、`blocked`、`needs-context`，或 Doc Reviewer、Code Reviewer 返回非 `pass` 时，先路由问题再停止。`done-with-concerns` 仅在存在明确 `Required next action` 时路由。
 
 1. 根据子代理报告识别问题和证据路径。
 2. 按决策路由处理 `Decision Request`。
@@ -125,4 +127,4 @@ PM、Architect、Tester 返回 `fail`、`blocked`、`needs-context` 或 `done-wi
 
 一个 run 表示一个 milestone 执行单元。进入下一 milestone 前，`$spec:execute` 必须完成 finish、归档、提交或 no-op 记录、清理 state，并关闭 milestone 子代理。
 
-后续 workflow context 来自 `codexspec/`。当前或已归档 run 文件是记录和证据，只在 dispatch 列出时读取。
+finish 必须更新 `codexspec/roadmap.md` 中当前 milestone 的结果。后续 workflow context 来自 `codexspec/`；archive 只作为记录和证据，在 dispatch 列出时读取。

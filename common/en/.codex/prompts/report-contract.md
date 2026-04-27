@@ -36,7 +36,6 @@ Findings:
 - <specific finding>
 Required next action:
 - <action or none>
-Decision: pass | fail | blocked | needs-context | done-with-concerns
 ```
 
-Every report must list inputs read and outputs written. Do not claim tests passed unless tests were run or a test report was read.
+Every report must list inputs read and outputs written. Route `done-with-concerns` only when `Required next action` contains a concrete action. Do not claim tests passed unless tests were run or a test report was read.

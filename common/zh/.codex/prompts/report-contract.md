@@ -36,7 +36,6 @@ Findings:
 - <specific finding>
 Required next action:
 - <action or none>
-Decision: pass | fail | blocked | needs-context | done-with-concerns
 ```
 
-每份报告必须列出读取输入和写入输出。未运行测试且未读取测试报告时，不要声称测试已通过。
+每份报告必须列出读取输入和写入输出。`done-with-concerns` 仅在 `Required next action` 存在明确动作时路由。未运行测试且未读取测试报告时，不要声称测试已通过。

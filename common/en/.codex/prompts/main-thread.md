@@ -51,7 +51,7 @@ flowchart TD
 5. Start the subagent with only the dispatch packet path, then record its runtime agent id and set the row to `running`.
 6. When the subagent replies, interpret the report using `report-contract.md`, update the row, and close the subagent if it reached an ending status.
 7. On `pass`, continue the active skill.
-8. On `fail`, `blocked`, `needs-context`, `done-with-concerns`, or reviewer non-pass, use Rejection Routing.
+8. On `fail`, `blocked`, `needs-context`, or reviewer non-pass, use Rejection Routing; handle `done-with-concerns` by `Required next action`.
 9. Before crossing a milestone boundary, finish, archive, commit or record no-op, clear state, and close or mark stale all open subagents.
 
 ## State
@@ -90,6 +90,8 @@ Decision format:
 Stop condition:
 ```
 
+A dispatch packet is the task contract for one assignment. It lists the needed inputs, outputs, authoritative documents, write scope, and tests for that round. Fix rounds use a new dispatch packet.
+
 Dispatch ledgers use:
 
 ```markdown
@@ -111,7 +113,7 @@ Only unresolved PM or Architect decisions go to the user. Destructive actions, e
 
 This rule applies to manual execution and `$spec:auto`.
 
-When PM, Architect, or Tester returns `fail`, `blocked`, `needs-context`, or `done-with-concerns`, or Doc Reviewer or Code Reviewer returns anything other than `pass`, route the issue before stopping:
+When PM, Architect, or Tester returns `fail`, `blocked`, or `needs-context`, or Doc Reviewer or Code Reviewer returns anything other than `pass`, route the issue before stopping. Route `done-with-concerns` only when `Required next action` is concrete.
 
 1. Identify the issue and evidence paths from the subagent report.
 2. Resolve any `Decision Request` through Decision Routing.
@@ -125,4 +127,4 @@ Enter `blocked`, or stop `$spec:auto`, only when safe routing is not possible.
 
 A run represents one milestone execution unit. Before the next milestone starts, `$spec:execute` must finish, archive, commit or record no-op, clear state, and close milestone subagents.
 
-Future workflow context comes from `codexspec/`. Current or archived run files are records and evidence, and they are read only when a dispatch lists them.
+Finish must update the current milestone result in `codexspec/roadmap.md`. Future workflow context comes from `codexspec/`; archives are records and evidence, read only when a dispatch lists them.

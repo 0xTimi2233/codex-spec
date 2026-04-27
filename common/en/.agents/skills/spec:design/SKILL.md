@@ -22,8 +22,8 @@ Read these paths only when they are not already in the active context or their c
 
 ## Procedure
 
-1. Run `codex-spec-internal state set --phase designing --run <run-id>`.
-2. Confirm a current run exists and the planning package is present before dispatching Architect. If not, stop and recommend `$spec:plan`.
+1. Before dispatching Architect, confirm `state.current_run` exists, the current phase can enter design, and `dispatch-ledger.md` plus the planning package are present. If not, stop and recommend `$spec:plan` or `$spec:resume` without mutating state.
+2. After validation passes, run `codex-spec-internal state set --phase designing --run <run-id>`.
 3. Write `codexspec/runtime/runs/<run-id>/dispatch/architect-001.md`.
 4. Use the current run planning package as Architect allowed inputs. Append the Architect dispatch row, dispatch Architect, record the runtime agent id, and update the row when the Architect response arrives.
 5. Architect updates dispatch-listed `codexspec/adr/*.md` and `codexspec/spec/*.md`, then reports changed document paths and recommended implementation scope.

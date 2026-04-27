@@ -62,6 +62,9 @@ function assertPlanningDocs(root, lang) {
   assert(mainThread.includes(lang === "zh" ? "只有 PM 或 Architect" : "Only unresolved PM or Architect"), `${lang} main-thread should limit user decision escalation`);
   assert(mainThread.includes(lang === "zh" ? "打回与路由" : "Rejection Routing"), `${lang} main-thread should define rejection routing`);
   assert(mainThread.includes(lang === "zh" ? "Milestone 边界" : "Milestone Boundary"), `${lang} main-thread should define milestone boundary`);
+  assert(mainThread.includes(lang === "zh" ? "单次任务契约" : "task contract"), `${lang} main-thread should define dispatch as the task contract`);
+  assert(mainThread.includes("done-with-concerns") && mainThread.includes("Required next action"), `${lang} main-thread should route done-with-concerns from required action`);
+  assert(mainThread.includes(lang === "zh" ? "更新 `codexspec/roadmap.md`" : "update the current milestone result in `codexspec/roadmap.md`"), `${lang} main-thread should require roadmap update at milestone finish`);
   assert(mainThread.includes(".codex/prompts/file-index.md"), `${lang} main-thread should use file index`);
   assert(mainThread.includes(".codex/prompts/report-contract.md"), `${lang} main-thread should use report contract`);
   assert(mainThread.includes(lang === "zh" ? "关闭子代理" : "close the subagent"), `${lang} main-thread should define subagent closure`);
@@ -71,6 +74,7 @@ function assertPlanningDocs(root, lang) {
   assert(!mainThread.includes(lang === "zh" ? "`$spec:design`：" : "`$spec:design`:"), `${lang} main-thread should not duplicate design skill flow`);
   assert(!mainThread.includes(lang === "zh" ? "`$spec:execute`：" : "`$spec:execute`:"), `${lang} main-thread should not duplicate execute skill flow`);
   assert(!mainThread.includes("gate.md"), `${lang} main-thread should not reference gate.md`);
+  assert(!mainThread.includes("execution-contract.md"), `${lang} main-thread should not introduce a shared execution contract file`);
 
   assert(glossary.includes("planning track"), `${lang} glossary should define planning track`);
   assert(glossary.includes("dispatch packet"), `${lang} glossary should define dispatch packet`);
@@ -98,6 +102,8 @@ function assertPlanningDocs(root, lang) {
   assert(reportContract.includes("Decision Request"), `${lang} report contract should define decision request`);
   assert(reportContract.includes("Inputs read"), `${lang} report contract should require standard report inputs`);
   assert(reportContract.includes("done-with-concerns"), `${lang} report contract should define status values`);
+  assert(!reportContract.includes("Decision:"), `${lang} report contract should not duplicate status with a Decision field`);
+  assert(reportContract.includes("Required next action"), `${lang} report contract should define done-with-concerns routing`);
 
   assert(planSkill.includes("current_planning_session"), `${lang} plan skill should track current planning session`);
   assert(planSkill.includes("planning_track"), `${lang} plan skill should track planning track`);
@@ -114,8 +120,13 @@ function assertPlanningDocs(root, lang) {
   assert(designSkill.includes("pm/scope.md"), `${lang} design skill should read planning scope`);
   assert(designSkill.includes("doc-reviewing"), `${lang} design skill should set doc-reviewing phase`);
   assert(designSkill.includes("codexspec/spec/*.md"), `${lang} design skill should update authoritative specs`);
+  const designValidationIndex = designSkill.indexOf(lang === "zh" ? "调度 Architect 前，确认" : "Before dispatching Architect, confirm");
+  const designMutationIndex = designSkill.indexOf(lang === "zh" ? "state set --phase designing" : "state set --phase designing");
+  assert(designValidationIndex >= 0 && designMutationIndex > designValidationIndex, `${lang} design skill should validate run prerequisites before mutating state`);
   assert(!designSkill.includes("gate.md"), `${lang} design skill should not create gate.md`);
-  assert(executeSkill.includes(lang === "zh" ? "commit 或 no-op 成功后" : "After commit or no-op succeeds"), `${lang} execute skill should clear state after commit or no-op`);
+  assert(executeSkill.includes(lang === "zh" ? "Doc Reviewer 报告只用于确认" : "use the Doc Reviewer report only"), `${lang} execute skill should keep doc reviewer read-only for scope`);
+  assert(executeSkill.includes(lang === "zh" ? "更新后的 `codexspec/roadmap.md`" : "updated `codexspec/roadmap.md`"), `${lang} execute skill should require roadmap updates`);
+  assert(executeSkill.includes(lang === "zh" ? "archive 成功后" : "After archive succeeds"), `${lang} execute skill should clear state after archive succeeds`);
   assert(executeSkill.includes("Doc Reviewer"), `${lang} execute skill should require doc reviewer pass`);
   assert(executeSkill.includes(lang === "zh" ? "不要通过理解 ADR" : "Do not derive scope"), `${lang} execute skill should copy scope from reports`);
   assert(executeSkill.includes(lang === "zh" ? "finish 阶段不新增 ADR" : "Do not introduce new ADR"), `${lang} execute skill should not bypass doc review during finish`);
